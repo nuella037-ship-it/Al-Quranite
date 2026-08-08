@@ -1,6 +1,7 @@
 /**
- *  AL-QURANITE - Main Script (FULLY PRODUCTION READY)
- *  Uses UmmahAPI for Hadith (free, no key required)
+ *  AL-QURANITE - Main Script (PRODUCTION READY)
+ *  Uses UmmahAPI for Hadith library (collections, books, Hadiths)
+ *  Daily Hadith uses a curated fallback list (no API dependency)
  */
 
 // ==============================
@@ -27,7 +28,21 @@ const APP = {
     { arabic: "لَا إِلَٰهَ إِلَّا أَنْتَ سُبْحَانَكَ إِنِّي كُنْتُ مِنَ الظَّالِمِينَ", translation: "There is no deity except You; exalted are You. Indeed, I have been of the wrongdoers.", source: "Surah Al-Anbiya, 21:87" },
     { arabic: "اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ وَعَلَى آلِ مُحَمَّدٍ", translation: "O Allah, send blessings upon Muhammad and upon the family of Muhammad.", source: "Sahih Al-Bukhari" }
   ],
-  currentDuaIndex: 0
+  currentDuaIndex: 0,
+  // Fallback Hadith list – used when API fails or for daily widget
+  hadithList: [
+    { arabic: "إِنَّمَا الْأَعْمَالُ بِالنِّيَّاتِ", english: "Actions are but by intentions.", source: "Sahih Al-Bukhari" },
+    { arabic: "مَنْ كَانَ يُؤْمِنُ بِاللَّهِ وَالْيَوْمِ الْآخِرِ فَلْيَقُلْ خَيْرًا أَوْ لِيَصْمُتْ", english: "Whoever believes in Allah and the Last Day, let him speak good or remain silent.", source: "Sahih Al-Bukhari" },
+    { arabic: "لَا يُؤْمِنُ أَحَدُكُمْ حَتَّى يُحِبَّ لِأَخِيهِ مَا يُحِبُّ لِنَفْسِهِ", english: "None of you truly believes until he loves for his brother what he loves for himself.", source: "Sahih Al-Bukhari" },
+    { arabic: "الرَّاحِمُونَ يَرْحَمُهُمُ الرَّحْمَنُ", english: "The merciful are shown mercy by the Most Merciful.", source: "Sunan At-Tirmidhi" },
+    { arabic: "مَنْ صَامَ رَمَضَانَ إِيمَانًا وَاحْتِسَابًا غُفِرَ لَهُ مَا تَقَدَّمَ مِنْ ذَنْبِهِ", english: "Whoever fasts Ramadan with faith and seeking reward, his previous sins will be forgiven.", source: "Sahih Al-Bukhari" },
+    { arabic: "الْحَيَاءُ شُعْبَةٌ مِنَ الْإِيمَانِ", english: "Modesty is a branch of faith.", source: "Sahih Al-Bukhari" },
+    { arabic: "تَبَسُّمُكَ فِي وَجْهِ أَخِيكَ صَدَقَةٌ", english: "Your smile for your brother is charity.", source: "Jami` at-Tirmidhi" },
+    { arabic: "مَنْ كَانَ يُؤْمِنُ بِاللَّهِ وَالْيَوْمِ الْآخِرِ فَلْيُكْرِمْ ضَيْفَهُ", english: "Whoever believes in Allah and the Last Day, let him honor his guest.", source: "Sahih Al-Bukhari" },
+    { arabic: "إِيَّاكُمْ وَالْغُلُوَّ فِي الدِّينِ", english: "Beware of extremism in religion.", source: "Sunan Ibn Majah" },
+    { arabic: "اللَّهُمَّ إِنِّي أَسْأَلُكَ الْهُدَى وَالتُّقَى وَالْعَفَافَ وَالْغِنَى", english: "O Allah, I ask You for guidance, piety, chastity, and sufficiency.", source: "Sahih Muslim" }
+  ],
+  currentHadithIndex: 0
 };
 
 async function fetchData(url) {
@@ -204,10 +219,12 @@ function resetDate() {
   if (el) el.textContent = '';
 }
 
-/* --- Daily Hadith (UmmahAPI) --- */
-async function fetchDailyHadith() {
-  const url = 'https://api.ummaapi.com/v1/random/hadith';
-  const data = await fetchData(url);
+/* --- Daily Hadith (Fallback list – no external API) --- */
+function fetchDailyHadith() {
+  const today = new Date();
+  const dayOfYear = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24));
+  APP.currentHadithIndex = dayOfYear % APP.hadithList.length;
+  const h = APP.hadithList[APP.currentHadithIndex];
   
   const loader = document.getElementById('hadithLoader');
   const content = document.getElementById('hadithContent');
@@ -218,20 +235,11 @@ async function fetchDailyHadith() {
 
   if (loader) loader.style.display = 'none';
   if (content) content.style.display = 'block';
-
-  if (data && data.success && data.data) {
-    const h = data.data;
-    if (arabicEl) arabicEl.textContent = h.arabic;
-    if (englishEl) englishEl.textContent = h.english;
-    if (sourceEl) sourceEl.textContent = `${h.book} - Hadith ${h.number}`;
-    if (dateEl) dateEl.textContent = new Date().toLocaleDateString();
-  } else {
-    // Graceful fallback
-    if (arabicEl) arabicEl.textContent = "فَاتَّقُوا اللَّهَ وَأَطِيعُونِ";
-    if (englishEl) englishEl.textContent = "So fear Allah and obey me.";
-    if (sourceEl) sourceEl.textContent = "UmmahAPI (Fallback)";
-    if (dateEl) dateEl.textContent = new Date().toLocaleDateString();
-  }
+  
+  if (arabicEl) arabicEl.textContent = h.arabic;
+  if (englishEl) englishEl.textContent = h.english;
+  if (sourceEl) sourceEl.textContent = h.source;
+  if (dateEl) dateEl.textContent = new Date().toLocaleDateString();
 }
 
 function copyDailyHadith() {

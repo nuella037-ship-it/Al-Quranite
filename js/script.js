@@ -1,15 +1,14 @@
 /**
- *  AL-QURANITE - Main Script
+ *  AL-QURANITE - Main Script (FULLY FIXED)
  *  Complete functionality for Home, Education, Quran, Hadith, and Connect pages.
- *  Uses free public APIs: Al-Quran Cloud, Hadith Proxy, and Aladhan.
  */
 
 // ==============================
-// 1. UTILITY FUNCTIONS
+// 1. UTILITY FUNCTIONS & APP STATE
 // ==============================
 
 const APP = {
-  currentPage: '', // 'home', 'quran', 'hadith', 'education', 'connect'
+  currentPage: '',
   currentSurah: null,
   currentCollection: null,
   currentBook: null,
@@ -17,7 +16,8 @@ const APP = {
   hadithLimit: 20,
   surahList: [],
   bookList: [],
-  // Pre-curated Duas for "Dua of the Day"
+  lat: null,
+  lng: null,
   duaList: [
     { arabic: "رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ", translation: "Our Lord, give us in this world [that which is] good and in the Hereafter [that which is] good and protect us from the punishment of the Fire.", source: "Surah Al-Baqarah, 2:201" },
     { arabic: "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنْ الْهَمِّ وَالْحَزَنِ", translation: "O Allah, I seek refuge in You from anxiety and grief.", source: "Sahih Al-Bukhari" },
@@ -29,7 +29,6 @@ const APP = {
   currentDuaIndex: 0
 };
 
-// Fetch wrapper with error handling
 async function fetchData(url) {
   try {
     const response = await fetch(url);
@@ -41,13 +40,11 @@ async function fetchData(url) {
   }
 }
 
-// Get URL query parameters
 function getQueryParam(param) {
   const urlParams = new URLSearchParams(window.location.search);
   return urlParams.get(param);
 }
 
-// Pad numbers for time/date
 function padZero(num) {
   return String(num).padStart(2, '0');
 }
@@ -63,17 +60,13 @@ function detectPage() {
   else if (path.includes('hadith.html')) APP.currentPage = 'hadith';
   else if (path.includes('education.html')) APP.currentPage = 'education';
   else if (path.includes('connect.html')) APP.currentPage = 'connect';
-  else if (path.includes('spirituality.html')) APP.currentPage = 'static';
-  else if (path.includes('belief.html')) APP.currentPage = 'static';
-  else if (path.includes('worship.html')) APP.currentPage = 'static';
-  else APP.currentPage = 'unknown';
+  else APP.currentPage = 'static';
 }
 
 // ==============================
 // 3. COMMON WIDGETS
 // ==============================
 
-/* --- Current Time --- */
 function updateClock() {
   const now = new Date();
   const timeStr = `${padZero(now.getHours())}:${padZero(now.getMinutes())}`;
@@ -82,7 +75,7 @@ function updateClock() {
 }
 setInterval(updateClock, 1000);
 
-/* --- Prayer Times & Qibla (Aladhan API) --- */
+/* --- Prayer Times & Qibla --- */
 async function fetchPrayerTimes(lat, lng) {
   const today = new Date().toISOString().split('T')[0];
   const url = `https://api.aladhan.com/v1/timings/${today}?latitude=${lat}&longitude=${lng}&method=2`;
@@ -93,7 +86,6 @@ async function fetchPrayerTimes(lat, lng) {
     const listEl = document.getElementById('prayer-times-list');
     if (!listEl) return;
     
-    // Update location display
     const locEl = document.getElementById('location-display');
     if (locEl) {
       const city = data.data.meta?.timezone?.split('/')[1] || 'Your Location';
@@ -114,8 +106,9 @@ async function fetchPrayerTimes(lat, lng) {
   }
 }
 
-async function calculateQibla(lat, lng) {
-  const url = `https://api.aladhan.com/v1/qibla/${lat}/${lng}`;
+async function calculateQibla() {
+  if (!APP.lat || !APP.lng) return;
+  const url = `https://api.aladhan.com/v1/qibla/${APP.lat}/${APP.lng}`;
   const data = await fetchData(url);
   const arrowEl = document.getElementById('qibla-arrow');
   const degEl = document.getElementById('qibla-direction');
@@ -138,32 +131,36 @@ function getUserLocation() {
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(
       (pos) => {
-        const { latitude, longitude } = pos.coords;
-        fetchPrayerTimes(latitude, longitude);
-        calculateQibla(latitude, longitude);
+        APP.lat = pos.coords.latitude;
+        APP.lng = pos.coords.longitude;
+        fetchPrayerTimes(APP.lat, APP.lng);
+        calculateQibla();
       },
       () => {
         // Fallback to Mecca
+        APP.lat = 21.4225;
+        APP.lng = 39.8262;
         document.getElementById('location-display').innerHTML = `<i class="fas fa-map-marker-alt me-1"></i> Mecca (Fallback)`;
-        fetchPrayerTimes(21.4225, 39.8262);
-        calculateQibla(21.4225, 39.8262);
+        fetchPrayerTimes(APP.lat, APP.lng);
+        calculateQibla();
       }
     );
   } else {
-    // Fallback
+    APP.lat = 21.4225;
+    APP.lng = 39.8262;
     document.getElementById('location-display').innerHTML = `<i class="fas fa-map-marker-alt me-1"></i> Mecca (Fallback)`;
-    fetchPrayerTimes(21.4225, 39.8262);
-    calculateQibla(21.4225, 39.8262);
+    fetchPrayerTimes(APP.lat, APP.lng);
+    calculateQibla();
   }
 }
 
-/* --- Hijri Date (Aladhan API) --- */
+function refreshPrayerTimes() { getUserLocation(); }
+
+/* --- Hijri Date --- */
 async function fetchHijriDate(dateStr) {
   const url = `https://api.aladhan.com/v1/gToH/${dateStr}`;
   const data = await fetchData(url);
-  if (data && data.code === 200) {
-    return data.data.hijri;
-  }
+  if (data && data.code === 200) return data.data.hijri;
   return null;
 }
 
@@ -197,7 +194,6 @@ function resetDate() {
 
 /* --- Daily Hadith (Proxy API) --- */
 async function fetchDailyHadith() {
-  // Get a random Hadith from Sahih Bukhari
   const url = 'https://api.hadith.alquran.cloud/v1/hadith/random/bukhari/ar-en';
   const data = await fetchData(url);
   
@@ -214,7 +210,6 @@ async function fetchDailyHadith() {
     document.getElementById('apiSource').textContent = `${h.collection} - ${h.book} - Hadith ${h.number}`;
     document.getElementById('hadithDate').textContent = new Date().toLocaleDateString();
   } else {
-    // Fallback
     document.getElementById('apiArabic').textContent = "فَاتَّقُوا اللَّهَ وَأَطِيعُونِ";
     document.getElementById('apiEnglish').textContent = "So fear Allah and obey me.";
     document.getElementById('apiSource').textContent = "Sahih Al-Bukhari (Fallback)";
@@ -267,14 +262,13 @@ function calculateZakat() {
 }
 
 // ==============================
-// 4. EDUCATION PAGE (Ilm)
+// 4. EDUCATION PAGE (FIXED PATH)
 // ==============================
 
 async function loadArticle(fileName) {
   const wrapper = document.getElementById('dynamic-content');
   if (!wrapper) return;
   
-  // Update URL without reloading
   const url = new URL(window.location);
   url.searchParams.set('article', fileName.replace('.html', ''));
   window.history.pushState({}, '', url);
@@ -285,25 +279,19 @@ async function loadArticle(fileName) {
     const html = await response.text();
     wrapper.innerHTML = html;
     
-    // Update page title
     const titleMatch = html.match(/<title>(.*?)<\/title>/i);
-    if (titleMatch) {
-      document.title = titleMatch[1] + ' - Al-QURANITE';
-    } else {
+    if (titleMatch) document.title = titleMatch[1] + ' - Al-QURANITE';
+    else {
       const h1Match = html.match(/<h1[^>]*>(.*?)<\/h1>/i);
       if (h1Match) document.title = h1Match[1].replace(/<[^>]*>/g, '') + ' - Al-QURANITE';
     }
     
-    // Re-apply search listener if it exists in the loaded article
     const searchInput = document.getElementById('namesSearch');
-    if (searchInput) {
-      searchInput.addEventListener('input', filterNames);
-    }
+    if (searchInput) searchInput.addEventListener('input', filterNames);
     
-    // Scroll to top
     window.scrollTo({ top: 0, behavior: 'smooth' });
   } catch (error) {
-    wrapper.innerHTML = `<div class="text-center py-5 text-danger"><i class="fas fa-exclamation-circle fa-3x mb-3"></i><h3>Article could not be loaded</h3><p>${fileName} not found.</p></div>`;
+    wrapper.innerHTML = `<div class="text-center py-5 text-danger"><i class="fas fa-exclamation-circle fa-3x mb-3"></i><h3>Article could not be loaded</h3><p>Make sure all .html files are in the root folder, and use "Live Server" to avoid CORS errors.</p></div>`;
   }
 }
 
@@ -326,13 +314,9 @@ function initEducation() {
     });
   });
   
-  // Load initial article from URL if present
   const article = getQueryParam('article');
-  if (article) {
-    loadArticle(article + '.html');
-  }
+  if (article) loadArticle(article + '.html');
   
-  // Sidebar search
   const searchInput = document.getElementById('bookSearch');
   if (searchInput) {
     searchInput.addEventListener('input', function() {
@@ -347,7 +331,7 @@ function initEducation() {
 }
 
 // ==============================
-// 5. QURAN PAGE
+// 5. QURAN PAGE (FIXED - FETCH BOTH ARABIC & ENGLISH)
 // ==============================
 
 async function fetchSurahs() {
@@ -360,7 +344,7 @@ async function fetchSurahs() {
     APP.surahList = data.data;
     renderSurahList(APP.surahList);
   } else {
-    container.innerHTML = `<div class="text-center p-4 text-muted small">Failed to load Surahs.</div>`;
+    container.innerHTML = `<div class="text-center p-4 text-muted small">Failed to load Surahs. Make sure you are using a local server (e.g. Live Server).</div>`;
   }
 }
 
@@ -381,7 +365,6 @@ function renderSurahList(surahs) {
   });
   container.innerHTML = html;
   
-  // Attach click events
   document.querySelectorAll('.surah-item').forEach(el => {
     el.addEventListener('click', function() {
       const id = this.getAttribute('data-id');
@@ -391,25 +374,29 @@ function renderSurahList(surahs) {
 }
 
 async function fetchSurah(id) {
-  const url = `https://api.alquran.cloud/v1/surah/${id}/en.sahih`;
-  const data = await fetchData(url);
+  // Fetch Arabic and English simultaneously
+  const urlAr = `https://api.alquran.cloud/v1/surah/${id}/ar`;
+  const urlEn = `https://api.alquran.cloud/v1/surah/${id}/en.sahih`;
+  const [dataAr, dataEn] = await Promise.all([fetchData(urlAr), fetchData(urlEn)]);
+  
   const panel = document.getElementById('readerPanel');
   const welcome = document.getElementById('welcomeMessage');
   const content = document.getElementById('surahContent');
   
   if (!panel) return;
   
-  if (data && data.code === 200) {
-    APP.currentSurah = data.data;
+  if (dataAr && dataAr.code === 200 && dataEn && dataEn.code === 200) {
+    APP.currentSurah = dataAr.data;
     if (welcome) welcome.style.display = 'none';
     if (content) content.style.display = 'block';
     
-    document.getElementById('currentSurahTitle').textContent = data.data.englishName;
-    document.getElementById('surahMetaBadge').textContent = `${data.data.numberOfAyahs} verses • ${data.data.revelationType}`;
+    document.getElementById('currentSurahTitle').textContent = dataAr.data.englishName;
+    document.getElementById('surahMetaBadge').textContent = `${dataAr.data.numberOfAyahs} verses • ${dataAr.data.revelationType}`;
     
     const container = document.getElementById('versesContainer');
     let html = '';
-    data.data.ayahs.forEach((ayah, index) => {
+    dataAr.data.ayahs.forEach((ayahAr, index) => {
+      const ayahEn = dataEn.data.ayahs[index];
       const num = index + 1;
       html += `<div class="verse-card">
         <div class="verse-content-wrapper">
@@ -417,18 +404,20 @@ async function fetchSurah(id) {
             <span class="verse-num-text">${num}</span>
           </div>
           <div class="verse-text-content">
-            <div class="verse-arabic">${ayah.text}</div>
-            <div class="verse-translation">${ayah.translation || ayah.text}</div>
+            <div class="verse-arabic">${ayahAr.text}</div>
+            <div class="verse-translation">${ayahEn.text}</div>
           </div>
         </div>
         <div class="verse-actions">
-          <button class="btn-action-mini" onclick="copyText('${ayah.text}')"><i class="far fa-copy"></i> Copy</button>
-          <button class="btn-action-mini" onclick="shareText('${ayah.text}')"><i class="fas fa-share-alt"></i> Share</button>
+          <button class="btn-action-mini" onclick="copyText('${ayahEn.text.replace(/'/g, "\\'")}')"><i class="far fa-copy"></i> Copy</button>
+          <button class="btn-action-mini" onclick="shareText('${ayahEn.text.replace(/'/g, "\\'")}')"><i class="fas fa-share-alt"></i> Share</button>
         </div>
       </div>`;
     });
     container.innerHTML = html;
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  } else {
+    document.getElementById('versesContainer').innerHTML = `<div class="text-center py-5 text-danger">Failed to load Surah. Please try again later.</div>`;
   }
 }
 
@@ -463,7 +452,7 @@ async function fetchCollections() {
     APP.collectionList = data.data;
     renderCollectionList(APP.collectionList);
   } else {
-    container.innerHTML = `<div class="text-center p-4 text-muted small">Failed to load collections.</div>`;
+    container.innerHTML = `<div class="text-center p-4 text-muted small">Failed to load collections. Use Live Server to avoid CORS errors.</div>`;
   }
 }
 
@@ -561,8 +550,8 @@ async function fetchHadiths(collection, bookId, offset = 0, limit = 20) {
           </div>
         </div>
         <div class="hadith-actions">
-          <button class="btn-action-mini" onclick="copyText('${h.english}')"><i class="far fa-copy"></i> Copy</button>
-          <button class="btn-action-mini" onclick="shareText('${h.english}')"><i class="fas fa-share-alt"></i> Share</button>
+          <button class="btn-action-mini" onclick="copyText('${h.english.replace(/'/g, "\\'")}')"><i class="far fa-copy"></i> Copy</button>
+          <button class="btn-action-mini" onclick="shareText('${h.english.replace(/'/g, "\\'")}')"><i class="fas fa-share-alt"></i> Share</button>
         </div>
       </div>`;
     });
@@ -613,7 +602,6 @@ document.addEventListener('DOMContentLoaded', function() {
   detectPage();
   updateClock();
   
-  // Index / Home
   if (APP.currentPage === 'home') {
     getUserLocation();
     updateHijriDate();
@@ -621,26 +609,10 @@ document.addEventListener('DOMContentLoaded', function() {
     fetchDailyDua();
   }
   
-  // Connect (Daily Hadith Widget)
-  if (APP.currentPage === 'connect') {
-    fetchDailyHadith();
-  }
-  
-  // Education
-  if (APP.currentPage === 'education') {
-    initEducation();
-  }
-  
-  // Quran
-  if (APP.currentPage === 'quran') {
-    initQuran();
-  }
-  
-  // Hadith
-  if (APP.currentPage === 'hadith') {
-    initHadith();
-  }
+  if (APP.currentPage === 'connect') fetchDailyHadith();
+  if (APP.currentPage === 'education') initEducation();
+  if (APP.currentPage === 'quran') initQuran();
+  if (APP.currentPage === 'hadith') initHadith();
 });
 
-// Keep clock running every second
 setInterval(updateClock, 1000);

@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coming Soon – Al-QURANITE</title>
+
+    <!-- Meta tags for SEO and sharing -->
+    <meta name="description" content="We're working on something new. Stay tuned for updates from Al-QURANITE.">
+    <meta property="og:title" content="Al-QURANITE – Coming Soon">
+    <meta property="og:description" content="We're preparing new content and features. Subscribe to be notified.">
+    <meta name="robots" content="noindex, follow">
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha512-t4GWSVZO1eC8BM339Xd7Uphw5s17a86tIZIj8qRxhnKub6WoyhnrxeCIMeAqBPgdZGlCcG2PrZjMc+Wr78+5Xg==" crossorigin="anonymous">
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts (same as main site) -->
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <style>
+        /* Minimal custom styles – reuse the site’s variables and basics */
+        :root {
+            --deep-sky-blue: #00BFFF;
+            --emerald-green: #009c4a;
+            --magenta: #b300b3;
+            --white: #FFFFFF;
+            --primary-gradient: linear-gradient(135deg, var(--deep-sky-blue), var(--emerald-green));
+            --bg-color: #f8f9fa;
+            --text-main: #2c3e50;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --font-arabic: 'Amiri', serif;
+            --font-heading: 'Playfair Display', serif;
+            --font-body: 'Lato', sans-serif;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            padding-top: 60px; /* for fixed navbar */
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Navbar – same as main site */
+        .navbar {
+            background-color: rgba(0, 191, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 0.4rem 0;
+            border-bottom: 2px solid var(--magenta);
+            z-index: 1030;
+        }
+        .navbar-brand {
+            color: var(--white) !important;
+            font-size: 1.5rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+        .navbar-brand i {
+            margin-right: 10px;
+        }
+
+        /* Hero / Coming Soon Section */
+        .coming-soon-hero {
+            background: var(--primary-gradient);
+            color: white;
+            padding: 80px 0 60px;
+            text-align: center;
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+            position: relative;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+        .coming-soon-hero::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: radial-gradient(var(--white) 1px, transparent 1px);
+            background-size: 20px 20px;
+            opacity: 0.15;
+        }
+        .coming-soon-hero .container {
+            position: relative;
+            z-index: 2;
+        }
+        .coming-soon-title {
+            font-family: var(--font-heading);
+            font-size: 4rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+        .coming-soon-sub {
+            font-size: 1.5rem;
+            font-weight: 300;
+            opacity: 0.9;
+        }
+        .coming-soon-message {
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 20px auto 30px;
+            opacity: 0.85;
+        }
+
+        /* Countdown Timer */
+        .countdown-wrapper {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin: 30px 0 20px;
+        }
+        .countdown-item {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 16px;
+            padding: 15px 20px;
+            min-width: 80px;
+            text-align: center;
+        }
+        .countdown-number {
+            font-family: var(--font-heading);
+            font-size: 2.8rem;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+        .countdown-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.7;
+        }
+
+        /* Newsletter / Notify Me */
+        .notify-section {
+            padding: 60px 0;
+            background-color: var(--white);
+        }
+        .notify-box {
+            max-width: 550px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        .notify-box h3 {
+            font-family: var(--font-heading);
+            color: var(--text-main);
+            margin-bottom: 15px;
+        }
+        .notify-box p {
+            color: var(--text-muted);
+            margin-bottom: 25px;
+        }
+        .input-group-custom {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .input-group-custom .form-control {
+            flex: 1 1 250px;
+            padding: 12px 20px;
+            border-radius: 50px;
+            border: 2px solid var(--border);
+            font-family: var(--font-body);
+            transition: border-color 0.3s;
+        }
+        .input-group-custom .form-control:focus {
+            border-color: var(--deep-sky-blue);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(0, 191, 255, 0.15);
+        }
+        .btn-notify {
+            background: var(--primary-gradient);
+            border: none;
+            color: white;
+            padding: 12px 35px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-family: var(--font-heading);
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 4px 15px rgba(0, 156, 74, 0.3);
+            white-space: nowrap;
+        }
+        .btn-notify:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 156, 74, 0.4);
+            color: white;
+        }
+
+        /* Footer (minimal) */
+        footer {
+            background-color: rgba(0, 191, 255, 0.95);
+            color: rgba(255,255,255,0.8);
+            padding: 30px 0 15px;
+            font-size: 0.85rem;
+            margin-top: auto;
+        }
+        .footer-logo {
+            font-family: var(--font-arabic);
+            font-size: 1.5rem;
+            color: white;
+            margin-bottom: 10px;
+            display: block;
+        }
+        .social-icons a {
+            color: white;
+            margin-right: 15px;
+            font-size: 1.4rem;
+            transition: opacity 0.3s;
+        }
+        .social-icons a:hover {
+            opacity: 0.7;
+        }
+        hr {
+            border-color: rgba(255,255,255,0.2) !important;
+        }
+
+        /* Responsive tweaks */
+        @media (max-width: 768px) {
+            .coming-soon-title {
+                font-size: 2.8rem;
+            }
+            .countdown-item {
+                min-width: 60px;
+                padding: 10px 15px;
+            }
+            .countdown-number {
+                font-size: 2rem;
+            }
+            .input-group-custom .form-control {
+                flex: 1 1 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-kaaba"></i> Al-QURANITE
+            </a>
+            <!-- Empty collapse – no extra links needed for coming soon -->
+        </div>
+    </nav>
+
+    <!-- Hero / Coming Soon -->
+    <section class="coming-soon-hero">
+        <div class="container">
+            <h1 class="coming-soon-title">Coming Soon</h1>
+            <p class="coming-soon-sub">We're preparing something special for you</p>
+            <p class="coming-soon-message">
+                Our team is working on new content, features, and resources to enrich your journey of knowledge. Stay tuned!
+            </p>
+
+            <!-- Countdown Timer -->
+            <div class="countdown-wrapper" id="countdown">
+                <div class="countdown-item">
+                    <div class="countdown-number" id="days">00</div>
+                    <div class="countdown-label">Days</div>
+                </div>
+                <div class="countdown-item">
+                    <div class="countdown-number" id="hours">00</div>
+                    <div class="countdown-label">Hours</div>
+                </div>
+                <div class="countdown-item">
+                    <div class="countdown-number" id="minutes">00</div>
+                    <div class="countdown-label">Minutes</div>
+                </div>
+                <div class="countdown-item">
+                    <div class="countdown-number" id="seconds">00</div>
+                    <div class="countdown-label">Seconds</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Notify / Newsletter -->
+    <section class="notify-section">
+        <div class="container">
+            <div class="notify-box">
+                <i class="fas fa-envelope-open-text fa-3x mb-3" style="color: var(--deep-sky-blue);"></i>
+                <h3>Get Notified When We Launch</h3>
+                <p>Subscribe to our newsletter and be the first to know about new content and updates.</p>
+                <form class="input-group-custom" onsubmit="event.preventDefault(); alert('Thank you for subscribing! We\'ll notify you soon.');">
+                    <input type="email" class="form-control" placeholder="Your email address" required>
+                    <button type="submit" class="btn-notify">Notify Me</button>
+                </form>
+                <p class="small text-muted mt-3"><i class="fas fa-lock me-1"></i> We respect your privacy. Unsubscribe anytime.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-4 mb-3">
+                    <span class="footer-logo"><i class="fas fa-kaaba me-2"></i> Al-QURANITE</span>
+                    <p class="small">Dedicated to providing authentic, accessible, and inspiring Islamic knowledge.</p>
+                </div>
+                <div class="col-lg-4 mb-3 text-center">
+                    <div class="social-icons">
+                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+                        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-4 mb-3 text-lg-end">
+                    <p class="small mb-0">&copy; 2026 Al-Quranite. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS (optional, for any toggles) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Countdown Script -->
+    <script>
+        (function() {
+            // Set the target date: 30 days from now (or a specific date)
+            const targetDate = new Date();
+            targetDate.setDate(targetDate.getDate() + 30); // 30 days from today
+
+            function updateCountdown() {
+                const now = new Date().getTime();
+                const distance = targetDate.getTime() - now;
+
+                if (distance < 0) {
+                    // If target date passed, show zeros or a message
+                    document.getElementById('days').textContent = '00';
+                    document.getElementById('hours').textContent = '00';
+                    document.getElementById('minutes').textContent = '00';
+                    document.getElementById('seconds').textContent = '00';
+                    return;
+                }
+
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                document.getElementById('days').textContent = String(days).padStart(2, '0');
+                document.getElementById('hours').textContent = String(hours).padStart(2, '0');
+                document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
+                document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
+            }
+
+            // Update immediately and then every second
+            updateCountdown();
+            setInterval(updateCountdown, 1000);
+        })();
+    </script>
+
+</body>
+</html>

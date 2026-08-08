@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Education (Ilm) - Al-QURANITE</title>
+    
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: https:;">
+    
+    <!-- Bootstrap 5 CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha512-t4GWSVZO1eC8BM339Xd7Uphw5s17a86tIZIj8qRxhnKub6WoyhnrxeCIMeAqBPgdZGlCcG2PrZjMc+Wr78+5Xg==" crossorigin="anonymous">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Scheherazade+New:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Custom Styles -->
+    <link rel="stylesheet" type="text/css" href="css/styles.css">
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html"><i class="fas fa-kaaba me-2"></i> Al-QURANITE</a>
+            <button class="navbar-toggler bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="spirituality.html">Spirituality</a></li>
+                    <li class="nav-item"><a class="nav-link" href="belief.html">Belief</a></li>
+                    <li class="nav-item"><a class="nav-link" href="worship.html">Worship</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="education.html">Education</a></li>
+                    <li class="nav-item"><a class="nav-link" href="quran.html">Quran</a></li>
+                    <li class="nav-item"><a class="nav-link" href="hadith.html">Hadith</a></li>
+                    <li class="nav-item"><a class="nav-link" href="connect.html">Connect</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <header class="hero-section">
+        <div class="container position-relative" style="z-index: 2;">
+            <h1 class="hero-title">Talab al-Ilm | طَلَبُ الْعِلْمِ</h1>
+            <p class="hero-subtitle">The Pursuit of Divine Knowledge</p>
+        </div>
+    </header>
+
+    <!-- Page Layout Container -->
+    <div class="page-layout">
+        
+        <!-- Left Panel: Sticky Sidebar (30%) -->
+        <aside class="library-sidebar">
+            <div class="sidebar-controls">
+                <!-- Enhanced Search Bar -->
+                <div class="search-wrapper">
+                    <input type="text" id="bookSearch" class="search-input" placeholder="Search Topic...">
+                    <div class="search-icon-wrapper">
+                        <i class="fas fa-search"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="bookListContainer" class="book-list-container">
+                <!-- All 26 topics with corrected data-src paths -->
+                <div class="book-item dynamic-link" data-src="shirk.html">
+                    <div class="d-flex align-items-center">
+                        <span class="book-number">1</span>
+                        <div class="book-info">
+                            <h6>The Concept of Shirk</h6>
+                            <small>Foundations</small>
+                        </div>
+                    </div>
+                    <div class="book-name-ar">الشرك</div>
+                </div>
+
+                <div class="book-item dynamic-link" data-src="ilm.html">
+                    <div class="d-flex align-items-center">
+                        <span class="book-number">2</span>
+                        <div class="book-info">
+                            <h6>Sacred Knowledge</h6>
+                            <small>Foundations</small>
+                        </div>
+                    </div>
+                    <div class="book-name-ar">علم</div>
+                </div>
+
+                <div class="book-item dynamic-link" data-src="tazkiyah.html">
+                    <div class="d-flex align-items-center">
+                        <span class="book-number">3</span>
+                        <div class="book-info">
+                            <h6>Purification of Soul</h6>
+                            <small>Foundations</small>
+                        </div>
+                    </div>
+                    <div class="book-name-ar">التزكية النفس</div>
+                </div>
+
+                <div class="book-item dynamic-link" data-src="ibadah.html">
+                    <div class="d-flex align-items-center">
+                        <span class="book-number">4</span>
+                        <div class="book-info">
+                            <h6>Practice (Ibadah)</h6>
+                            <small>Foundations</small>
+                        </div>
+                    </div>
+                    <div class="book-name-ar">العبادة</div>
+                </div>
+
+                <div class="book-item dynamic-link" data-src="aqidah.html">
+                    <div class="d-flex align-items-center">
+                        <span class="book-number">5</span>
+                        <div class="book-info">
+                            <h6>Theology (Aqidah)</h6>
+                            <small>Foundations</small>
+                        </div>
+                    </div>
+                    <div class="book-name-ar">العقيدة</div>
+                </div>
+
+                <div class="book-item dynamic-link" data-src="rituals.html">
+                    <div class="d-flex align-items-center">
+                        <span class="book-number">6</span>
+                        <div class="book-info">
+                            <h6>Philosophy of Rituals</h6>
+                            <small>Foundations</small>
+                        </div>
+                    </div>
+                    <div class="book-name-ar">الشعائر</div>
+                </div>
+
+                <div class="book-item dynamic-link" data-src="99-names.html">
+                    <div class="d-flex align-items-center">
+                        <span class="book-number">7</span>
+                        <div class="book-info">
+                            <h6>99 Names of Allah</h6>
+                            <small>Foundations</small>
+                        </div>
+                    </div>
+                    <div class="book-name-ar">الأسماء</div>
+                </div>
+
+                <div class="book-item dynamic-link" data-src="asbab.html">
+                    <div class="d-flex align-items-center">
+                        <span class="book-number">8</span>
+                        <div class="book-info">
+                            <h6>Asbab al-Nuzul</h6>
+                            <small>Sacred Sciences</small>
+                        </div>
+                    </div>
+                    <div class="book-name-ar">الأسباب</div>
+                </div>
+
+                <div class="book-item dynamic-link" data-src="preservation.html">
+                    <div class="d-flex align-items-center">
+                        <span class="book-number">9</span>
+                        <div class="book-info">
+                            <h6>Textual Preservation</h6>
+                            <small>Sacred Sciences</small>
+                        </div>
+                    </div>
+                    <div class="book-name-ar">الحفظ</div>
+                </div>
+
+                <div class="book-item dynamic-link" data-src="authentication.html">
+                    <div class="d-flex align-items-center">
+                        <span class="book-number">10</span>
+                        <div class="book-info">
+                            <h6>Authentication</h6>
+                            <small>Sacred Sciences</small>
+                        </div>
+                    </div>
+                    <div class="book-name-ar">التوثيق</div>
+                </div>
+
+                <div class="book-item dynamic-link" data-src="maqasid.html">
+                    <div class="d-flex align-items-center">
+                        <span class="book-number">11</span>
+                        <div class="book-info">
+                            <h6>Maqasid al-Sharia</h6>
+                            <small>Legal Systems</small>
+                        </div>
+                    </div>
+                    <div class="book-name-ar">المقاصد</div>
+                </div>
+
+                <div class="book-item dynamic-link" data-src="fiqh.html">
+                    <div class="d-flex align-items-center">
+                        <span class="book-number">12</span>
+                        <div class="book-info">
+                            <h6>Islamic Jurisprudence</h6>
+                            <small>Legal Systems</small>
+                        </div>
+                    </div>
+                    <div class="book-name-ar">فقه</div>
+                </div>
+
+                <div class="book-item dynamic-link" data-src="madhhabs.html">
+                    <div class="d-flex align-items-center">
+                        <span class="book-number">13</span>
+                        <div class="book-info">
+                            <h6>Evolution of Madhhabs</h6>
+                            <small>Legal Systems</small>
+                        </div>
+                    </div>
+                    <div class="book-name-ar">المذاهب</div>
+                </div>
+
+                <div class="book-item dynamic-link" data-src="usul.html">
+                    <div class="d-flex align-items-center">
+                        <span class="book-number">14</span>
+                        <div class="book-info">
+                            <h6>Methodology (Usul)</h6>
+                            <small>Legal Systems</small>
+                        </div>
+                    </div>
+                    <div class="book-name-ar">الأصول</div>
+                </div>
+
+                <div class="book-item dynamic-link" data-src="dawah.html">
+                    <div class="d-flex align-items-center">
+                        <span class="book-number">15</span>
+                        <div class="book-info">
+                            <h6>Interfaith &amp; Dawah</h6>
+                            <small>Modern Dynamics</small>
+                        </div>
+                    </div>
+                    <div class="book-name-ar">الدعوة</div>
+                </div>
+
+                <div class="book-item dynamic-link" data-src="modernism.html">
+                    <div class="d-flex align-items-center">
+                        <span class="book-number">16</span>
+                        <div class="book-info">
+                            <h6>Modernism vs Traditionalism</h6>
+                            <small>Modern Dynamics</small>
+                        </div>
+                    </div>
+                    <div class="book-name-ar">الحداثة</div>
+                </div>
+
+                <div class="book-item dynamic-link" data-src="modernity.html">
+                    <div class="d-flex align-items-center">
+                        <span class="book-number">17</span>
+                        <div class="book-info">
+                            <h6>Modernity</h6>
+                            <small>Modern Dynamics</small>
+                        </div>
+                    </div>
+                    <div class="book-name-ar">العصر</div>
+                </div>
+
+                <div class="book-item dynamic-link" data-src="marriage.html">
+                    <div class="d-flex align-items-center">
+                        <span class="book-number">18</span>
+                        <div class="book-info">
+                            <h6>Family Life</h6>
+                            <small>Modern Dynamics</small>
+                        </div>
+                    </div>
+                    <div class="book-name-ar">الحياة العائلية</div>
+                </div>
+
+                <div class="book-item dynamic-link" data-src="muamalat.html">
+                    <div class="d-flex align-items-center">
+                        <span class="book-number">19</span>
+                        <div class="book-info">
+                            <h6>Social Transaction</h6>
+                            <small>Modern Dynamics</small>
+                        </div>
+                    </div>
+                    <div class="book-name-ar">معاملات</div>
+                </div>
+
+                <div class="book-item dynamic-link" data-src="quran-source.html">
+                    <div class="d-flex align-items-center">
+                        <span class="book-number">20</span>
+                        <div class="book-info">
+                            <h6>Quran (Primary Source)</h6>
+                            <small>Sources</small>
+                        </div>
+                    </div>
+                    <div class="book-name-ar">القرآن</div>
+                </div>
+
+                <div class="book-item dynamic-link" data-src="hadith-source.html">
+                    <div class="d-flex align-items-center">
+                        <span class="book-number">21</span>
+                        <div class="book-info">
+                            <h6>Hadith (Sunnah)</h6>
+                            <small>Sources</small>
+                        </div>
+                    </div>
+                    <div class="book-name-ar">الحديث</div>
+                </div>
+
+                <div class="book-item dynamic-link" data-src="seerah.html">
+                    <div class="d-flex align-items-center">
+                        <span class="book-number">22</span>
+                        <div class="book-info">
+                            <h6>Prophetic Biography</h6>
+                            <small>Sources</small>
+                        </div>
+                    </div>
+                    <div class="book-name-ar">السيرة النبوية</div>
+                </div>
+
+                <div class="book-item dynamic-link" data-src="ijma.html">
+                    <div class="d-flex align-items-center">
+                        <span class="book-number">23</span>
+                        <div class="book-info">
+                            <h6>Ijma (Consensus)</h6>
+                            <small>Sources</small>
+                        </div>
+                    </div>
+                    <div class="book-name-ar">الإجماع</div>
+                </div>
+
+                <div class="book-item dynamic-link" data-src="qiyas.html">
+                    <div class="d-flex align-items-center">
+                        <span class="book-number">24</span>
+                        <div class="book-info">
+                            <h6>Qiyas (Analogy)</h6>
+                            <small>Sources</small>
+                        </div>
+                    </div>
+                    <div class="book-name-ar">القياس</div>
+                </div>
+
+                <div class="book-item dynamic-link" data-src="adab.html">
+                    <div class="d-flex align-items-center">
+                        <span class="book-number">25</span>
+                        <div class="book-info">
+                            <h6>Etiquettes (Adab)</h6>
+                            <small>Student Guide</small>
+                        </div>
+                    </div>
+                    <div class="book-name-ar">الأدب</div>
+                </div>
+
+                <div class="book-item dynamic-link" data-src="books.html">
+                    <div class="d-flex align-items-center">
+                        <span class="book-number">26</span>
+                        <div class="book-info">
+                            <h6>Recommended Books</h6>
+                            <small>Student Guide</small>
+                        </div>
+                    </div>
+                    <div class="book-name-ar">الكتب</div>
+                </div>
+
+            </div>
+        </aside>
+
+        <!-- Right Panel: Reader (70%) -->
+        <main class="main-wrapper" id="mainWrapper">
+            <div id="dynamic-content">
+                <div class="article-container text-center py-5">
+                    <i class="fas fa-book-open fa-4x mb-4" style="color: var(--emerald-green); opacity: 0.3;"></i>
+                    <h2 class="serif-heading text-muted">Select a Topic to begin</h2>
+                    <p class="text-muted small">Use the search bar above to find specific articles.</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-3">
+                    <span class="footer-logo"><i class="fas fa-kaaba me-2"></i> Al-QURANITE</span>
+                    <p class="small">Dedicated to providing authentic, accessible, and inspiring Islamic knowledge to seekers around the world.</p>
+                </div>
+                <div class="col-lg-2 col-md-6 mb-3">
+                    <h5 class="text-white serif-heading">Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="index.html" class="text-decoration-none text-white">Home</a></li>
+                         <li><a href="hadith.html" class="text-decoration-none text-white">Hadith</a></li>
+                        <li><a href="quran.html" class="text-decoration-none text-white">Qur'an</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-2 col-md-6 mb-3">
+                    <h5 class="text-white serif-heading">Topics</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="belief.html" class="text-decoration-none text-white">Belief</a></li>
+                        <li><a href="worship.html" class="text-decoration-none text-white">Worship</a></li>
+                        <li><a href="spirituality.html" class="text-decoration-none text-white">Spirituality</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-4 mb-3">
+                    <h5 class="text-white serif-heading">Connect</h5>
+                    <div class="social-icons mb-2">
+                        <a href="coming-soon.html" class="text-white me-3 fs-5" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+                        <a href="coming-soon.html" class="text-white me-3 fs-5" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="coming-soon.html" class="text-white me-3 fs-5" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    </div>
+                </div>
+            </div>
+            <hr class="border-secondary my-2" style="border-color: rgba(255,255,255,0.2) !important;">
+            <div class="text-center small">
+                <p class="mb-0">&copy; 2026 Al-Quranite. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Main Scripts -->
+    <script src="js/script.js"></script>
+</body>
+</html>

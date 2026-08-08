@@ -1,5 +1,5 @@
 /**
- *  AL-QURANITE - Main Script (FULLY UPDATED)
+ *  AL-QURANITE - Main Script (FULLY PRODUCTION READY)
  *  Uses UmmahAPI for Hadith (free, no key required)
  */
 
@@ -16,7 +16,7 @@ const APP = {
   hadithLimit: 20,
   surahList: [],
   bookList: [],
-  _fullHadiths: [], // Used for client-side pagination
+  _fullHadiths: [], // Client-side pagination cache
   lat: null,
   lng: null,
   duaList: [
@@ -82,11 +82,11 @@ async function fetchPrayerTimes(lat, lng) {
   const url = `https://api.aladhan.com/v1/timings/${today}?latitude=${lat}&longitude=${lng}&method=2`;
   const data = await fetchData(url);
   
+  const listEl = document.getElementById('prayer-times-list');
+  if (!listEl) return;
+  
   if (data && data.code === 200) {
     const timings = data.data.timings;
-    const listEl = document.getElementById('prayer-times-list');
-    if (!listEl) return;
-    
     const locEl = document.getElementById('location-display');
     if (locEl) {
       const city = data.data.meta?.timezone?.split('/')[1] || 'Your Location';
@@ -103,7 +103,7 @@ async function fetchPrayerTimes(lat, lng) {
     });
     listEl.innerHTML = html;
   } else {
-    document.getElementById('prayer-times-list').innerHTML = `<div class="text-center py-3 text-muted small">Could not load prayer times.</div>`;
+    listEl.innerHTML = `<div class="text-center py-3 text-muted small">Could not load prayer times.</div>`;
   }
 }
 
@@ -140,7 +140,8 @@ function getUserLocation() {
       () => {
         APP.lat = 21.4225;
         APP.lng = 39.8262;
-        document.getElementById('location-display').innerHTML = `<i class="fas fa-map-marker-alt me-1"></i> Mecca (Fallback)`;
+        const locEl = document.getElementById('location-display');
+        if (locEl) locEl.innerHTML = `<i class="fas fa-map-marker-alt me-1"></i> Mecca (Fallback)`;
         fetchPrayerTimes(APP.lat, APP.lng);
         calculateQibla();
       }
@@ -148,7 +149,8 @@ function getUserLocation() {
   } else {
     APP.lat = 21.4225;
     APP.lng = 39.8262;
-    document.getElementById('location-display').innerHTML = `<i class="fas fa-map-marker-alt me-1"></i> Mecca (Fallback)`;
+    const locEl = document.getElementById('location-display');
+    if (locEl) locEl.innerHTML = `<i class="fas fa-map-marker-alt me-1"></i> Mecca (Fallback)`;
     fetchPrayerTimes(APP.lat, APP.lng);
     calculateQibla();
   }
@@ -156,7 +158,7 @@ function getUserLocation() {
 
 function refreshPrayerTimes() { getUserLocation(); }
 
-/* --- Hijri Date --- */
+/* --- Hijri Date (FIXED: dd-MM-yyyy format) --- */
 async function fetchHijriDate(dateStr) {
   const url = `https://api.aladhan.com/v1/gToH/${dateStr}`;
   const data = await fetchData(url);
@@ -165,8 +167,13 @@ async function fetchHijriDate(dateStr) {
 }
 
 async function updateHijriDate() {
-  const today = new Date().toISOString().split('T')[0];
-  const hijri = await fetchHijriDate(today);
+  const now = new Date();
+  const day = padZero(now.getDate());
+  const month = padZero(now.getMonth() + 1);
+  const year = now.getFullYear();
+  const dateStr = `${day}-${month}-${year}`; // dd-MM-yyyy
+
+  const hijri = await fetchHijriDate(dateStr);
   const el = document.getElementById('hijri-date');
   const gregEl = document.getElementById('gregorian-date');
   
@@ -180,16 +187,21 @@ async function updateHijriDate() {
 
 function convertDate(val) {
   const el = document.getElementById('converted-hijri');
-  if (!val) { el.textContent = ''; return; }
-  fetchHijriDate(val).then(hijri => {
-    if (hijri) el.textContent = `${hijri.day} ${hijri.month.en} ${hijri.year} AH`;
-    else el.textContent = 'Conversion failed';
+  if (!val) { if (el) el.textContent = ''; return; }
+  // Convert input value (yyyy-MM-dd) to dd-MM-yyyy
+  const parts = val.split('-');
+  const dateStr = `${parts[2]}-${parts[1]}-${parts[0]}`;
+  fetchHijriDate(dateStr).then(hijri => {
+    if (hijri && el) el.textContent = `${hijri.day} ${hijri.month.en} ${hijri.year} AH`;
+    else if (el) el.textContent = 'Conversion failed';
   });
 }
 
 function resetDate() {
-  document.getElementById('gregorian-input').value = '';
-  document.getElementById('converted-hijri').textContent = '';
+  const input = document.getElementById('gregorian-input');
+  const el = document.getElementById('converted-hijri');
+  if (input) input.value = '';
+  if (el) el.textContent = '';
 }
 
 /* --- Daily Hadith (UmmahAPI) --- */
@@ -199,31 +211,40 @@ async function fetchDailyHadith() {
   
   const loader = document.getElementById('hadithLoader');
   const content = document.getElementById('hadithContent');
-  
+  const arabicEl = document.getElementById('apiArabic');
+  const englishEl = document.getElementById('apiEnglish');
+  const sourceEl = document.getElementById('apiSource');
+  const dateEl = document.getElementById('hadithDate');
+
   if (loader) loader.style.display = 'none';
   if (content) content.style.display = 'block';
-  
+
   if (data && data.success && data.data) {
     const h = data.data;
-    document.getElementById('apiArabic').textContent = h.arabic;
-    document.getElementById('apiEnglish').textContent = h.english;
-    document.getElementById('apiSource').textContent = `${h.book} - Hadith ${h.number}`;
-    document.getElementById('hadithDate').textContent = new Date().toLocaleDateString();
+    if (arabicEl) arabicEl.textContent = h.arabic;
+    if (englishEl) englishEl.textContent = h.english;
+    if (sourceEl) sourceEl.textContent = `${h.book} - Hadith ${h.number}`;
+    if (dateEl) dateEl.textContent = new Date().toLocaleDateString();
   } else {
-    document.getElementById('apiArabic').textContent = "فَاتَّقُوا اللَّهَ وَأَطِيعُونِ";
-    document.getElementById('apiEnglish').textContent = "So fear Allah and obey me.";
-    document.getElementById('apiSource').textContent = "UmmahAPI (Fallback)";
-    document.getElementById('hadithDate').textContent = new Date().toLocaleDateString();
+    // Graceful fallback
+    if (arabicEl) arabicEl.textContent = "فَاتَّقُوا اللَّهَ وَأَطِيعُونِ";
+    if (englishEl) englishEl.textContent = "So fear Allah and obey me.";
+    if (sourceEl) sourceEl.textContent = "UmmahAPI (Fallback)";
+    if (dateEl) dateEl.textContent = new Date().toLocaleDateString();
   }
 }
 
 function copyDailyHadith() {
-  const text = document.getElementById('apiEnglish').textContent;
+  const el = document.getElementById('apiEnglish');
+  if (!el) return;
+  const text = el.textContent;
   navigator.clipboard.writeText(text).then(() => alert('Hadith copied to clipboard!'));
 }
 
 function shareDailyHadith() {
-  const text = document.getElementById('apiEnglish').textContent;
+  const el = document.getElementById('apiEnglish');
+  if (!el) return;
+  const text = el.textContent;
   if (navigator.share) {
     navigator.share({ title: 'Daily Hadith', text: text });
   } else {
@@ -253,10 +274,10 @@ function calculateZakat() {
   
   const output = document.getElementById('zakat-output');
   const totalEl = document.getElementById('zakat-total');
-  if (total > 0) {
+  if (total > 0 && output && totalEl) {
     output.classList.add('show');
     totalEl.textContent = `$${total.toFixed(2)}`;
-  } else {
+  } else if (output) {
     output.classList.remove('show');
   }
 }
@@ -549,7 +570,6 @@ async function fetchHadiths(collection, bookId, offset = 0, limit = 20) {
     let html = '';
     paginated.forEach((h, idx) => {
       const num = APP.hadithOffset + idx + 1;
-      // Escape single quotes for safe inline onclick
       const safeEnglish = h.english.replace(/'/g, "\\'");
       html += `<div class="hadith-card">
         <div class="hadith-content-wrapper">
@@ -577,7 +597,6 @@ async function fetchHadiths(collection, bookId, offset = 0, limit = 20) {
 
 function loadMoreHadiths() {
   APP.hadithOffset += APP.hadithLimit;
-  // Re-render the container with the new slice
   const container = document.getElementById('hadithsContainer');
   const paginated = APP._fullHadiths.slice(APP.hadithOffset, APP.hadithOffset + APP.hadithLimit);
   
@@ -602,11 +621,12 @@ function loadMoreHadiths() {
       </div>
     </div>`;
   });
-  container.innerHTML = html;
+  if (container) container.innerHTML = html;
   
   // Hide "Load More" if we've reached the end
+  const loadMoreBtn = document.querySelector('.load-more-btn');
   if (APP.hadithOffset + APP.hadithLimit >= APP._fullHadiths.length) {
-    document.querySelector('.load-more-btn').style.display = 'none';
+    if (loadMoreBtn) loadMoreBtn.style.display = 'none';
   }
 }
 
@@ -617,7 +637,6 @@ function initHadith() {
   if (searchInput) {
     searchInput.addEventListener('input', function() {
       const query = this.value.toLowerCase();
-      // Filter the current book list (stored in APP.bookList)
       if (APP.bookList && APP.bookList.length > 0) {
         const filtered = APP.bookList.filter(b => b.name.toLowerCase().includes(query));
         renderBookList(filtered);

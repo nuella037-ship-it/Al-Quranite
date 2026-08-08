@@ -1,6 +1,6 @@
 /**
- *  AL-QURANITE - Main Script (FULLY FIXED)
- *  Complete functionality for Home, Education, Quran, Hadith, and Connect pages.
+ *  AL-QURANITE - Main Script (FULLY UPDATED)
+ *  Uses UmmahAPI for Hadith (free, no key required)
  */
 
 // ==============================
@@ -16,6 +16,7 @@ const APP = {
   hadithLimit: 20,
   surahList: [],
   bookList: [],
+  _fullHadiths: [], // Used for client-side pagination
   lat: null,
   lng: null,
   duaList: [
@@ -137,7 +138,6 @@ function getUserLocation() {
         calculateQibla();
       },
       () => {
-        // Fallback to Mecca
         APP.lat = 21.4225;
         APP.lng = 39.8262;
         document.getElementById('location-display').innerHTML = `<i class="fas fa-map-marker-alt me-1"></i> Mecca (Fallback)`;
@@ -192,9 +192,9 @@ function resetDate() {
   document.getElementById('converted-hijri').textContent = '';
 }
 
-/* --- Daily Hadith (Proxy API) --- */
+/* --- Daily Hadith (UmmahAPI) --- */
 async function fetchDailyHadith() {
-  const url = 'https://api.hadith.alquran.cloud/v1/hadith/random/bukhari/ar-en';
+  const url = 'https://api.ummaapi.com/v1/random/hadith';
   const data = await fetchData(url);
   
   const loader = document.getElementById('hadithLoader');
@@ -203,16 +203,16 @@ async function fetchDailyHadith() {
   if (loader) loader.style.display = 'none';
   if (content) content.style.display = 'block';
   
-  if (data && data.data) {
+  if (data && data.success && data.data) {
     const h = data.data;
     document.getElementById('apiArabic').textContent = h.arabic;
     document.getElementById('apiEnglish').textContent = h.english;
-    document.getElementById('apiSource').textContent = `${h.collection} - ${h.book} - Hadith ${h.number}`;
+    document.getElementById('apiSource').textContent = `${h.book} - Hadith ${h.number}`;
     document.getElementById('hadithDate').textContent = new Date().toLocaleDateString();
   } else {
     document.getElementById('apiArabic').textContent = "فَاتَّقُوا اللَّهَ وَأَطِيعُونِ";
     document.getElementById('apiEnglish').textContent = "So fear Allah and obey me.";
-    document.getElementById('apiSource').textContent = "Sahih Al-Bukhari (Fallback)";
+    document.getElementById('apiSource').textContent = "UmmahAPI (Fallback)";
     document.getElementById('hadithDate').textContent = new Date().toLocaleDateString();
   }
 }
@@ -262,7 +262,7 @@ function calculateZakat() {
 }
 
 // ==============================
-// 4. EDUCATION PAGE (FIXED PATH)
+// 4. EDUCATION PAGE
 // ==============================
 
 async function loadArticle(fileName) {
@@ -331,7 +331,7 @@ function initEducation() {
 }
 
 // ==============================
-// 5. QURAN PAGE (FIXED - FETCH BOTH ARABIC & ENGLISH)
+// 5. QURAN PAGE
 // ==============================
 
 async function fetchSurahs() {
@@ -374,7 +374,6 @@ function renderSurahList(surahs) {
 }
 
 async function fetchSurah(id) {
-  // Fetch Arabic and English simultaneously
   const urlAr = `https://api.alquran.cloud/v1/surah/${id}/ar`;
   const urlEn = `https://api.alquran.cloud/v1/surah/${id}/en.sahih`;
   const [dataAr, dataEn] = await Promise.all([fetchData(urlAr), fetchData(urlEn)]);
@@ -439,20 +438,20 @@ function initQuran() {
 }
 
 // ==============================
-// 6. HADITH PAGE
+// 6. HADITH PAGE (UmmahAPI - NO KEY REQUIRED)
 // ==============================
 
 async function fetchCollections() {
-  const url = 'https://api.hadith.alquran.cloud/v1/collections';
+  const url = 'https://api.ummaapi.com/v1/collections';
   const data = await fetchData(url);
   const container = document.getElementById('bookListContainer');
   if (!container) return;
   
-  if (data && data.code === 200) {
-    APP.collectionList = data.data;
+  if (data && Array.isArray(data)) {
+    APP.collectionList = data;
     renderCollectionList(APP.collectionList);
   } else {
-    container.innerHTML = `<div class="text-center p-4 text-muted small">Failed to load collections. Use Live Server to avoid CORS errors.</div>`;
+    container.innerHTML = `<div class="text-center p-4 text-muted small">Failed to load collections.</div>`;
   }
 }
 
@@ -481,14 +480,16 @@ function renderCollectionList(collections) {
 }
 
 async function fetchBooks(slug) {
-  const url = `https://api.hadith.alquran.cloud/v1/collections/${slug}/books`;
+  const url = `https://api.ummaapi.com/v1/books/${slug}`;
   const data = await fetchData(url);
   const container = document.getElementById('bookListContainer');
   
-  if (data && data.code === 200) {
+  if (data && Array.isArray(data)) {
     APP.currentCollection = slug;
-    APP.bookList = data.data;
+    APP.bookList = data;
     renderBookList(APP.bookList);
+  } else {
+    container.innerHTML = `<div class="text-center p-4 text-muted small">Failed to load books.</div>`;
   }
 }
 
@@ -496,9 +497,9 @@ function renderBookList(books) {
   const container = document.getElementById('bookListContainer');
   let html = `<div class="mb-2 text-muted small fst-italic ps-3">Collection: ${APP.currentCollection}</div><button class="btn btn-sm btn-outline-secondary ms-2 mb-2" onclick="fetchCollections()"><i class="fas fa-arrow-left"></i> Back</button>`;
   books.forEach(b => {
-    html += `<div class="book-item book-item-child" data-collection="${APP.currentCollection}" data-book="${b.id}">
+    html += `<div class="book-item book-item-child" data-collection="${APP.currentCollection}" data-book="${b.number}">
       <div class="d-flex align-items-center">
-        <span class="book-number">${b.id}</span>
+        <span class="book-number">${b.number}</span>
         <div class="book-info">
           <h6>${b.name}</h6>
           <small>${b.hadith_count} hadiths</small>
@@ -518,26 +519,38 @@ function renderBookList(books) {
 }
 
 async function fetchHadiths(collection, bookId, offset = 0, limit = 20) {
-  const url = `https://api.hadith.alquran.cloud/v1/collections/${collection}/books/${bookId}/hadiths?offset=${offset}&limit=${limit}`;
+  // UmmahAPI returns ALL hadiths at once. We fetch all and slice for pagination on the client.
+  const url = `https://api.ummaapi.com/v1/hadiths/${collection}/${bookId}`;
   const data = await fetchData(url);
   const panel = document.getElementById('readerPanel');
   const welcome = document.getElementById('welcomeMessage');
   const content = document.getElementById('bookContent');
   
   if (!panel) return;
-  
-  if (data && data.code === 200) {
+
+  // Store full list in global state
+  if (!APP._fullHadiths || APP.currentBook !== bookId || APP.currentCollection !== collection) {
+    APP._fullHadiths = data && Array.isArray(data) ? data : [];
+    APP.hadithOffset = 0;
+    APP.currentCollection = collection;
     APP.currentBook = bookId;
+  }
+
+  if (APP._fullHadiths && APP._fullHadiths.length > 0) {
     if (welcome) welcome.style.display = 'none';
     if (content) content.style.display = 'block';
     
     document.getElementById('currentBookTitle').textContent = `Hadiths - Book ${bookId}`;
-    document.getElementById('bookMetaBadge').textContent = `${collection} • ${data.data.length} hadiths`;
+    document.getElementById('bookMetaBadge').textContent = `${collection} • ${APP._fullHadiths.length} hadiths`;
     
     const container = document.getElementById('hadithsContainer');
+    const paginated = APP._fullHadiths.slice(APP.hadithOffset, APP.hadithOffset + APP.hadithLimit);
+    
     let html = '';
-    data.data.forEach((h, idx) => {
-      const num = offset + idx + 1;
+    paginated.forEach((h, idx) => {
+      const num = APP.hadithOffset + idx + 1;
+      // Escape single quotes for safe inline onclick
+      const safeEnglish = h.english.replace(/'/g, "\\'");
       html += `<div class="hadith-card">
         <div class="hadith-content-wrapper">
           <div class="hadith-number-box">
@@ -550,19 +563,51 @@ async function fetchHadiths(collection, bookId, offset = 0, limit = 20) {
           </div>
         </div>
         <div class="hadith-actions">
-          <button class="btn-action-mini" onclick="copyText('${h.english.replace(/'/g, "\\'")}')"><i class="far fa-copy"></i> Copy</button>
-          <button class="btn-action-mini" onclick="shareText('${h.english.replace(/'/g, "\\'")}')"><i class="fas fa-share-alt"></i> Share</button>
+          <button class="btn-action-mini" onclick="copyText('${safeEnglish}')"><i class="far fa-copy"></i> Copy</button>
+          <button class="btn-action-mini" onclick="shareText('${safeEnglish}')"><i class="fas fa-share-alt"></i> Share</button>
         </div>
       </div>`;
     });
     container.innerHTML = html;
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  } else {
+    document.getElementById('hadithsContainer').innerHTML = `<div class="text-center py-4 text-danger small">Failed to load Hadiths.</div>`;
   }
 }
 
 function loadMoreHadiths() {
   APP.hadithOffset += APP.hadithLimit;
-  fetchHadiths(APP.currentCollection, APP.currentBook, APP.hadithOffset, APP.hadithLimit);
+  // Re-render the container with the new slice
+  const container = document.getElementById('hadithsContainer');
+  const paginated = APP._fullHadiths.slice(APP.hadithOffset, APP.hadithOffset + APP.hadithLimit);
+  
+  let html = '';
+  paginated.forEach((h, idx) => {
+    const num = APP.hadithOffset + idx + 1;
+    const safeEnglish = h.english.replace(/'/g, "\\'");
+    html += `<div class="hadith-card">
+      <div class="hadith-content-wrapper">
+        <div class="hadith-number-box">
+          <span class="hadith-num-text">${num}</span>
+        </div>
+        <div class="hadith-text-content">
+          <div class="hadith-arabic">${h.arabic}</div>
+          <div class="hadith-translation">${h.english}</div>
+          <div class="small text-muted mt-2">${h.grade || 'Authentic'}</div>
+        </div>
+      </div>
+      <div class="hadith-actions">
+        <button class="btn-action-mini" onclick="copyText('${safeEnglish}')"><i class="far fa-copy"></i> Copy</button>
+        <button class="btn-action-mini" onclick="shareText('${safeEnglish}')"><i class="fas fa-share-alt"></i> Share</button>
+      </div>
+    </div>`;
+  });
+  container.innerHTML = html;
+  
+  // Hide "Load More" if we've reached the end
+  if (APP.hadithOffset + APP.hadithLimit >= APP._fullHadiths.length) {
+    document.querySelector('.load-more-btn').style.display = 'none';
+  }
 }
 
 function initHadith() {
@@ -572,8 +617,11 @@ function initHadith() {
   if (searchInput) {
     searchInput.addEventListener('input', function() {
       const query = this.value.toLowerCase();
-      const filtered = APP.bookList.filter(b => b.name.toLowerCase().includes(query));
-      renderBookList(filtered);
+      // Filter the current book list (stored in APP.bookList)
+      if (APP.bookList && APP.bookList.length > 0) {
+        const filtered = APP.bookList.filter(b => b.name.toLowerCase().includes(query));
+        renderBookList(filtered);
+      }
     });
   }
 }

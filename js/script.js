@@ -1,6 +1,7 @@
 /**
- *  AL-QURANITE - Main Script (PRODUCTION READY - Real APIs Only)
- *  Uses Fawaz Ahmed Hadith API (hosted on Azure, 100% free, no key required)
+ *  AL-QURANITE - Main Script (Production Ready - HadithAPI.com)
+ *  Uses hadithapi.com with your provided API key.
+ *  No mock content, no static fallbacks – pure API data.
  */
 
 // ==============================
@@ -12,8 +13,9 @@ const APP = {
   currentSurah: null,
   currentCollection: null,
   currentBook: null,
-  hadithOffset: 0, // Used as page number
-  hadithLimit: 20, // Used as size per page
+  currentChapterId: null,
+  hadithPage: 1,
+  hadithSize: 20,
   surahList: [],
   bookList: [],
   lat: null,
@@ -28,6 +30,9 @@ const APP = {
   ],
   currentDuaIndex: 0
 };
+
+// === YOUR API KEY ===
+const API_KEY = "$2y$10$CMLzJBy2h0l6elIOfEqnSEAbufBKlhk5FVMhmn0EPzS4lQL2";
 
 async function fetchData(url) {
   try {
@@ -187,7 +192,6 @@ async function updateHijriDate() {
 function convertDate(val) {
   const el = document.getElementById('converted-hijri');
   if (!val) { if (el) el.textContent = ''; return; }
-  // Convert input value (yyyy-MM-dd) to dd-MM-yyyy
   const parts = val.split('-');
   const dateStr = `${parts[2]}-${parts[1]}-${parts[0]}`;
   fetchHijriDate(dateStr).then(hijri => {
@@ -203,9 +207,9 @@ function resetDate() {
   if (el) el.textContent = '';
 }
 
-/* --- Daily Hadith (Fawaz Ahmed API - No Mock) --- */
+/* --- Daily Hadith (HadithAPI.com - Random) --- */
 async function fetchDailyHadith() {
-  const url = 'https://hadithapi.azurewebsites.net/api/hadiths/random';
+  const url = `https://hadithapi.com/api/hadiths/random?apiKey=${API_KEY}`;
   const data = await fetchData(url);
   
   const loader = document.getElementById('hadithLoader');
@@ -225,10 +229,10 @@ async function fetchDailyHadith() {
     if (sourceEl) sourceEl.textContent = `${h.collection || h.book} - Hadith ${h.number}`;
     if (dateEl) dateEl.textContent = new Date().toLocaleDateString();
   } else {
-    // Fallback to a generic real quote - but we are trusting API to stay up!
-    if (arabicEl) arabicEl.textContent = "فَاتَّقُوا اللَّهَ وَأَطِيعُونِ";
-    if (englishEl) englishEl.textContent = "So fear Allah and obey me.";
-    if (sourceEl) sourceEl.textContent = "Azure API (Fallback)";
+    // Only show error – no mock content
+    if (arabicEl) arabicEl.textContent = "Unable to load Hadith.";
+    if (englishEl) englishEl.textContent = "Please try again later.";
+    if (sourceEl) sourceEl.textContent = "API error";
     if (dateEl) dateEl.textContent = new Date().toLocaleDateString();
   }
 }
@@ -458,11 +462,12 @@ function initQuran() {
 }
 
 // ==============================
-// 6. HADITH PAGE (Fawaz Ahmed Azure API - NO KEY REQUIRED)
+// 6. HADITH PAGE (HadithAPI.com - No Mock Data)
 // ==============================
 
+/* --- Fetch Books (Collections) --- */
 async function fetchCollections() {
-  const url = 'https://hadithapi.azurewebsites.net/api/collections';
+  const url = `https://hadithapi.com/api/books?apiKey=${API_KEY}`;
   const data = await fetchData(url);
   const container = document.getElementById('bookListContainer');
   if (!container) return;
@@ -471,7 +476,7 @@ async function fetchCollections() {
     APP.collectionList = data;
     renderCollectionList(APP.collectionList);
   } else {
-    container.innerHTML = `<div class="text-center p-4 text-muted small">Failed to load collections. API might be down.</div>`;
+    container.innerHTML = `<div class="text-center p-4 text-muted small">Failed to load collections.</div>`;
   }
 }
 
@@ -483,7 +488,7 @@ function renderCollectionList(collections) {
       <div class="d-flex align-items-center">
         <div class="book-info">
           <h6>${c.name}</h6>
-          <small>${c.total_books} books</small>
+          <small>${c.total_chapters || '?'} chapters</small>
         </div>
       </div>
       <div class="book-name-ar">${c.slug}</div>
@@ -499,8 +504,9 @@ function renderCollectionList(collections) {
   });
 }
 
+/* --- Fetch Chapters (Books) --- */
 async function fetchBooks(slug) {
-  const url = `https://hadithapi.azurewebsites.net/api/collections/${slug}/books`;
+  const url = `https://hadithapi.com/api/books/${slug}/chapters?apiKey=${API_KEY}`;
   const data = await fetchData(url);
   const container = document.getElementById('bookListContainer');
   
@@ -509,20 +515,20 @@ async function fetchBooks(slug) {
     APP.bookList = data;
     renderBookList(APP.bookList);
   } else {
-    container.innerHTML = `<div class="text-center p-4 text-muted small">Failed to load books.</div>`;
+    container.innerHTML = `<div class="text-center p-4 text-muted small">Failed to load chapters.</div>`;
   }
 }
 
-function renderBookList(books) {
+function renderBookList(chapters) {
   const container = document.getElementById('bookListContainer');
   let html = `<div class="mb-2 text-muted small fst-italic ps-3">Collection: ${APP.currentCollection}</div><button class="btn btn-sm btn-outline-secondary ms-2 mb-2" onclick="fetchCollections()"><i class="fas fa-arrow-left"></i> Back</button>`;
-  books.forEach(b => {
-    html += `<div class="book-item book-item-child" data-collection="${APP.currentCollection}" data-book="${b.id}">
+  chapters.forEach(ch => {
+    html += `<div class="book-item book-item-child" data-collection="${APP.currentCollection}" data-chapter="${ch.id}" data-bookid="${ch.book_id}">
       <div class="d-flex align-items-center">
-        <span class="book-number">${b.id}</span>
+        <span class="book-number">${ch.id}</span>
         <div class="book-info">
-          <h6>${b.name}</h6>
-          <small>${b.hadith_count} hadiths</small>
+          <h6>${ch.name}</h6>
+          <small>${ch.hadith_count || '?'} hadiths</small>
         </div>
       </div>
     </div>`;
@@ -532,15 +538,18 @@ function renderBookList(books) {
   document.querySelectorAll('.book-item-child').forEach(el => {
     el.addEventListener('click', function() {
       const collection = this.getAttribute('data-collection');
-      const bookId = this.getAttribute('data-book');
-      APP.hadithOffset = 1; // Reset to page 1
-      fetchHadiths(collection, bookId, 1);
+      const chapterId = this.getAttribute('data-chapter');
+      const bookId = this.getAttribute('data-bookid');
+      APP.currentChapterId = chapterId;
+      APP.hadithPage = 1; // reset to first page
+      fetchHadiths(collection, bookId, chapterId, 1);
     });
   });
 }
 
-async function fetchHadiths(collection, bookId, page = 1) {
-  const url = `https://hadithapi.azurewebsites.net/api/books/${collection}/${bookId}/hadiths?page=${page}&size=${APP.hadithLimit}`;
+/* --- Fetch Hadiths --- */
+async function fetchHadiths(collection, bookId, chapterId, page = 1) {
+  const url = `https://hadithapi.com/api/hadiths?bookId=${bookId}&chapterId=${chapterId}&page=${page}&size=${APP.hadithSize}&apiKey=${API_KEY}`;
   const data = await fetchData(url);
   const panel = document.getElementById('readerPanel');
   const welcome = document.getElementById('welcomeMessage');
@@ -548,19 +557,18 @@ async function fetchHadiths(collection, bookId, page = 1) {
   
   if (!panel) return;
 
-  // The API returns an object with `data` and `meta`
-  if (data && data.data && data.data.length > 0) {
+  if (data && data.hadiths && data.hadiths.length > 0) {
     if (welcome) welcome.style.display = 'none';
     if (content) content.style.display = 'block';
     
-    document.getElementById('currentBookTitle').textContent = `Hadiths - Book ${bookId}`;
+    document.getElementById('currentBookTitle').textContent = `Hadiths - Chapter ${chapterId}`;
     document.getElementById('bookMetaBadge').textContent = `${collection} • Page ${page}`;
     
     const container = document.getElementById('hadithsContainer');
     
     let html = '';
-    data.data.forEach((h, idx) => {
-      const num = ((page - 1) * APP.hadithLimit) + idx + 1;
+    data.hadiths.forEach((h, idx) => {
+      const num = ((page - 1) * APP.hadithSize) + idx + 1;
       const safeEnglish = h.text.replace(/'/g, "\\'");
       html += `<div class="hadith-card">
         <div class="hadith-content-wrapper">
@@ -583,15 +591,16 @@ async function fetchHadiths(collection, bookId, page = 1) {
     
     // Handle Load More button visibility
     const loadMoreBtn = document.querySelector('.load-more-btn');
-    if (data.meta && data.meta.total && data.meta.total <= page * APP.hadithLimit) {
+    if (data.meta && data.meta.total && data.meta.total <= page * APP.hadithSize) {
       if (loadMoreBtn) loadMoreBtn.style.display = 'none';
     } else {
-      if (loadMoreBtn) loadMoreBtn.style.display = 'inline-block';
-      // Attach the next page load event
-      loadMoreBtn.onclick = function() {
-        const nextPage = page + 1;
-        fetchHadiths(collection, bookId, nextPage);
-      };
+      if (loadMoreBtn) {
+        loadMoreBtn.style.display = 'inline-block';
+        loadMoreBtn.onclick = function() {
+          const nextPage = page + 1;
+          fetchHadiths(collection, bookId, chapterId, nextPage);
+        };
+      }
     }
     
     window.scrollTo({ top: 0, behavior: 'smooth' });

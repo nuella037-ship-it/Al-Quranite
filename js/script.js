@@ -175,7 +175,16 @@ function getUserLocation() {
   }
 }
 
-function refreshPrayerTimes() { getUserLocation(); }
+// --- FIXED: Uses cached coordinates for instant refresh ---
+function refreshPrayerTimes() {
+  if (APP.lat && APP.lng) {
+    fetchPrayerTimes(APP.lat, APP.lng);
+    calculateQibla();
+    console.log("Prayer times refreshed successfully!");
+  } else {
+    getUserLocation();
+  }
+}
 
 /* --- Hijri Date --- */
 async function fetchHijriDate(dateStr) {

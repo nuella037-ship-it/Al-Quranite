@@ -208,7 +208,7 @@ function resetDate() {
 }
 
 /* --- Daily Hadith (HadithAPI.com - Random) --- */
-/* --- Daily Hadith (Random using real endpoints) --- */
+/* --- Daily Hadith (Random using real endpoints with encoded key) --- */
 async function fetchDailyHadith() {
   const loader = document.getElementById('hadithLoader');
   const content = document.getElementById('hadithContent');
@@ -220,35 +220,53 @@ async function fetchDailyHadith() {
   if (loader) loader.style.display = 'none';
   if (content) content.style.display = 'block';
 
+  // URL-encode the API key
+  const encodedKey = encodeURIComponent(API_KEY);
+  console.log('Encoded API key:', encodedKey);
+
   // 1. Fetch all books
-  const booksUrl = `https://hadithapi.com/api/books?apiKey=${API_KEY}`;
+  const booksUrl = `https://hadithapi.com/api/books?apiKey=${encodedKey}`;
+  console.log('Fetching books from:', booksUrl);
   const booksData = await fetchData(booksUrl);
 
   if (booksData && Array.isArray(booksData) && booksData.length > 0) {
+    console.log('Books fetched successfully, total books:', booksData.length);
     // 2. Pick a random book
     const randomBook = booksData[Math.floor(Math.random() * booksData.length)];
-    
+    console.log('Random book selected:', randomBook.name, 'slug:', randomBook.slug);
+
     // 3. Fetch chapters for that book
-    const chaptersUrl = `https://hadithapi.com/api/books/${randomBook.slug}/chapters?apiKey=${API_KEY}`;
+    const chaptersUrl = `https://hadithapi.com/api/books/${randomBook.slug}/chapters?apiKey=${encodedKey}`;
+    console.log('Fetching chapters from:', chaptersUrl);
     const chaptersData = await fetchData(chaptersUrl);
 
     if (chaptersData && Array.isArray(chaptersData) && chaptersData.length > 0) {
+      console.log('Chapters fetched successfully, total chapters:', chaptersData.length);
       // 4. Pick a random chapter
       const randomChapter = chaptersData[Math.floor(Math.random() * chaptersData.length)];
-      
+      console.log('Random chapter selected:', randomChapter.name, 'ID:', randomChapter.id);
+
       // 5. Fetch exactly 1 Hadith from that chapter
-      const hadithsUrl = `https://hadithapi.com/api/hadiths?bookId=${randomChapter.book_id}&chapterId=${randomChapter.id}&page=1&size=1&apiKey=${API_KEY}`;
+      const hadithsUrl = `https://hadithapi.com/api/hadiths?bookId=${randomChapter.book_id}&chapterId=${randomChapter.id}&page=1&size=1&apiKey=${encodedKey}`;
+      console.log('Fetching Hadith from:', hadithsUrl);
       const hadithsData = await fetchData(hadithsUrl);
 
       if (hadithsData && hadithsData.hadiths && hadithsData.hadiths.length > 0) {
         const h = hadithsData.hadiths[0];
+        console.log('Hadith found:', h.id);
         if (arabicEl) arabicEl.textContent = h.arabic || h.text;
         if (englishEl) englishEl.textContent = h.text;
         if (sourceEl) sourceEl.textContent = `${randomBook.name} - Chapter ${randomChapter.id} - Hadith ${h.id}`;
         if (dateEl) dateEl.textContent = new Date().toLocaleDateString();
         return; // Success! Stop here.
+      } else {
+        console.error('No Hadiths returned from the API for this chapter.');
       }
+    } else {
+      console.error('Failed to fetch chapters or empty response.');
     }
+  } else {
+    console.error('Failed to fetch books or empty response.');
   }
 
   // If ANY step fails, show a real error message (no mock content)

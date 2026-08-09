@@ -520,13 +520,14 @@ function renderCollectionList(collections) {
   document.querySelectorAll('.collection-item').forEach(el => {
     el.addEventListener('click', function() {
       const bookId = this.getAttribute('data-id');
+      console.log('Clicked collection with ID:', bookId); // Debugging
       fetchBooks(bookId);
     });
   });
 }
 
 async function fetchBooks(bookId) {
-  // Use book ID, not slug
+  console.log('Fetching chapters for Book ID:', bookId);
   const url = `https://hadithapi.com/api/books/${bookId}/chapters?apiKey=${encodeURIComponent(API_KEY)}`;
   const data = await fetchData(url);
   const container = document.getElementById('bookListContainer');
@@ -672,12 +673,12 @@ document.addEventListener('DOMContentLoaded', function() {
   if (APP.currentPage === 'home') {
     getUserLocation();
     updateHijriDate();
-    fetchDailyHadith(); // <-- renamed back to fetchDailyHadith
+    fetchDailyHadith();
     fetchDailyDua();
   }
   
   if (APP.currentPage === 'connect') {
-    fetchDailyHadith(); // <-- renamed back to fetchDailyHadith
+    fetchDailyHadith();
   }
   
   if (APP.currentPage === 'education') initEducation();

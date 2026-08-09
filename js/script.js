@@ -1,5 +1,5 @@
 /**
- *  AL-QURANITE - Main Script (Hadith module rewritten from scratch)
+ *  AL-QURANITE - Main Script (Hadith module completely rewritten)
  *  Uses hadithapi.com with your provided API key.
  */
 
@@ -239,7 +239,7 @@ async function fetchDailyHadith() {
           if (chaptersData && chaptersData.chapters && Array.isArray(chaptersData.chapters) && chaptersData.chapters.length > 0) {
             const randomChapter = chaptersData.chapters[Math.floor(Math.random() * chaptersData.chapters.length)];
             // 3. Fetch Hadiths
-            const hadithsUrl = `https://hadithapi.com/api/hadiths?bookId=${randomBook.id}&chapterId=${randomChapter.id}&page=1&size=1&apiKey=${encodedKey}`;
+            const hadithsUrl = `https://hadithapi.com/api/hadiths/?bookId=${randomBook.id}&chapterId=${randomChapter.id}&page=1&size=1&apiKey=${encodedKey}`;
             const hadithsData = await fetchData(hadithsUrl);
             if (hadithsData && hadithsData.hadiths && Array.isArray(hadithsData.hadiths) && hadithsData.hadiths.length > 0) {
               const h = hadithsData.hadiths[0];
@@ -261,7 +261,7 @@ async function fetchDailyHadith() {
   // If all attempts fail, fallback to a known reliable Hadith (still real API data)
   if (!success) {
     // Fallback: Sahih Bukhari, Chapter 1, Hadith 1
-    const fallbackUrl = `https://hadithapi.com/api/hadiths?bookId=1&chapterId=1&page=1&size=1&apiKey=${encodedKey}`;
+    const fallbackUrl = `https://hadithapi.com/api/hadiths/?bookId=1&chapterId=1&page=1&size=1&apiKey=${encodedKey}`;
     const fallbackData = await fetchData(fallbackUrl);
     if (fallbackData && fallbackData.hadiths && Array.isArray(fallbackData.hadiths) && fallbackData.hadiths.length > 0) {
       const h = fallbackData.hadiths[0];
@@ -504,7 +504,7 @@ function initQuran() {
 }
 
 // ==============================
-// 6. HADITH PAGE - COMPLETELY REWRITTEN
+// 6. HADITH PAGE - COMPLETELY REWRITTEN FROM SCRATCH
 // ==============================
 
 async function fetchCollections() {
@@ -525,7 +525,7 @@ function renderCollectionList(collections) {
   const container = document.getElementById('bookListContainer');
   let html = '';
   collections.forEach(c => {
-    html += `<div class="book-item collection-item" data-id="${c.id}" data-slug="${c.bookSlug}">
+    html += `<div class="book-item collection-item" data-slug="${c.bookSlug}" data-id="${c.id}">
       <div class="d-flex align-items-center">
         <div class="book-info">
           <h6>${c.bookName}</h6>
@@ -573,7 +573,7 @@ function renderBookList(chapters) {
 
   chapters.forEach(ch => {
     const title = ch.name || ch.title || ch.arabic || ch.english || 'Chapter ' + ch.id;
-    html += `<div class="book-item book-item-child" data-collection="${APP.currentCollection}" data-chapter="${ch.id}" data-bookid="${APP.currentBookId}">
+    html += `<div class="book-item book-item-child" data-chapter="${ch.id}" data-bookid="${APP.currentBookId}" data-collection="${APP.currentCollection}">
       <div class="d-flex align-items-center">
         <span class="book-number">${ch.id}</span>
         <div class="book-info">
@@ -606,7 +606,7 @@ function renderBookList(chapters) {
 }
 
 async function fetchHadiths(collection, bookId, chapterId, page = 1) {
-  const url = `https://hadithapi.com/api/hadiths?bookId=${bookId}&chapterId=${chapterId}&page=${page}&size=${APP.hadithSize}&apiKey=${encodeURIComponent(API_KEY)}`;
+  const url = `https://hadithapi.com/api/hadiths/?bookId=${bookId}&chapterId=${chapterId}&page=${page}&size=${APP.hadithSize}&apiKey=${encodeURIComponent(API_KEY)}`;
   const data = await fetchData(url);
   const panel = document.getElementById('readerPanel');
   const welcome = document.getElementById('welcomeMessage');
@@ -661,13 +661,14 @@ async function fetchHadiths(collection, bookId, chapterId, page = 1) {
       });
     });
 
-    // Load More button - now with event listener
+    // Load More button
     const loadMoreBtn = document.querySelector('.load-more-btn');
     if (data.meta && data.meta.total && data.meta.total <= page * APP.hadithSize) {
       if (loadMoreBtn) loadMoreBtn.style.display = 'none';
     } else {
       if (loadMoreBtn) {
         loadMoreBtn.style.display = 'inline-block';
+        // Define the onclick event
         loadMoreBtn.onclick = function() {
           const nextPage = page + 1;
           fetchHadiths(collection, bookId, chapterId, nextPage);
@@ -698,6 +699,21 @@ function initHadith() {
     });
   }
 }
+
+// ==============================
+// 6.5 ADDED: Global wrapper for HTML's onclick="loadMoreHadiths()"
+// ==============================
+
+function loadMoreHadiths() {
+  if (APP.currentCollection && APP.currentBookId && APP.currentChapterId) {
+    APP.hadithPage += 1;
+    fetchHadiths(APP.currentCollection, APP.currentBookId, APP.currentChapterId, APP.hadithPage);
+  } else {
+    console.warn("No active chapter selected to load more hadiths.");
+  }
+}
+// Make it globally accessible for inline onclick
+window.loadMoreHadiths = loadMoreHadiths;
 
 // ==============================
 // 7. GLOBAL HELPERS (Copy/Share)

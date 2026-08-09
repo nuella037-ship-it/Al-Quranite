@@ -48,47 +48,47 @@
         </div>
     </header>
 
-    <!-- Daily Hadith Widget Section (Elegant Redesign) -->
-    <section class="py-5">
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-lg-9">
-                    <div class="daily-hadith-elegant" id="dailyHadithWidget">
-                        <!-- Loading State -->
-                        <div class="text-center py-5" id="hadithLoader">
-                            <div class="spinner-border text-success spinner-border-sm"></div>
-                            <span class="ms-2 text-muted small">Fetching Daily Wisdom...</span>
+   <!-- Daily Ayah Widget Section (Elegant Redesign) -->
+<section class="py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-9">
+                <div class="daily-hadith-elegant" id="dailyHadithWidget">
+                    <!-- Loading State -->
+                    <div class="text-center py-5" id="ayahLoader">
+                        <div class="spinner-border text-success spinner-border-sm"></div>
+                        <span class="ms-2 text-muted small">Fetching Daily Wisdom...</span>
+                    </div>
+
+                    <!-- Content State (Hidden initially) -->
+                    <div id="ayahContent" style="display: none;">
+                        <div class="dh-header">
+                            <div class="dh-badge">
+                                <i class="fas fa-quran"></i> Ayah of the Day
+                            </div>
+                            <small class="text-muted fst-italic" id="hadithDate"></small>
                         </div>
 
-                        <!-- Content State (Hidden initially) -->
-                        <div id="hadithContent" style="display: none;">
-                            <div class="dh-header">
-                                <div class="dh-badge">
-                                    <i class="fas fa-sun"></i> Hadith of the Day
-                                </div>
-                                <small class="text-muted fst-italic" id="hadithDate"></small>
-                            </div>
+                        <div class="dh-body">
+                            <p class="dh-arabic" id="apiArabic"></p>
+                            <p class="dh-translation" id="apiEnglish"></p>
+                        </div>
 
-                            <div class="dh-body">
-                                <p class="dh-arabic" id="apiArabic"></p>
-                                <p class="dh-translation" id="apiEnglish"></p>
+                        <div class="dh-footer">
+                            <div class="dh-source">
+                                <i class="fas fa-book-open me-1"></i> <span id="apiSource">The Holy Quran</span>
                             </div>
-
-                            <div class="dh-footer">
-                                <div class="dh-source">
-                                    <i class="fas fa-book-open me-1"></i> <span id="apiSource">Sahih Al-Bukhari</span>
-                                </div>
-                                <div class="dh-actions">
-                                    <button onclick="copyDailyHadith()" title="Copy" aria-label="Copy Hadith"><i class="far fa-copy"></i></button>
-                                    <button onclick="shareDailyHadith()" title="Share" aria-label="Share Hadith"><i class="fas fa-share-alt"></i></button>
-                                </div>
+                            <div class="dh-actions">
+                                <button onclick="copyDailyAyah()" title="Copy" aria-label="Copy Ayah"><i class="far fa-copy"></i></button>
+                                <button onclick="shareDailyAyah()" title="Share" aria-label="Share Ayah"><i class="fas fa-share-alt"></i></button>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
     <!-- Main Contact Area -->
     <section class="contact-section">

@@ -1,6 +1,7 @@
 /**
- *  AL-QURANITE - Main Script (FINAL)
+ *  AL-QURANITE - Main Script (FINAL FIX)
  *  Uses hadithapi.com with your provided API key.
+ *  No fallback – only real Hadith data.
  */
 
 // ==============================
@@ -226,8 +227,8 @@ async function fetchDailyHadith() {
     const booksData = await fetchData(booksUrl);
     if (booksData && booksData.books && Array.isArray(booksData.books) && booksData.books.length > 0) {
       const randomBook = booksData.books[Math.floor(Math.random() * booksData.books.length)];
-      // 2. Fetch chapters
-      const chaptersUrl = `https://hadithapi.com/api/books/${randomBook.bookSlug}/chapters?apiKey=${encodedKey}`;
+      // 2. Fetch chapters (use book id, not slug)
+      const chaptersUrl = `https://hadithapi.com/api/books/${randomBook.id}/chapters?apiKey=${encodedKey}`;
       const chaptersData = await fetchData(chaptersUrl);
       if (chaptersData && chaptersData.chapters && Array.isArray(chaptersData.chapters) && chaptersData.chapters.length > 0) {
         const randomChapter = chaptersData.chapters[Math.floor(Math.random() * chaptersData.chapters.length)];
@@ -482,7 +483,7 @@ function initQuran() {
 }
 
 // ==============================
-// 6. HADITH PAGE (FIXED RESPONSE HANDLING)
+// 6. HADITH PAGE (FIXED: use book id instead of slug)
 // ==============================
 
 async function fetchCollections() {
@@ -503,7 +504,8 @@ function renderCollectionList(collections) {
   const container = document.getElementById('bookListContainer');
   let html = '';
   collections.forEach(c => {
-    html += `<div class="book-item collection-item" data-slug="${c.bookSlug}">
+    // Store both id and slug for flexibility
+    html += `<div class="book-item collection-item" data-id="${c.id}" data-slug="${c.bookSlug}">
       <div class="d-flex align-items-center">
         <div class="book-info">
           <h6>${c.bookName}</h6>
@@ -517,19 +519,22 @@ function renderCollectionList(collections) {
   
   document.querySelectorAll('.collection-item').forEach(el => {
     el.addEventListener('click', function() {
-      const slug = this.getAttribute('data-slug');
-      fetchBooks(slug);
+      const bookId = this.getAttribute('data-id');
+      fetchBooks(bookId);
     });
   });
 }
 
-async function fetchBooks(slug) {
-  const url = `https://hadithapi.com/api/books/${slug}/chapters?apiKey=${encodeURIComponent(API_KEY)}`;
+async function fetchBooks(bookId) {
+  // Use book ID, not slug
+  const url = `https://hadithapi.com/api/books/${bookId}/chapters?apiKey=${encodeURIComponent(API_KEY)}`;
   const data = await fetchData(url);
   const container = document.getElementById('bookListContainer');
   
   if (data && data.chapters && Array.isArray(data.chapters)) {
-    APP.currentCollection = slug;
+    // We need to find the collection name from the stored list
+    const collectionName = APP.collectionList.find(c => c.id == bookId)?.bookName || bookId;
+    APP.currentCollection = collectionName;
     APP.bookList = data.chapters;
     renderBookList(APP.bookList);
   } else {
@@ -667,12 +672,12 @@ document.addEventListener('DOMContentLoaded', function() {
   if (APP.currentPage === 'home') {
     getUserLocation();
     updateHijriDate();
-    fetchDailyHadith(); 
+    fetchDailyHadith(); // <-- renamed back to fetchDailyHadith
     fetchDailyDua();
   }
   
   if (APP.currentPage === 'connect') {
-    fetchDailyHadith(); 
+    fetchDailyHadith(); // <-- renamed back to fetchDailyHadith
   }
   
   if (APP.currentPage === 'education') initEducation();

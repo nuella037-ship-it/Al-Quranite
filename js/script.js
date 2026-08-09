@@ -1,5 +1,5 @@
 /**
- *  AL-QURANITE - Main Script
+ *  AL-QURANITE - Main Script (Hadith module rewritten from scratch)
  *  Uses hadithapi.com with your provided API key.
  */
 
@@ -504,7 +504,7 @@ function initQuran() {
 }
 
 // ==============================
-// 6. HADITH PAGE - Fully CSP compliant, no inline handlers
+// 6. HADITH PAGE - COMPLETELY REWRITTEN
 // ==============================
 
 async function fetchCollections() {
@@ -512,7 +512,7 @@ async function fetchCollections() {
   const data = await fetchData(url);
   const container = document.getElementById('bookListContainer');
   if (!container) return;
-  
+
   if (data && data.books && Array.isArray(data.books)) {
     APP.collectionList = data.books;
     renderCollectionList(APP.collectionList);
@@ -537,7 +537,7 @@ function renderCollectionList(collections) {
   });
   container.innerHTML = html;
 
-  // Use event delegation to avoid inline onclick
+  // Event delegation for collection items
   container.addEventListener('click', function(e) {
     const item = e.target.closest('.collection-item');
     if (item) {
@@ -554,7 +554,7 @@ async function fetchBooks(slug, bookId) {
   const url = `https://hadithapi.com/api/${slug}/chapters?apiKey=${encodeURIComponent(API_KEY)}`;
   const data = await fetchData(url);
   const container = document.getElementById('bookListContainer');
-  
+
   if (data && data.chapters && Array.isArray(data.chapters)) {
     const collectionName = APP.collectionList.find(c => c.bookSlug === slug)?.bookName || slug;
     APP.currentCollection = collectionName;
@@ -568,10 +568,10 @@ async function fetchBooks(slug, bookId) {
 
 function renderBookList(chapters) {
   const container = document.getElementById('bookListContainer');
-  let html = `<div class="mb-2 text-muted small fst-italic ps-3">Collection: ${APP.currentCollection}</div><button id="backBtn" class="btn btn-sm btn-outline-secondary ms-2 mb-2"><i class="fas fa-arrow-left"></i> Back</button>`;
-  
+  let html = `<div class="mb-2 text-muted small fst-italic ps-3">Collection: ${APP.currentCollection}</div>
+             <button id="backBtn" class="btn btn-sm btn-outline-secondary ms-2 mb-2"><i class="fas fa-arrow-left"></i> Back</button>`;
+
   chapters.forEach(ch => {
-    // FIX: Try multiple properties for the title
     const title = ch.name || ch.title || ch.arabic || ch.english || 'Chapter ' + ch.id;
     html += `<div class="book-item book-item-child" data-collection="${APP.currentCollection}" data-chapter="${ch.id}" data-bookid="${APP.currentBookId}">
       <div class="d-flex align-items-center">
@@ -585,7 +585,7 @@ function renderBookList(chapters) {
   });
   container.innerHTML = html;
 
-  // Back button - event delegation
+  // Back button event
   const backBtn = document.getElementById('backBtn');
   if (backBtn) {
     backBtn.addEventListener('click', fetchCollections);
@@ -611,18 +611,17 @@ async function fetchHadiths(collection, bookId, chapterId, page = 1) {
   const panel = document.getElementById('readerPanel');
   const welcome = document.getElementById('welcomeMessage');
   const content = document.getElementById('bookContent');
-  
+
   if (!panel) return;
 
   if (data && data.hadiths && Array.isArray(data.hadiths) && data.hadiths.length > 0) {
     if (welcome) welcome.style.display = 'none';
     if (content) content.style.display = 'block';
-    
+
     document.getElementById('currentBookTitle').textContent = `Hadiths - Chapter ${chapterId}`;
     document.getElementById('bookMetaBadge').textContent = `${collection} • Page ${page}`;
-    
+
     const container = document.getElementById('hadithsContainer');
-    
     let html = '';
     data.hadiths.forEach((h, idx) => {
       const num = ((page - 1) * APP.hadithSize) + idx + 1;
@@ -646,21 +645,7 @@ async function fetchHadiths(collection, bookId, chapterId, page = 1) {
     });
     container.innerHTML = html;
 
-    // Load More button
-    const loadMoreBtn = document.querySelector('.load-more-btn');
-    if (data.meta && data.meta.total && data.meta.total <= page * APP.hadithSize) {
-      if (loadMoreBtn) loadMoreBtn.style.display = 'none';
-    } else {
-      if (loadMoreBtn) {
-        loadMoreBtn.style.display = 'inline-block';
-        loadMoreBtn.onclick = function() {
-          const nextPage = page + 1;
-          fetchHadiths(collection, bookId, chapterId, nextPage);
-        };
-      }
-    }
-
-    // Attach copy/share events after rendering
+    // Attach copy/share events
     container.querySelectorAll('.copy-btn').forEach(btn => {
       btn.addEventListener('click', function() {
         const card = this.closest('.hadith-card');
@@ -676,6 +661,20 @@ async function fetchHadiths(collection, bookId, chapterId, page = 1) {
       });
     });
 
+    // Load More button - now with event listener
+    const loadMoreBtn = document.querySelector('.load-more-btn');
+    if (data.meta && data.meta.total && data.meta.total <= page * APP.hadithSize) {
+      if (loadMoreBtn) loadMoreBtn.style.display = 'none';
+    } else {
+      if (loadMoreBtn) {
+        loadMoreBtn.style.display = 'inline-block';
+        loadMoreBtn.onclick = function() {
+          const nextPage = page + 1;
+          fetchHadiths(collection, bookId, chapterId, nextPage);
+        };
+      }
+    }
+
     window.scrollTo({ top: 0, behavior: 'smooth' });
   } else {
     document.getElementById('hadithsContainer').innerHTML = `<div class="text-center py-4 text-danger small">Failed to load Hadiths.</div>`;
@@ -684,7 +683,7 @@ async function fetchHadiths(collection, bookId, chapterId, page = 1) {
 
 function initHadith() {
   fetchCollections();
-  
+
   const searchInput = document.getElementById('bookSearch');
   if (searchInput) {
     searchInput.addEventListener('input', function() {

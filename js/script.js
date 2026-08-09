@@ -1,6 +1,6 @@
 /**
- *  AL-QURANITE - Main Script (Hadith module rewritten from scratch, CORS fixed)
- *  Uses hadithapi.com with your provided API key.
+ *  AL-QURANITE - Main Script (Hadith module with CORS proxy)
+ *  Uses hadithapi.com with your provided API key via a CORS proxy.
  */
 
 // ==============================
@@ -31,10 +31,13 @@ const APP = {
 };
 
 const API_KEY = "$2y$10$CMLzJBy2h0l6elIOfEqnSEAbufBKlhk5FVMhmn0EPzS4lQL2";
+const CORS_PROXY = "https://corsproxy.io/?"; // Free CORS proxy
 
 async function fetchData(url) {
+  // If the URL is from hadithapi.com, use the CORS proxy
+  const finalUrl = url.includes('hadithapi.com') ? CORS_PROXY + encodeURIComponent(url) : url;
   try {
-    const response = await fetch(url);
+    const response = await fetch(finalUrl);
     if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
     return await response.json();
   } catch (error) {
@@ -238,7 +241,7 @@ async function fetchDailyHadith() {
           const chaptersData = await fetchData(chaptersUrl);
           if (chaptersData && chaptersData.chapters && Array.isArray(chaptersData.chapters) && chaptersData.chapters.length > 0) {
             const randomChapter = chaptersData.chapters[Math.floor(Math.random() * chaptersData.chapters.length)];
-            // 3. Fetch Hadiths (no trailing slash)
+            // 3. Fetch Hadiths
             const hadithsUrl = `https://hadithapi.com/api/hadiths?bookId=${randomBook.id}&chapterId=${randomChapter.id}&page=1&size=1&apiKey=${encodedKey}`;
             const hadithsData = await fetchData(hadithsUrl);
             if (hadithsData && hadithsData.hadiths && Array.isArray(hadithsData.hadiths) && hadithsData.hadiths.length > 0) {

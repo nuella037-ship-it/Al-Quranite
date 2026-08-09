@@ -2,6 +2,7 @@
  *  AL-QURANITE - Main Script (FINAL FIX)
  *  Uses hadithapi.com with your provided API key.
  *  No fallback – only real Hadith data.
+ *  No inline event handlers – fully CSP compliant.
  */
 
 // ==============================
@@ -483,7 +484,7 @@ function initQuran() {
 }
 
 // ==============================
-// 6. HADITH PAGE - FIXED with correct endpoints
+// 6. HADITH PAGE - Fully CSP compliant, no inline handlers
 // ==============================
 
 async function fetchCollections() {
@@ -504,7 +505,6 @@ function renderCollectionList(collections) {
   const container = document.getElementById('bookListContainer');
   let html = '';
   collections.forEach(c => {
-    // Store both id and slug: we'll use slug for chapters, id for hadiths
     html += `<div class="book-item collection-item" data-id="${c.id}" data-slug="${c.bookSlug}">
       <div class="d-flex align-items-center">
         <div class="book-info">
@@ -516,14 +516,16 @@ function renderCollectionList(collections) {
     </div>`;
   });
   container.innerHTML = html;
-  
-  document.querySelectorAll('.collection-item').forEach(el => {
-    el.addEventListener('click', function() {
-      const slug = this.getAttribute('data-slug');
-      const bookId = this.getAttribute('data-id');
+
+  // Use event delegation to avoid inline onclick
+  container.addEventListener('click', function(e) {
+    const item = e.target.closest('.collection-item');
+    if (item) {
+      const slug = item.getAttribute('data-slug');
+      const bookId = item.getAttribute('data-id');
       console.log('Clicked collection with slug:', slug, 'ID:', bookId);
       fetchBooks(slug, bookId);
-    });
+    }
   });
 }
 
@@ -534,10 +536,9 @@ async function fetchBooks(slug, bookId) {
   const container = document.getElementById('bookListContainer');
   
   if (data && data.chapters && Array.isArray(data.chapters)) {
-    // Store the bookId for later hadith fetching
     const collectionName = APP.collectionList.find(c => c.bookSlug === slug)?.bookName || slug;
     APP.currentCollection = collectionName;
-    APP.currentBookId = bookId; // store numeric ID
+    APP.currentBookId = bookId;
     APP.bookList = data.chapters;
     renderBookList(APP.bookList);
   } else {
@@ -547,29 +548,40 @@ async function fetchBooks(slug, bookId) {
 
 function renderBookList(chapters) {
   const container = document.getElementById('bookListContainer');
-  let html = `<div class="mb-2 text-muted small fst-italic ps-3">Collection: ${APP.currentCollection}</div><button class="btn btn-sm btn-outline-secondary ms-2 mb-2" onclick="fetchCollections()"><i class="fas fa-arrow-left"></i> Back</button>`;
+  let html = `<div class="mb-2 text-muted small fst-italic ps-3">Collection: ${APP.currentCollection}</div><button id="backBtn" class="btn btn-sm btn-outline-secondary ms-2 mb-2"><i class="fas fa-arrow-left"></i> Back</button>`;
+  
   chapters.forEach(ch => {
+    // FIX: Try multiple properties for the title
+    const title = ch.name || ch.title || ch.arabic || ch.english || 'Chapter ' + ch.id;
     html += `<div class="book-item book-item-child" data-collection="${APP.currentCollection}" data-chapter="${ch.id}" data-bookid="${APP.currentBookId}">
       <div class="d-flex align-items-center">
         <span class="book-number">${ch.id}</span>
         <div class="book-info">
-          <h6>${ch.name}</h6>
+          <h6>${title}</h6>
           <small>${ch.hadith_count || '?'} hadiths</small>
         </div>
       </div>
     </div>`;
   });
   container.innerHTML = html;
-  
-  document.querySelectorAll('.book-item-child').forEach(el => {
-    el.addEventListener('click', function() {
-      const collection = this.getAttribute('data-collection');
-      const chapterId = this.getAttribute('data-chapter');
-      const bookId = this.getAttribute('data-bookid');
+
+  // Back button - event delegation
+  const backBtn = document.getElementById('backBtn');
+  if (backBtn) {
+    backBtn.addEventListener('click', fetchCollections);
+  }
+
+  // Chapter click events - event delegation
+  container.addEventListener('click', function(e) {
+    const item = e.target.closest('.book-item-child');
+    if (item) {
+      const collection = item.getAttribute('data-collection');
+      const chapterId = item.getAttribute('data-chapter');
+      const bookId = item.getAttribute('data-bookid');
       APP.currentChapterId = chapterId;
       APP.hadithPage = 1;
       fetchHadiths(collection, bookId, chapterId, 1);
-    });
+    }
   });
 }
 
@@ -607,13 +619,14 @@ async function fetchHadiths(collection, bookId, chapterId, page = 1) {
           </div>
         </div>
         <div class="hadith-actions">
-          <button class="btn-action-mini" onclick="copyText('${safeEnglish}')"><i class="far fa-copy"></i> Copy</button>
-          <button class="btn-action-mini" onclick="shareText('${safeEnglish}')"><i class="fas fa-share-alt"></i> Share</button>
+          <button class="btn-action-mini copy-btn"><i class="far fa-copy"></i> Copy</button>
+          <button class="btn-action-mini share-btn"><i class="fas fa-share-alt"></i> Share</button>
         </div>
       </div>`;
     });
     container.innerHTML = html;
-    
+
+    // Load More button
     const loadMoreBtn = document.querySelector('.load-more-btn');
     if (data.meta && data.meta.total && data.meta.total <= page * APP.hadithSize) {
       if (loadMoreBtn) loadMoreBtn.style.display = 'none';
@@ -626,7 +639,23 @@ async function fetchHadiths(collection, bookId, chapterId, page = 1) {
         };
       }
     }
-    
+
+    // Attach copy/share events after rendering
+    container.querySelectorAll('.copy-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const card = this.closest('.hadith-card');
+        const textEl = card.querySelector('.hadith-translation');
+        if (textEl) copyText(textEl.textContent);
+      });
+    });
+    container.querySelectorAll('.share-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const card = this.closest('.hadith-card');
+        const textEl = card.querySelector('.hadith-translation');
+        if (textEl) shareText(textEl.textContent);
+      });
+    });
+
     window.scrollTo({ top: 0, behavior: 'smooth' });
   } else {
     document.getElementById('hadithsContainer').innerHTML = `<div class="text-center py-4 text-danger small">Failed to load Hadiths.</div>`;
@@ -641,7 +670,10 @@ function initHadith() {
     searchInput.addEventListener('input', function() {
       const query = this.value.toLowerCase();
       if (APP.bookList && APP.bookList.length > 0) {
-        const filtered = APP.bookList.filter(b => b.name.toLowerCase().includes(query));
+        const filtered = APP.bookList.filter(b => {
+          const title = b.name || b.title || b.arabic || b.english || '';
+          return title.toLowerCase().includes(query);
+        });
         renderBookList(filtered);
       }
     });

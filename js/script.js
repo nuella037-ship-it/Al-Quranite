@@ -1,5 +1,5 @@
 /**
- *  AL-QURANITE - Main Script (Hadith module completely rewritten)
+ *  AL-QURANITE - Main Script (Hadith module rewritten from scratch, CORS fixed)
  *  Uses hadithapi.com with your provided API key.
  */
 
@@ -238,8 +238,8 @@ async function fetchDailyHadith() {
           const chaptersData = await fetchData(chaptersUrl);
           if (chaptersData && chaptersData.chapters && Array.isArray(chaptersData.chapters) && chaptersData.chapters.length > 0) {
             const randomChapter = chaptersData.chapters[Math.floor(Math.random() * chaptersData.chapters.length)];
-            // 3. Fetch Hadiths
-            const hadithsUrl = `https://hadithapi.com/api/hadiths/?bookId=${randomBook.id}&chapterId=${randomChapter.id}&page=1&size=1&apiKey=${encodedKey}`;
+            // 3. Fetch Hadiths (no trailing slash)
+            const hadithsUrl = `https://hadithapi.com/api/hadiths?bookId=${randomBook.id}&chapterId=${randomChapter.id}&page=1&size=1&apiKey=${encodedKey}`;
             const hadithsData = await fetchData(hadithsUrl);
             if (hadithsData && hadithsData.hadiths && Array.isArray(hadithsData.hadiths) && hadithsData.hadiths.length > 0) {
               const h = hadithsData.hadiths[0];
@@ -261,7 +261,7 @@ async function fetchDailyHadith() {
   // If all attempts fail, fallback to a known reliable Hadith (still real API data)
   if (!success) {
     // Fallback: Sahih Bukhari, Chapter 1, Hadith 1
-    const fallbackUrl = `https://hadithapi.com/api/hadiths/?bookId=1&chapterId=1&page=1&size=1&apiKey=${encodedKey}`;
+    const fallbackUrl = `https://hadithapi.com/api/hadiths?bookId=1&chapterId=1&page=1&size=1&apiKey=${encodedKey}`;
     const fallbackData = await fetchData(fallbackUrl);
     if (fallbackData && fallbackData.hadiths && Array.isArray(fallbackData.hadiths) && fallbackData.hadiths.length > 0) {
       const h = fallbackData.hadiths[0];
@@ -606,7 +606,8 @@ function renderBookList(chapters) {
 }
 
 async function fetchHadiths(collection, bookId, chapterId, page = 1) {
-  const url = `https://hadithapi.com/api/hadiths/?bookId=${bookId}&chapterId=${chapterId}&page=${page}&size=${APP.hadithSize}&apiKey=${encodeURIComponent(API_KEY)}`;
+  // FIX: Remove the trailing slash before the query parameters
+  const url = `https://hadithapi.com/api/hadiths?bookId=${bookId}&chapterId=${chapterId}&page=${page}&size=${APP.hadithSize}&apiKey=${encodeURIComponent(API_KEY)}`;
   const data = await fetchData(url);
   const panel = document.getElementById('readerPanel');
   const welcome = document.getElementById('welcomeMessage');

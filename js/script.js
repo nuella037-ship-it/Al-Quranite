@@ -1,6 +1,6 @@
 /**
- *  AL-QURANITE - Main Script (Final – direct API calls, no proxy)
- *  Uses hadithapi.com with your provided API key.
+ *  AL-QURANITE - Main Script (Hadith code completely removed)
+ *  Clean version – no Hadith APIs, no widget, no library.
  */
 
 // ==============================
@@ -10,13 +10,7 @@
 const APP = {
   currentPage: '',
   currentSurah: null,
-  currentCollection: null,
-  currentBook: null,
-  currentChapterId: null,
-  hadithPage: 1,
-  hadithSize: 20,
   surahList: [],
-  bookList: [],
   lat: null,
   lng: null,
   duaList: [
@@ -29,8 +23,6 @@ const APP = {
   ],
   currentDuaIndex: 0
 };
-
-const API_KEY = "$2y$10$CMLzJBy2h0l6elIOfEqnSEAbufBKlhk5FVMhmn0EPzS4lQL2";
 
 async function fetchData(url) {
   try {
@@ -203,98 +195,6 @@ function resetDate() {
   const el = document.getElementById('converted-hijri');
   if (input) input.value = '';
   if (el) el.textContent = '';
-}
-
-/* --- Daily Hadith (Pure Hadith API, no proxy) --- */
-async function fetchDailyHadith() {
-  const loader = document.getElementById('hadithLoader');
-  const content = document.getElementById('hadithContent');
-  const arabicEl = document.getElementById('apiArabic');
-  const englishEl = document.getElementById('apiEnglish');
-  const sourceEl = document.getElementById('apiSource');
-  const dateEl = document.getElementById('hadithDate');
-
-  if (loader) loader.style.display = 'none';
-  if (content) content.style.display = 'block';
-
-  const encodedKey = encodeURIComponent(API_KEY);
-  let success = false;
-  let attempts = 0;
-  const maxAttempts = 5;
-
-  while (!success && attempts < maxAttempts) {
-    attempts++;
-    try {
-      // 1. Fetch books
-      const booksUrl = `https://hadithapi.com/api/books?apiKey=${encodedKey}`;
-      const booksData = await fetchData(booksUrl);
-      if (booksData && booksData.books && Array.isArray(booksData.books)) {
-        // Filter out books with zero hadiths to avoid empty chapters
-        const validBooks = booksData.books.filter(b => b.hadiths_count > 0);
-        if (validBooks.length > 0) {
-          const randomBook = validBooks[Math.floor(Math.random() * validBooks.length)];
-          // 2. Fetch chapters
-          const chaptersUrl = `https://hadithapi.com/api/${randomBook.bookSlug}/chapters?apiKey=${encodedKey}`;
-          const chaptersData = await fetchData(chaptersUrl);
-          if (chaptersData && chaptersData.chapters && Array.isArray(chaptersData.chapters) && chaptersData.chapters.length > 0) {
-            const randomChapter = chaptersData.chapters[Math.floor(Math.random() * chaptersData.chapters.length)];
-            // 3. Fetch Hadiths (no trailing slash)
-            const hadithsUrl = `https://hadithapi.com/api/hadiths?bookId=${randomBook.id}&chapterId=${randomChapter.id}&page=1&size=1&apiKey=${encodedKey}`;
-            const hadithsData = await fetchData(hadithsUrl);
-            if (hadithsData && hadithsData.hadiths && Array.isArray(hadithsData.hadiths) && hadithsData.hadiths.length > 0) {
-              const h = hadithsData.hadiths[0];
-              if (arabicEl) arabicEl.textContent = h.arabic || h.text;
-              if (englishEl) englishEl.textContent = h.text;
-              if (sourceEl) sourceEl.textContent = `${randomBook.bookName} - Chapter ${randomChapter.id} - Hadith ${h.id}`;
-              if (dateEl) dateEl.textContent = new Date().toLocaleDateString();
-              success = true;
-              break;
-            }
-          }
-        }
-      }
-    } catch (e) {
-      console.warn(`Daily Hadith attempt ${attempts} failed:`, e);
-    }
-  }
-
-  // If all attempts fail, fallback to a known reliable Hadith (still real API data)
-  if (!success) {
-    // Fallback: Sahih Bukhari, Chapter 1, Hadith 1
-    const fallbackUrl = `https://hadithapi.com/api/hadiths?bookId=1&chapterId=1&page=1&size=1&apiKey=${encodedKey}`;
-    const fallbackData = await fetchData(fallbackUrl);
-    if (fallbackData && fallbackData.hadiths && Array.isArray(fallbackData.hadiths) && fallbackData.hadiths.length > 0) {
-      const h = fallbackData.hadiths[0];
-      if (arabicEl) arabicEl.textContent = h.arabic || h.text;
-      if (englishEl) englishEl.textContent = h.text;
-      if (sourceEl) sourceEl.textContent = `Sahih Bukhari - Chapter 1 - Hadith ${h.id}`;
-      if (dateEl) dateEl.textContent = new Date().toLocaleDateString();
-    } else {
-      // Ultra rare – API truly unreachable
-      if (arabicEl) arabicEl.textContent = "Unable to load Hadith.";
-      if (englishEl) englishEl.textContent = "The API is currently unreachable. Please try again later.";
-      if (sourceEl) sourceEl.textContent = "API Error";
-      if (dateEl) dateEl.textContent = new Date().toLocaleDateString();
-    }
-  }
-}
-
-function copyDailyHadith() {
-  const el = document.getElementById('apiEnglish');
-  if (!el) return;
-  const text = el.textContent;
-  navigator.clipboard.writeText(text).then(() => alert('Copied to clipboard!'));
-}
-
-function shareDailyHadith() {
-  const el = document.getElementById('apiEnglish');
-  if (!el) return;
-  const text = el.textContent;
-  if (navigator.share) {
-    navigator.share({ title: 'Daily Hadith', text: text });
-  } else {
-    alert('Share not supported on this browser.');
-  }
 }
 
 /* --- Dua of the Day --- */
@@ -504,220 +404,7 @@ function initQuran() {
 }
 
 // ==============================
-// 6. HADITH PAGE - COMPLETELY REWRITTEN, DIRECT API CALLS
-// ==============================
-
-async function fetchCollections() {
-  const url = `https://hadithapi.com/api/books?apiKey=${encodeURIComponent(API_KEY)}`;
-  const data = await fetchData(url);
-  const container = document.getElementById('bookListContainer');
-  if (!container) return;
-
-  if (data && data.books && Array.isArray(data.books)) {
-    APP.collectionList = data.books;
-    renderCollectionList(APP.collectionList);
-  } else {
-    container.innerHTML = `<div class="text-center p-4 text-muted small">Failed to load collections.</div>`;
-  }
-}
-
-function renderCollectionList(collections) {
-  const container = document.getElementById('bookListContainer');
-  let html = '';
-  collections.forEach(c => {
-    html += `<div class="book-item collection-item" data-slug="${c.bookSlug}" data-id="${c.id}">
-      <div class="d-flex align-items-center">
-        <div class="book-info">
-          <h6>${c.bookName}</h6>
-          <small>${c.chapters_count || '?'} chapters</small>
-        </div>
-      </div>
-      <div class="book-name-ar">${c.bookSlug}</div>
-    </div>`;
-  });
-  container.innerHTML = html;
-
-  // Event delegation for collection items
-  container.addEventListener('click', function(e) {
-    const item = e.target.closest('.collection-item');
-    if (item) {
-      const slug = item.getAttribute('data-slug');
-      const bookId = item.getAttribute('data-id');
-      console.log('Clicked collection with slug:', slug, 'ID:', bookId);
-      fetchBooks(slug, bookId);
-    }
-  });
-}
-
-async function fetchBooks(slug, bookId) {
-  console.log('Fetching chapters for slug:', slug);
-  const url = `https://hadithapi.com/api/${slug}/chapters?apiKey=${encodeURIComponent(API_KEY)}`;
-  const data = await fetchData(url);
-  const container = document.getElementById('bookListContainer');
-
-  if (data && data.chapters && Array.isArray(data.chapters)) {
-    const collectionName = APP.collectionList.find(c => c.bookSlug === slug)?.bookName || slug;
-    APP.currentCollection = collectionName;
-    APP.currentBookId = bookId;
-    APP.bookList = data.chapters;
-    renderBookList(APP.bookList);
-  } else {
-    container.innerHTML = `<div class="text-center p-4 text-muted small">Failed to load chapters.</div>`;
-  }
-}
-
-function renderBookList(chapters) {
-  const container = document.getElementById('bookListContainer');
-  let html = `<div class="mb-2 text-muted small fst-italic ps-3">Collection: ${APP.currentCollection}</div>
-             <button id="backBtn" class="btn btn-sm btn-outline-secondary ms-2 mb-2"><i class="fas fa-arrow-left"></i> Back</button>`;
-
-  chapters.forEach(ch => {
-    const title = ch.name || ch.title || ch.arabic || ch.english || 'Chapter ' + ch.id;
-    html += `<div class="book-item book-item-child" data-chapter="${ch.id}" data-bookid="${APP.currentBookId}" data-collection="${APP.currentCollection}">
-      <div class="d-flex align-items-center">
-        <span class="book-number">${ch.id}</span>
-        <div class="book-info">
-          <h6>${title}</h6>
-          <small>${ch.hadith_count || '?'} hadiths</small>
-        </div>
-      </div>
-    </div>`;
-  });
-  container.innerHTML = html;
-
-  // Back button event
-  const backBtn = document.getElementById('backBtn');
-  if (backBtn) {
-    backBtn.addEventListener('click', fetchCollections);
-  }
-
-  // Chapter click events - event delegation
-  container.addEventListener('click', function(e) {
-    const item = e.target.closest('.book-item-child');
-    if (item) {
-      const collection = item.getAttribute('data-collection');
-      const chapterId = item.getAttribute('data-chapter');
-      const bookId = item.getAttribute('data-bookid');
-      APP.currentChapterId = chapterId;
-      APP.hadithPage = 1;
-      fetchHadiths(collection, bookId, chapterId, 1);
-    }
-  });
-}
-
-async function fetchHadiths(collection, bookId, chapterId, page = 1) {
-  // Direct API call – no proxy, no trailing slash
-  const url = `https://hadithapi.com/api/hadiths?bookId=${bookId}&chapterId=${chapterId}&page=${page}&size=${APP.hadithSize}&apiKey=${encodeURIComponent(API_KEY)}`;
-  const data = await fetchData(url);
-  const panel = document.getElementById('readerPanel');
-  const welcome = document.getElementById('welcomeMessage');
-  const content = document.getElementById('bookContent');
-
-  if (!panel) return;
-
-  if (data && data.hadiths && Array.isArray(data.hadiths) && data.hadiths.length > 0) {
-    if (welcome) welcome.style.display = 'none';
-    if (content) content.style.display = 'block';
-
-    document.getElementById('currentBookTitle').textContent = `Hadiths - Chapter ${chapterId}`;
-    document.getElementById('bookMetaBadge').textContent = `${collection} • Page ${page}`;
-
-    const container = document.getElementById('hadithsContainer');
-    let html = '';
-    data.hadiths.forEach((h, idx) => {
-      const num = ((page - 1) * APP.hadithSize) + idx + 1;
-      const safeEnglish = h.text.replace(/'/g, "\\'");
-      html += `<div class="hadith-card">
-        <div class="hadith-content-wrapper">
-          <div class="hadith-number-box">
-            <span class="hadith-num-text">${num}</span>
-          </div>
-          <div class="hadith-text-content">
-            <div class="hadith-arabic">${h.arabic}</div>
-            <div class="hadith-translation">${h.text}</div>
-            <div class="small text-muted mt-2">${h.grade || 'Authentic'}</div>
-          </div>
-        </div>
-        <div class="hadith-actions">
-          <button class="btn-action-mini copy-btn"><i class="far fa-copy"></i> Copy</button>
-          <button class="btn-action-mini share-btn"><i class="fas fa-share-alt"></i> Share</button>
-        </div>
-      </div>`;
-    });
-    container.innerHTML = html;
-
-    // Attach copy/share events
-    container.querySelectorAll('.copy-btn').forEach(btn => {
-      btn.addEventListener('click', function() {
-        const card = this.closest('.hadith-card');
-        const textEl = card.querySelector('.hadith-translation');
-        if (textEl) copyText(textEl.textContent);
-      });
-    });
-    container.querySelectorAll('.share-btn').forEach(btn => {
-      btn.addEventListener('click', function() {
-        const card = this.closest('.hadith-card');
-        const textEl = card.querySelector('.hadith-translation');
-        if (textEl) shareText(textEl.textContent);
-      });
-    });
-
-    // Load More button
-    const loadMoreBtn = document.querySelector('.load-more-btn');
-    if (data.meta && data.meta.total && data.meta.total <= page * APP.hadithSize) {
-      if (loadMoreBtn) loadMoreBtn.style.display = 'none';
-    } else {
-      if (loadMoreBtn) {
-        loadMoreBtn.style.display = 'inline-block';
-        // Define the onclick event
-        loadMoreBtn.onclick = function() {
-          const nextPage = page + 1;
-          fetchHadiths(collection, bookId, chapterId, nextPage);
-        };
-      }
-    }
-
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  } else {
-    document.getElementById('hadithsContainer').innerHTML = `<div class="text-center py-4 text-danger small">Failed to load Hadiths.</div>`;
-  }
-}
-
-function initHadith() {
-  fetchCollections();
-
-  const searchInput = document.getElementById('bookSearch');
-  if (searchInput) {
-    searchInput.addEventListener('input', function() {
-      const query = this.value.toLowerCase();
-      if (APP.bookList && APP.bookList.length > 0) {
-        const filtered = APP.bookList.filter(b => {
-          const title = b.name || b.title || b.arabic || b.english || '';
-          return title.toLowerCase().includes(query);
-        });
-        renderBookList(filtered);
-      }
-    });
-  }
-}
-
-// ==============================
-// 6.5 ADDED: Global wrapper for HTML's onclick="loadMoreHadiths()"
-// ==============================
-
-function loadMoreHadiths() {
-  if (APP.currentCollection && APP.currentBookId && APP.currentChapterId) {
-    APP.hadithPage += 1;
-    fetchHadiths(APP.currentCollection, APP.currentBookId, APP.currentChapterId, APP.hadithPage);
-  } else {
-    console.warn("No active chapter selected to load more hadiths.");
-  }
-}
-// Make it globally accessible for inline onclick
-window.loadMoreHadiths = loadMoreHadiths;
-
-// ==============================
-// 7. GLOBAL HELPERS (Copy/Share)
+// 6. GLOBAL HELPERS (Copy/Share)
 // ==============================
 
 function copyText(text) {
@@ -733,7 +420,7 @@ function shareText(text) {
 }
 
 // ==============================
-// 8. INITIALIZATION
+// 7. INITIALIZATION (Hadith completely removed)
 // ==============================
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -743,17 +430,15 @@ document.addEventListener('DOMContentLoaded', function() {
   if (APP.currentPage === 'home') {
     getUserLocation();
     updateHijriDate();
-    fetchDailyHadith();
     fetchDailyDua();
   }
   
   if (APP.currentPage === 'connect') {
-    fetchDailyHadith();
+    // No Hadith widget anymore
   }
   
   if (APP.currentPage === 'education') initEducation();
   if (APP.currentPage === 'quran') initQuran();
-  if (APP.currentPage === 'hadith') initHadith();
 });
 
 setInterval(updateClock, 1000);

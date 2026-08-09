@@ -1,6 +1,6 @@
 /**
- *  AL-QURANITE - Main Script (Hadith module with CORS proxy)
- *  Uses hadithapi.com with your provided API key via a CORS proxy.
+ *  AL-QURANITE - Main Script (Hadith module with stable CORS proxy)
+ *  Uses hadithapi.com via api.allorigins.win proxy.
  */
 
 // ==============================
@@ -31,7 +31,8 @@ const APP = {
 };
 
 const API_KEY = "$2y$10$CMLzJBy2h0l6elIOfEqnSEAbufBKlhk5FVMhmn0EPzS4lQL2";
-const CORS_PROXY = "https://corsproxy.io/?"; // Free CORS proxy
+// Use a stable CORS proxy
+const CORS_PROXY = "https://api.allorigins.win/raw?url=";
 
 async function fetchData(url) {
   // If the URL is from hadithapi.com, use the CORS proxy

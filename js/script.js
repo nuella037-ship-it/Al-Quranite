@@ -1,7 +1,7 @@
 /**
- *  AL-QURANITE - Main Script (Production Ready - HadithAPI.com)
+ *  AL-QURANITE - Main Script (FIXED API RESPONSE HANDLING)
  *  Uses hadithapi.com with your provided API key.
- *  No mock content, no static fallbacks – pure API data.
+ *  Fallback to Quran API for Daily Wisdom if Hadith fails.
  */
 
 // ==============================
@@ -31,7 +31,6 @@ const APP = {
   currentDuaIndex: 0
 };
 
-// === YOUR API KEY ===
 const API_KEY = "$2y$10$CMLzJBy2h0l6elIOfEqnSEAbufBKlhk5FVMhmn0EPzS4lQL2";
 
 async function fetchData(url) {
@@ -175,7 +174,7 @@ async function updateHijriDate() {
   const day = padZero(now.getDate());
   const month = padZero(now.getMonth() + 1);
   const year = now.getFullYear();
-  const dateStr = `${day}-${month}-${year}`; // dd-MM-yyyy
+  const dateStr = `${day}-${month}-${year}`;
 
   const hijri = await fetchHijriDate(dateStr);
   const el = document.getElementById('hijri-date');
@@ -219,31 +218,28 @@ async function fetchDailyWisdom() {
   if (loader) loader.style.display = 'none';
   if (content) content.style.display = 'block';
 
-  // --- Attempt to fetch a random Hadith using your API key ---
   const encodedKey = encodeURIComponent(API_KEY);
   let hadithSuccess = false;
 
   try {
-    // 1. Fetch all books
+    // 1. Fetch books
     const booksUrl = `https://hadithapi.com/api/books?apiKey=${encodedKey}`;
     const booksData = await fetchData(booksUrl);
-    if (booksData && Array.isArray(booksData) && booksData.length > 0) {
-      // 2. Pick a random book
-      const randomBook = booksData[Math.floor(Math.random() * booksData.length)];
-      // 3. Fetch chapters for that book
-      const chaptersUrl = `https://hadithapi.com/api/books/${randomBook.slug}/chapters?apiKey=${encodedKey}`;
+    if (booksData && booksData.books && Array.isArray(booksData.books) && booksData.books.length > 0) {
+      const randomBook = booksData.books[Math.floor(Math.random() * booksData.books.length)];
+      // 2. Fetch chapters
+      const chaptersUrl = `https://hadithapi.com/api/books/${randomBook.bookSlug}/chapters?apiKey=${encodedKey}`;
       const chaptersData = await fetchData(chaptersUrl);
-      if (chaptersData && Array.isArray(chaptersData) && chaptersData.length > 0) {
-        // 4. Pick a random chapter
-        const randomChapter = chaptersData[Math.floor(Math.random() * chaptersData.length)];
-        // 5. Fetch exactly 1 Hadith from that chapter
-        const hadithsUrl = `https://hadithapi.com/api/hadiths?bookId=${randomChapter.book_id}&chapterId=${randomChapter.id}&page=1&size=1&apiKey=${encodedKey}`;
+      if (chaptersData && chaptersData.chapters && Array.isArray(chaptersData.chapters) && chaptersData.chapters.length > 0) {
+        const randomChapter = chaptersData.chapters[Math.floor(Math.random() * chaptersData.chapters.length)];
+        // 3. Fetch Hadiths
+        const hadithsUrl = `https://hadithapi.com/api/hadiths?bookId=${randomBook.id}&chapterId=${randomChapter.id}&page=1&size=1&apiKey=${encodedKey}`;
         const hadithsData = await fetchData(hadithsUrl);
-        if (hadithsData && hadithsData.hadiths && hadithsData.hadiths.length > 0) {
+        if (hadithsData && hadithsData.hadiths && Array.isArray(hadithsData.hadiths) && hadithsData.hadiths.length > 0) {
           const h = hadithsData.hadiths[0];
           if (arabicEl) arabicEl.textContent = h.arabic || h.text;
           if (englishEl) englishEl.textContent = h.text;
-          if (sourceEl) sourceEl.textContent = `${randomBook.name} - Chapter ${randomChapter.id} - Hadith ${h.id}`;
+          if (sourceEl) sourceEl.textContent = `${randomBook.bookName} - Chapter ${randomChapter.id} - Hadith ${h.id}`;
           if (dateEl) dateEl.textContent = new Date().toLocaleDateString();
           hadithSuccess = true;
         }
@@ -253,7 +249,7 @@ async function fetchDailyWisdom() {
     console.warn('Hadith API attempt failed, falling back to Quran.', e);
   }
 
-  // --- If Hadith failed, fetch a random Quran verse ---
+  // Fallback to Quran if Hadith failed
   if (!hadithSuccess) {
     const urlAr = 'https://api.alquran.cloud/v1/ayah/random/ar';
     const urlEn = 'https://api.alquran.cloud/v1/ayah/random/en.sahih';
@@ -266,7 +262,6 @@ async function fetchDailyWisdom() {
       if (sourceEl) sourceEl.textContent = `Surah ${ayahEn.surah.englishName}, Ayah ${ayahEn.numberInSurah}`;
       if (dateEl) dateEl.textContent = new Date().toLocaleDateString();
     } else {
-      // Ultra‑rare fallback – but it's still a real verse, not mock
       if (arabicEl) arabicEl.textContent = "إِنَّ اللَّهَ مَعَ الصَّابِرِينَ";
       if (englishEl) englishEl.textContent = "Indeed, Allah is with the patient.";
       if (sourceEl) sourceEl.textContent = "Surah Al-Baqarah, 2:153";
@@ -279,7 +274,7 @@ function copyDailyHadith() {
   const el = document.getElementById('apiEnglish');
   if (!el) return;
   const text = el.textContent;
-  navigator.clipboard.writeText(text).then(() => alert('Hadith copied to clipboard!'));
+  navigator.clipboard.writeText(text).then(() => alert('Copied to clipboard!'));
 }
 
 function shareDailyHadith() {
@@ -287,7 +282,7 @@ function shareDailyHadith() {
   if (!el) return;
   const text = el.textContent;
   if (navigator.share) {
-    navigator.share({ title: 'Daily Hadith', text: text });
+    navigator.share({ title: 'Daily Wisdom', text: text });
   } else {
     alert('Share not supported on this browser.');
   }
@@ -500,18 +495,17 @@ function initQuran() {
 }
 
 // ==============================
-// 6. HADITH PAGE (HadithAPI.com - No Mock Data)
+// 6. HADITH PAGE (FIXED RESPONSE HANDLING)
 // ==============================
 
-/* --- Fetch Books (Collections) --- */
 async function fetchCollections() {
-  const url = `https://hadithapi.com/api/books?apiKey=${API_KEY}`;
+  const url = `https://hadithapi.com/api/books?apiKey=${encodeURIComponent(API_KEY)}`;
   const data = await fetchData(url);
   const container = document.getElementById('bookListContainer');
   if (!container) return;
   
-  if (data && Array.isArray(data)) {
-    APP.collectionList = data;
+  if (data && data.books && Array.isArray(data.books)) {
+    APP.collectionList = data.books;
     renderCollectionList(APP.collectionList);
   } else {
     container.innerHTML = `<div class="text-center p-4 text-muted small">Failed to load collections.</div>`;
@@ -522,14 +516,14 @@ function renderCollectionList(collections) {
   const container = document.getElementById('bookListContainer');
   let html = '';
   collections.forEach(c => {
-    html += `<div class="book-item collection-item" data-slug="${c.slug}">
+    html += `<div class="book-item collection-item" data-slug="${c.bookSlug}">
       <div class="d-flex align-items-center">
         <div class="book-info">
-          <h6>${c.name}</h6>
-          <small>${c.total_chapters || '?'} chapters</small>
+          <h6>${c.bookName}</h6>
+          <small>${c.chapters_count || '?'} chapters</small>
         </div>
       </div>
-      <div class="book-name-ar">${c.slug}</div>
+      <div class="book-name-ar">${c.bookSlug}</div>
     </div>`;
   });
   container.innerHTML = html;
@@ -542,15 +536,14 @@ function renderCollectionList(collections) {
   });
 }
 
-/* --- Fetch Chapters (Books) --- */
 async function fetchBooks(slug) {
-  const url = `https://hadithapi.com/api/books/${slug}/chapters?apiKey=${API_KEY}`;
+  const url = `https://hadithapi.com/api/books/${slug}/chapters?apiKey=${encodeURIComponent(API_KEY)}`;
   const data = await fetchData(url);
   const container = document.getElementById('bookListContainer');
   
-  if (data && Array.isArray(data)) {
+  if (data && data.chapters && Array.isArray(data.chapters)) {
     APP.currentCollection = slug;
-    APP.bookList = data;
+    APP.bookList = data.chapters;
     renderBookList(APP.bookList);
   } else {
     container.innerHTML = `<div class="text-center p-4 text-muted small">Failed to load chapters.</div>`;
@@ -579,15 +572,14 @@ function renderBookList(chapters) {
       const chapterId = this.getAttribute('data-chapter');
       const bookId = this.getAttribute('data-bookid');
       APP.currentChapterId = chapterId;
-      APP.hadithPage = 1; // reset to first page
+      APP.hadithPage = 1;
       fetchHadiths(collection, bookId, chapterId, 1);
     });
   });
 }
 
-/* --- Fetch Hadiths --- */
 async function fetchHadiths(collection, bookId, chapterId, page = 1) {
-  const url = `https://hadithapi.com/api/hadiths?bookId=${bookId}&chapterId=${chapterId}&page=${page}&size=${APP.hadithSize}&apiKey=${API_KEY}`;
+  const url = `https://hadithapi.com/api/hadiths?bookId=${bookId}&chapterId=${chapterId}&page=${page}&size=${APP.hadithSize}&apiKey=${encodeURIComponent(API_KEY)}`;
   const data = await fetchData(url);
   const panel = document.getElementById('readerPanel');
   const welcome = document.getElementById('welcomeMessage');
@@ -595,7 +587,7 @@ async function fetchHadiths(collection, bookId, chapterId, page = 1) {
   
   if (!panel) return;
 
-  if (data && data.hadiths && data.hadiths.length > 0) {
+  if (data && data.hadiths && Array.isArray(data.hadiths) && data.hadiths.length > 0) {
     if (welcome) welcome.style.display = 'none';
     if (content) content.style.display = 'block';
     
@@ -627,7 +619,6 @@ async function fetchHadiths(collection, bookId, chapterId, page = 1) {
     });
     container.innerHTML = html;
     
-    // Handle Load More button visibility
     const loadMoreBtn = document.querySelector('.load-more-btn');
     if (data.meta && data.meta.total && data.meta.total <= page * APP.hadithSize) {
       if (loadMoreBtn) loadMoreBtn.style.display = 'none';
@@ -689,11 +680,14 @@ document.addEventListener('DOMContentLoaded', function() {
   if (APP.currentPage === 'home') {
     getUserLocation();
     updateHijriDate();
-    fetchDailyWisdom();
+    fetchDailyWisdom(); // <-- updated function name
     fetchDailyDua();
   }
   
-  if (APP.currentPage === 'connect') fetchDailyWisdom();
+  if (APP.currentPage === 'connect') {
+    fetchDailyWisdom();
+  }
+  
   if (APP.currentPage === 'education') initEducation();
   if (APP.currentPage === 'quran') initQuran();
   if (APP.currentPage === 'hadith') initHadith();

@@ -1,7 +1,6 @@
 /**
- *  AL-QURANITE - Main Script (FIXED API RESPONSE HANDLING)
+ *  AL-QURANITE - Main Script (FINAL)
  *  Uses hadithapi.com with your provided API key.
- *  Fallback to Quran API for Daily Wisdom if Hadith fails.
  */
 
 // ==============================
@@ -206,8 +205,8 @@ function resetDate() {
   if (el) el.textContent = '';
 }
 
-/* --- Daily Wisdom (Hadith with Quran fallback) --- */
-async function fetchDailyWisdom() {
+/* --- Daily Hadith (Pure Hadith API, no fallback) --- */
+async function fetchDailyHadith() {
   const loader = document.getElementById('hadithLoader');
   const content = document.getElementById('hadithContent');
   const arabicEl = document.getElementById('apiArabic');
@@ -219,7 +218,7 @@ async function fetchDailyWisdom() {
   if (content) content.style.display = 'block';
 
   const encodedKey = encodeURIComponent(API_KEY);
-  let hadithSuccess = false;
+  let success = false;
 
   try {
     // 1. Fetch books
@@ -241,32 +240,20 @@ async function fetchDailyWisdom() {
           if (englishEl) englishEl.textContent = h.text;
           if (sourceEl) sourceEl.textContent = `${randomBook.bookName} - Chapter ${randomChapter.id} - Hadith ${h.id}`;
           if (dateEl) dateEl.textContent = new Date().toLocaleDateString();
-          hadithSuccess = true;
+          success = true;
         }
       }
     }
   } catch (e) {
-    console.warn('Hadith API attempt failed, falling back to Quran.', e);
+    console.warn('Hadith API attempt failed.', e);
   }
 
-  // Fallback to Quran if Hadith failed
-  if (!hadithSuccess) {
-    const urlAr = 'https://api.alquran.cloud/v1/ayah/random/ar';
-    const urlEn = 'https://api.alquran.cloud/v1/ayah/random/en.sahih';
-    const [dataAr, dataEn] = await Promise.all([fetchData(urlAr), fetchData(urlEn)]);
-    if (dataAr && dataAr.data && dataEn && dataEn.data) {
-      const ayahAr = dataAr.data;
-      const ayahEn = dataEn.data;
-      if (arabicEl) arabicEl.textContent = ayahAr.text;
-      if (englishEl) englishEl.textContent = ayahEn.text;
-      if (sourceEl) sourceEl.textContent = `Surah ${ayahEn.surah.englishName}, Ayah ${ayahEn.numberInSurah}`;
-      if (dateEl) dateEl.textContent = new Date().toLocaleDateString();
-    } else {
-      if (arabicEl) arabicEl.textContent = "إِنَّ اللَّهَ مَعَ الصَّابِرِينَ";
-      if (englishEl) englishEl.textContent = "Indeed, Allah is with the patient.";
-      if (sourceEl) sourceEl.textContent = "Surah Al-Baqarah, 2:153";
-      if (dateEl) dateEl.textContent = new Date().toLocaleDateString();
-    }
+  if (!success) {
+    // Show error message (no mock content)
+    if (arabicEl) arabicEl.textContent = "Unable to load Hadith.";
+    if (englishEl) englishEl.textContent = "The API is currently unreachable. Please try again later.";
+    if (sourceEl) sourceEl.textContent = "API Error";
+    if (dateEl) dateEl.textContent = new Date().toLocaleDateString();
   }
 }
 
@@ -282,7 +269,7 @@ function shareDailyHadith() {
   if (!el) return;
   const text = el.textContent;
   if (navigator.share) {
-    navigator.share({ title: 'Daily Wisdom', text: text });
+    navigator.share({ title: 'Daily Hadith', text: text });
   } else {
     alert('Share not supported on this browser.');
   }
@@ -680,12 +667,12 @@ document.addEventListener('DOMContentLoaded', function() {
   if (APP.currentPage === 'home') {
     getUserLocation();
     updateHijriDate();
-    fetchDailyWisdom(); // <-- updated function name
+    fetchDailyHadith(); 
     fetchDailyDua();
   }
   
   if (APP.currentPage === 'connect') {
-    fetchDailyWisdom();
+    fetchDailyHadith(); 
   }
   
   if (APP.currentPage === 'education') initEducation();

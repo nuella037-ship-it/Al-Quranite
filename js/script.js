@@ -1,6 +1,6 @@
 /**
- *  AL-QURANITE - Main Script (Hadith module with stable CORS proxy)
- *  Uses hadithapi.com via api.allorigins.win proxy.
+ *  AL-QURANITE - Main Script (Final – direct API calls, no proxy)
+ *  Uses hadithapi.com with your provided API key.
  */
 
 // ==============================
@@ -31,14 +31,10 @@ const APP = {
 };
 
 const API_KEY = "$2y$10$CMLzJBy2h0l6elIOfEqnSEAbufBKlhk5FVMhmn0EPzS4lQL2";
-// Use a stable CORS proxy
-const CORS_PROXY = "https://api.allorigins.win/raw?url=";
 
 async function fetchData(url) {
-  // If the URL is from hadithapi.com, use the CORS proxy
-  const finalUrl = url.includes('hadithapi.com') ? CORS_PROXY + encodeURIComponent(url) : url;
   try {
-    const response = await fetch(finalUrl);
+    const response = await fetch(url);
     if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
     return await response.json();
   } catch (error) {
@@ -209,7 +205,7 @@ function resetDate() {
   if (el) el.textContent = '';
 }
 
-/* --- Daily Hadith (Robust selection with retries) --- */
+/* --- Daily Hadith (Pure Hadith API, no proxy) --- */
 async function fetchDailyHadith() {
   const loader = document.getElementById('hadithLoader');
   const content = document.getElementById('hadithContent');
@@ -242,7 +238,7 @@ async function fetchDailyHadith() {
           const chaptersData = await fetchData(chaptersUrl);
           if (chaptersData && chaptersData.chapters && Array.isArray(chaptersData.chapters) && chaptersData.chapters.length > 0) {
             const randomChapter = chaptersData.chapters[Math.floor(Math.random() * chaptersData.chapters.length)];
-            // 3. Fetch Hadiths
+            // 3. Fetch Hadiths (no trailing slash)
             const hadithsUrl = `https://hadithapi.com/api/hadiths?bookId=${randomBook.id}&chapterId=${randomChapter.id}&page=1&size=1&apiKey=${encodedKey}`;
             const hadithsData = await fetchData(hadithsUrl);
             if (hadithsData && hadithsData.hadiths && Array.isArray(hadithsData.hadiths) && hadithsData.hadiths.length > 0) {
@@ -508,7 +504,7 @@ function initQuran() {
 }
 
 // ==============================
-// 6. HADITH PAGE - COMPLETELY REWRITTEN FROM SCRATCH
+// 6. HADITH PAGE - COMPLETELY REWRITTEN, DIRECT API CALLS
 // ==============================
 
 async function fetchCollections() {
@@ -610,7 +606,7 @@ function renderBookList(chapters) {
 }
 
 async function fetchHadiths(collection, bookId, chapterId, page = 1) {
-  // FIX: Remove the trailing slash before the query parameters
+  // Direct API call – no proxy, no trailing slash
   const url = `https://hadithapi.com/api/hadiths?bookId=${bookId}&chapterId=${chapterId}&page=${page}&size=${APP.hadithSize}&apiKey=${encodeURIComponent(API_KEY)}`;
   const data = await fetchData(url);
   const panel = document.getElementById('readerPanel');

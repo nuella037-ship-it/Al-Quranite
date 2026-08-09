@@ -1,8 +1,6 @@
 /**
- *  AL-QURANITE - Main Script (FINAL FIX)
+ *  AL-QURANITE - Main Script
  *  Uses hadithapi.com with your provided API key.
- *  No fallback – only real Hadith data.
- *  No inline event handlers – fully CSP compliant.
  */
 
 // ==============================
@@ -207,7 +205,7 @@ function resetDate() {
   if (el) el.textContent = '';
 }
 
-/* --- Daily Hadith (Pure Hadith API, no fallback) --- */
+/* --- Daily Hadith (Robust selection with retries) --- */
 async function fetchDailyHadith() {
   const loader = document.getElementById('hadithLoader');
   const content = document.getElementById('hadithContent');
@@ -221,41 +219,63 @@ async function fetchDailyHadith() {
 
   const encodedKey = encodeURIComponent(API_KEY);
   let success = false;
+  let attempts = 0;
+  const maxAttempts = 5;
 
-  try {
-    // 1. Fetch books
-    const booksUrl = `https://hadithapi.com/api/books?apiKey=${encodedKey}`;
-    const booksData = await fetchData(booksUrl);
-    if (booksData && booksData.books && Array.isArray(booksData.books) && booksData.books.length > 0) {
-      const randomBook = booksData.books[Math.floor(Math.random() * booksData.books.length)];
-      // 2. Fetch chapters (using slug, not numeric ID)
-      const chaptersUrl = `https://hadithapi.com/api/${randomBook.bookSlug}/chapters?apiKey=${encodedKey}`;
-      const chaptersData = await fetchData(chaptersUrl);
-      if (chaptersData && chaptersData.chapters && Array.isArray(chaptersData.chapters) && chaptersData.chapters.length > 0) {
-        const randomChapter = chaptersData.chapters[Math.floor(Math.random() * chaptersData.chapters.length)];
-        // 3. Fetch Hadiths (using numeric bookId and chapterId)
-        const hadithsUrl = `https://hadithapi.com/api/hadiths?bookId=${randomBook.id}&chapterId=${randomChapter.id}&page=1&size=1&apiKey=${encodedKey}`;
-        const hadithsData = await fetchData(hadithsUrl);
-        if (hadithsData && hadithsData.hadiths && Array.isArray(hadithsData.hadiths) && hadithsData.hadiths.length > 0) {
-          const h = hadithsData.hadiths[0];
-          if (arabicEl) arabicEl.textContent = h.arabic || h.text;
-          if (englishEl) englishEl.textContent = h.text;
-          if (sourceEl) sourceEl.textContent = `${randomBook.bookName} - Chapter ${randomChapter.id} - Hadith ${h.id}`;
-          if (dateEl) dateEl.textContent = new Date().toLocaleDateString();
-          success = true;
+  while (!success && attempts < maxAttempts) {
+    attempts++;
+    try {
+      // 1. Fetch books
+      const booksUrl = `https://hadithapi.com/api/books?apiKey=${encodedKey}`;
+      const booksData = await fetchData(booksUrl);
+      if (booksData && booksData.books && Array.isArray(booksData.books)) {
+        // Filter out books with zero hadiths to avoid empty chapters
+        const validBooks = booksData.books.filter(b => b.hadiths_count > 0);
+        if (validBooks.length > 0) {
+          const randomBook = validBooks[Math.floor(Math.random() * validBooks.length)];
+          // 2. Fetch chapters
+          const chaptersUrl = `https://hadithapi.com/api/${randomBook.bookSlug}/chapters?apiKey=${encodedKey}`;
+          const chaptersData = await fetchData(chaptersUrl);
+          if (chaptersData && chaptersData.chapters && Array.isArray(chaptersData.chapters) && chaptersData.chapters.length > 0) {
+            const randomChapter = chaptersData.chapters[Math.floor(Math.random() * chaptersData.chapters.length)];
+            // 3. Fetch Hadiths
+            const hadithsUrl = `https://hadithapi.com/api/hadiths?bookId=${randomBook.id}&chapterId=${randomChapter.id}&page=1&size=1&apiKey=${encodedKey}`;
+            const hadithsData = await fetchData(hadithsUrl);
+            if (hadithsData && hadithsData.hadiths && Array.isArray(hadithsData.hadiths) && hadithsData.hadiths.length > 0) {
+              const h = hadithsData.hadiths[0];
+              if (arabicEl) arabicEl.textContent = h.arabic || h.text;
+              if (englishEl) englishEl.textContent = h.text;
+              if (sourceEl) sourceEl.textContent = `${randomBook.bookName} - Chapter ${randomChapter.id} - Hadith ${h.id}`;
+              if (dateEl) dateEl.textContent = new Date().toLocaleDateString();
+              success = true;
+              break;
+            }
+          }
         }
       }
+    } catch (e) {
+      console.warn(`Daily Hadith attempt ${attempts} failed:`, e);
     }
-  } catch (e) {
-    console.warn('Hadith API attempt failed.', e);
   }
 
+  // If all attempts fail, fallback to a known reliable Hadith (still real API data)
   if (!success) {
-    // Show error message (no mock content)
-    if (arabicEl) arabicEl.textContent = "Unable to load Hadith.";
-    if (englishEl) englishEl.textContent = "The API is currently unreachable. Please try again later.";
-    if (sourceEl) sourceEl.textContent = "API Error";
-    if (dateEl) dateEl.textContent = new Date().toLocaleDateString();
+    // Fallback: Sahih Bukhari, Chapter 1, Hadith 1
+    const fallbackUrl = `https://hadithapi.com/api/hadiths?bookId=1&chapterId=1&page=1&size=1&apiKey=${encodedKey}`;
+    const fallbackData = await fetchData(fallbackUrl);
+    if (fallbackData && fallbackData.hadiths && Array.isArray(fallbackData.hadiths) && fallbackData.hadiths.length > 0) {
+      const h = fallbackData.hadiths[0];
+      if (arabicEl) arabicEl.textContent = h.arabic || h.text;
+      if (englishEl) englishEl.textContent = h.text;
+      if (sourceEl) sourceEl.textContent = `Sahih Bukhari - Chapter 1 - Hadith ${h.id}`;
+      if (dateEl) dateEl.textContent = new Date().toLocaleDateString();
+    } else {
+      // Ultra rare – API truly unreachable
+      if (arabicEl) arabicEl.textContent = "Unable to load Hadith.";
+      if (englishEl) englishEl.textContent = "The API is currently unreachable. Please try again later.";
+      if (sourceEl) sourceEl.textContent = "API Error";
+      if (dateEl) dateEl.textContent = new Date().toLocaleDateString();
+    }
   }
 }
 

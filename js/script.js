@@ -1,6 +1,6 @@
 /**
- *  AL-QURANITE - Main Script (Hadith code completely removed)
- *  Clean version – no Hadith APIs, no widget, no library.
+ *  AL-QURANITE - Main Script (Daily Ayah Updated)
+ *  Clean version – no Hadith APIs.
  */
 
 // ==============================
@@ -13,15 +13,40 @@ const APP = {
   surahList: [],
   lat: null,
   lng: null,
-  duaList: [
-    { arabic: "رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ", translation: "Our Lord, give us in this world [that which is] good and in the Hereafter [that which is] good and protect us from the punishment of the Fire.", source: "Surah Al-Baqarah, 2:201" },
-    { arabic: "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنْ الْهَمِّ وَالْحَزَنِ", translation: "O Allah, I seek refuge in You from anxiety and grief.", source: "Sahih Al-Bukhari" },
-    { arabic: "رَبِّ اشْرَحْ لِي صَدْرِي وَيَسِّرْ لِي أَمْرِي", translation: "My Lord, expand for me my chest [with assurance] and ease for me my task.", source: "Surah Taha, 20:25-26" },
-    { arabic: "اللَّهُمَّ إِنِّي أَسْأَلُكَ الْعَافِيَةَ", translation: "O Allah, I ask You for well-being.", source: "Sunan Ibn Majah" },
-    { arabic: "لَا إِلَٰهَ إِلَّا أَنْتَ سُبْحَانَكَ إِنِّي كُنْتُ مِنَ الظَّالِمِينَ", translation: "There is no deity except You; exalted are You. Indeed, I have been of the wrongdoers.", source: "Surah Al-Anbiya, 21:87" },
-    { arabic: "اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ وَعَلَى آلِ مُحَمَّدٍ", translation: "O Allah, send blessings upon Muhammad and upon the family of Muhammad.", source: "Sahih Al-Bukhari" }
+  // Replaced Dua list with 30 curated Quranic verses
+  ayahList: [
+    { arabic: "إِنَّ مَعَ الْعُسْرِ يُسْرًا", translation: "Indeed, with hardship [comes] ease.", source: "Surah Ash-Sharh, 94:6" },
+    { arabic: "وَمَن يَتَّقِ اللَّهَ يَجْعَل لَّهُ مَخْرَجًا", translation: "And whoever fears Allah - He will make for him a way out.", source: "Surah At-Talaq, 65:2" },
+    { arabic: "لَا يُكَلِّفُ اللَّهُ نَفْسًا إِلَّا وُسْعَهَا", translation: "Allah does not burden a soul beyond its capacity.", source: "Surah Al-Baqarah, 2:286" },
+    { arabic: "أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ", translation: "Unquestionably, by the remembrance of Allah hearts find rest.", source: "Surah Ar-Ra'd, 13:28" },
+    { arabic: "فَاذْكُرُونِي أَذْكُرْكُمْ", translation: "So remember Me; I will remember you.", source: "Surah Al-Baqarah, 2:152" },
+    { arabic: "وَمِنْ آيَاتِهِ أَنْ خَلَقَ لَكُم مِّنْ أَنفُسِكُمْ أَزْوَاجًا", translation: "And of His signs is that He created for you from yourselves mates.", source: "Surah Ar-Rum, 30:21" },
+    { arabic: "كُلُّ نَفْسٍ ذَائِقَةُ الْمَوْتِ", translation: "Every soul will taste death.", source: "Surah Ali 'Imran, 3:185" },
+    { arabic: "هَلْ يَسْتَوِي الَّذِينَ يَعْلَمُونَ وَالَّذِينَ لَا يَعْلَمُونَ", translation: "Are those who know equal to those who do not know?", source: "Surah Az-Zumar, 39:9" },
+    { arabic: "ادْعُ إِلَىٰ سَبِيلِ رَبِّكَ بِالْحِكْمَةِ وَالْمَوْعِظَةِ الْحَسَنَةِ", translation: "Invite to the way of your Lord with wisdom and good instruction.", source: "Surah An-Nahl, 16:125" },
+    { arabic: "رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً", translation: "Our Lord, give us in this world [that which is] good and in the Hereafter [that which is] good.", source: "Surah Al-Baqarah, 2:201" },
+    { arabic: "وَإِلَىٰ رَبِّكَ فَارْغَب", translation: "And to your Lord direct [your] longing.", source: "Surah Ash-Sharh, 94:8" },
+    { arabic: "لَيْسَ كَمِثْلِهِ شَيْءٌ ۖ وَهُوَ السَّمِيعُ الْبَصِيرُ", translation: "There is nothing like unto Him, and He is the Hearing, the Seeing.", source: "Surah Ash-Shura, 42:11" },
+    { arabic: "إِنَّ اللَّهَ مَعَ الصَّابِرِينَ", translation: "Indeed, Allah is with the patient.", source: "Surah Al-Baqarah, 2:153" },
+    { arabic: "يَا أَيُّهَا الَّذِينَ آمَنُوا اتَّقُوا اللَّهَ وَقُولُوا قَوْلًا سَدِيدًا", translation: "O you who have believed, fear Allah and speak words of appropriate justice.", source: "Surah Al-Ahzab, 33:70" },
+    { arabic: "وَلِلَّهِ الْأَسْمَاءُ الْحُسْنَىٰ فَادْعُوهُ بِهَا", translation: "And to Allah belong the best names, so invoke Him by them.", source: "Surah Al-A'raf, 7:180" },
+    { arabic: "إِنَّ اللَّهَ يُحِبُّ الْمُحْسِنِينَ", translation: "Indeed, Allah loves the doers of good.", source: "Surah Al-Baqarah, 2:195" },
+    { arabic: "عَسَىٰ أَن تَكْرَهُوا شَيْئًا وَهُوَ خَيْرٌ لَّكُمْ", translation: "Perhaps you hate a thing and it is good for you.", source: "Surah Al-Baqarah, 2:216" },
+    { arabic: "وَجَاهِدُوا فِي اللَّهِ حَقَّ جِهَادِهِ", translation: "And strive for Allah with the striving due to Him.", source: "Surah Al-Hajj, 22:78" },
+    { arabic: "يَا أَيُّهَا النَّاسُ إِنَّا خَلَقْنَاكُم مِّن ذَكَرٍ وَأُنثَىٰ", translation: "O mankind, indeed We have created you from male and female.", source: "Surah Al-Hujurat, 49:13" },
+    { arabic: "اقْرَأْ بِاسْمِ رَبِّكَ الَّذِي خَلَقَ", translation: "Recite in the name of your Lord who created.", source: "Surah Al-'Alaq, 96:1" },
+    { arabic: "إِنَّ اللَّهَ يُحِبُّ التَّوَّابِينَ وَيُحِبُّ الْمُتَطَهِّرِينَ", translation: "Indeed, Allah loves those who repent and loves those who purify themselves.", source: "Surah Al-Baqarah, 2:222" },
+    { arabic: "قُلْ هُوَ اللَّهُ أَحَدٌ", translation: "Say, 'He is Allah, [who is] One.'", source: "Surah Al-Ikhlas, 112:1" },
+    { arabic: "وَرَحْمَتِي وَسِعَتْ كُلَّ شَيْءٍ", translation: "And My mercy encompasses all things.", source: "Surah Al-A'raf, 7:156" },
+    { arabic: "وَأَن لَّيْسَ لِلْإِنسَانِ إِلَّا مَا سَعَىٰ", translation: "And that man has only that for which he strives.", source: "Surah An-Najm, 53:39" },
+    { arabic: "فَبِأَيِّ آلَاءِ رَبِّكُمَا تُكَذِّبَانِ", translation: "So which of the favors of your Lord would you deny?", source: "Surah Ar-Rahman, 55:13" },
+    { arabic: "اسْتَغْفِرُوا رَبَّكُمْ إِنَّهُ كَانَ غَفَّارًا", translation: "Ask forgiveness of your Lord. Indeed, He is ever a Forgiver.", source: "Surah Nuh, 71:10" },
+    { arabic: "وَمَا جَعَلْنَاكَ عَلَيْهِمْ حَفِيظًا", translation: "And We have not made you, [O Muhammad], a guardian over them.", source: "Surah Ash-Shura, 42:48" },
+    { arabic: "وَعَدَ اللَّهُ الَّذِينَ آمَنُوا وَعَمِلُوا الصَّالِحَاتِ", translation: "Allah has promised those who believe and do righteous deeds.", source: "Surah Al-Ma'idah, 5:9" },
+    { arabic: "سَبَّحَ لِلَّهِ مَا فِي السَّمَاوَاتِ وَالْأَرْضِ", translation: "Whatever is in the heavens and earth exalts Allah.", source: "Surah Al-Hadid, 57:1" },
+    { arabic: "وَمَا تَوْفِيقِي إِلَّا بِاللَّهِ ۚ عَلَيْهِ تَوَكَّلْتُ", translation: "And my success is not except through Allah. Upon Him I have relied.", source: "Surah Hud, 11:88" }
   ],
-  currentDuaIndex: 0
+  currentAyahIndex: 0
 };
 
 async function fetchData(url) {
@@ -197,17 +222,32 @@ function resetDate() {
   if (el) el.textContent = '';
 }
 
-/* --- Dua of the Day --- */
-function fetchDailyDua() {
+/* --- Daily Ayah of the Day --- */
+function fetchDailyAyah() {
   const today = new Date();
   const dayOfYear = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24));
-  APP.currentDuaIndex = dayOfYear % APP.duaList.length;
-  const dua = APP.duaList[APP.currentDuaIndex];
-  
-  const textEl = document.getElementById('daily-dua');
-  const sourceEl = document.getElementById('dua-source');
-  if (textEl) textEl.textContent = dua.translation;
-  if (sourceEl) sourceEl.textContent = dua.source;
+  APP.currentAyahIndex = dayOfYear % APP.ayahList.length;
+  const ayah = APP.ayahList[APP.currentAyahIndex];
+
+  // Update Home Page Widget
+  const textEl = document.getElementById('daily-ayah');
+  const sourceEl = document.getElementById('ayah-source');
+  if (textEl) textEl.textContent = ayah.translation;
+  if (sourceEl) sourceEl.textContent = ayah.source;
+
+  // Update Connect Page Widget
+  const apiArabic = document.getElementById('apiArabic');
+  const apiEnglish = document.getElementById('apiEnglish');
+  const apiSource = document.getElementById('apiSource');
+  if (apiArabic) apiArabic.textContent = ayah.arabic;
+  if (apiEnglish) apiEnglish.textContent = ayah.translation;
+  if (apiSource) apiSource.textContent = ayah.source;
+
+  // Hide the loader and show the content on the connect page
+  const loader = document.getElementById('ayahLoader');
+  const content = document.getElementById('ayahContent');
+  if (loader) loader.style.display = 'none';
+  if (content) content.style.display = 'block';
 }
 
 /* --- Zakat Calculator --- */
@@ -420,7 +460,7 @@ function shareText(text) {
 }
 
 // ==============================
-// 7. INITIALIZATION (Hadith completely removed)
+// 7. INITIALIZATION
 // ==============================
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -430,11 +470,11 @@ document.addEventListener('DOMContentLoaded', function() {
   if (APP.currentPage === 'home') {
     getUserLocation();
     updateHijriDate();
-    fetchDailyDua();
+    fetchDailyAyah(); // Changed from fetchDailyDua
   }
   
   if (APP.currentPage === 'connect') {
-    // No Hadith widget anymore
+    fetchDailyAyah(); // Changed from Hadith widget
   }
   
   if (APP.currentPage === 'education') initEducation();

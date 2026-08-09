@@ -11,7 +11,6 @@
     --text-main: #2c3e50;
     --text-muted: #64748b;
     --border: #e2e8f0;
-    --sidebar-width: 320px;
     
     --font-arabic: 'Amiri', serif;
     --font-heading: 'Playfair Display', serif;
@@ -175,18 +174,6 @@ h1, h2, h3, h4, h5, .arabic-text {
 
 .prayer-row:last-child {
     border-bottom: none;
-}
-
-.prayer-row.active-prayer {
-    background-color: rgba(0, 156, 74, 0.1);
-    border-left: 4px solid var(--emerald-green);
-    animation: pulse-green 2s infinite;
-}
-
-@keyframes pulse-green {
-    0% { box-shadow: 0 0 0 0 rgba(0, 156, 74, 0.4); }
-    70% { box-shadow: 0 0 0 6px rgba(0, 156, 74, 0); }
-    100% { box-shadow: 0 0 0 0 rgba(0, 156, 74, 0); }
 }
 
 .prayer-name {
@@ -1318,32 +1305,6 @@ h1, h2, h3, h4, h5, .arabic-text {
     margin-bottom: 10px;
 }
 
-/* Filter tabs removed via HTML, styles kept for potential future use or if needed elsewhere */
-.filter-tabs {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 10px;
-    background: #fff;
-    border-radius: 8px;
-    padding: 5px;
-    border: 1px solid var(--border);
-}
-
-.filter-tab {
-    flex: 1;
-    text-align: center;
-    padding: 6px 0;
-    font-size: 0.8rem;
-    cursor: pointer;
-    border-radius: 6px;
-    transition: all 0.2s;
-    color: var(--text-muted);
-    font-weight: 600;
-}
-
-.filter-tab:hover { background-color: #f1f5f9; }
-.filter-tab.active { background-color: var(--emerald-green); color: white; }
-
 /* Mobile Handling */
 @media (max-width: 991px) {
     .page-layout, .quran-layout, .hadith-layout { flex-direction: column; }
@@ -1537,7 +1498,7 @@ h1, h2, h3, h4, h5, .arabic-text {
 }
 
 /* Verse Card Design */
-.verse-card, .hadith-card {
+.verse-card {
     background: #fff;
     border: 1px solid #edf2f7;
     border-radius: 8px;
@@ -1550,20 +1511,20 @@ h1, h2, h3, h4, h5, .arabic-text {
     border-bottom-width: 2px;
 }
 
-.verse-card:hover, .hadith-card:hover {
+.verse-card:hover {
     background-color: #f0fdf4;
     box-shadow: 0 4px 12px rgba(0,0,0,0.08);
     transform: translateY(-2px);
     border-color: var(--emerald-green);
 }
 
-.verse-content-wrapper, .hadith-content-wrapper {
+.verse-content-wrapper {
     display: flex;
     align-items: flex-start;
     gap: 20px;
 }
 
-.verse-number-box, .hadith-number-box {
+.verse-number-box {
     min-width: 40px;
     display: flex;
     flex-direction: column;
@@ -1575,21 +1536,21 @@ h1, h2, h3, h4, h5, .arabic-text {
     margin-top: 5px;
 }
 
-.verse-num-text, .hadith-num-text {
+.verse-num-text {
     font-family: var(--font-heading);
     font-weight: bold;
     color: var(--emerald-green);
     font-size: 1.1rem;
 }
 
-.verse-text-content, .hadith-text-content {
+.verse-text-content {
     flex-grow: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-.verse-arabic, .hadith-arabic {
+.verse-arabic {
     font-family: var(--font-arabic);
     font-size: 2.2rem;
     line-height: 2.4;
@@ -1600,7 +1561,7 @@ h1, h2, h3, h4, h5, .arabic-text {
     width: 100%;
 }
 
-.verse-translation, .hadith-translation {
+.verse-translation {
     color: #475569;
     font-size: 1.1rem;
     line-height: 1.6;
@@ -1610,7 +1571,7 @@ h1, h2, h3, h4, h5, .arabic-text {
     max-width: 90%;
 }
 
-.verse-actions, .hadith-actions {
+.verse-actions {
     display: flex;
     justify-content: flex-end;
     gap: 8px;
@@ -1953,24 +1914,6 @@ footer a:hover {
     transform: translateY(-3px);
     box-shadow: 0 8px 25px rgba(0, 156, 74, 0.4);
     color: white;
-}
-
-.btn-classic {
-    background-color: var(--white);
-    border: 2px solid var(--emerald-green);
-    color: var(--emerald-green);
-    padding: 10px 30px;
-    font-family: var(--font-heading);
-    transition: all 0.3s;
-    border-radius: 50px;
-    font-weight: bold;
-    text-decoration: none;
-    display: inline-block;
-    cursor: pointer;
-}
-.btn-classic:hover { 
-    background-color: var(--emerald-green); 
-    color: var(--white); 
 }
 
 /* Mobile Refinements */

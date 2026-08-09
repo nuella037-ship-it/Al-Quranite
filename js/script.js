@@ -208,10 +208,8 @@ function resetDate() {
 }
 
 /* --- Daily Hadith (HadithAPI.com - Random) --- */
+/* --- Daily Hadith (Random using real endpoints) --- */
 async function fetchDailyHadith() {
-  const url = `https://hadithapi.com/api/hadiths/random?apiKey=${API_KEY}`;
-  const data = await fetchData(url);
-  
   const loader = document.getElementById('hadithLoader');
   const content = document.getElementById('hadithContent');
   const arabicEl = document.getElementById('apiArabic');
@@ -222,19 +220,42 @@ async function fetchDailyHadith() {
   if (loader) loader.style.display = 'none';
   if (content) content.style.display = 'block';
 
-  if (data && data.hadith) {
-    const h = data.hadith;
-    if (arabicEl) arabicEl.textContent = h.arabic || h.text;
-    if (englishEl) englishEl.textContent = h.english || h.text;
-    if (sourceEl) sourceEl.textContent = `${h.collection || h.book} - Hadith ${h.number}`;
-    if (dateEl) dateEl.textContent = new Date().toLocaleDateString();
-  } else {
-    // Only show error – no mock content
-    if (arabicEl) arabicEl.textContent = "Unable to load Hadith.";
-    if (englishEl) englishEl.textContent = "Please try again later.";
-    if (sourceEl) sourceEl.textContent = "API error";
-    if (dateEl) dateEl.textContent = new Date().toLocaleDateString();
+  // 1. Fetch all books
+  const booksUrl = `https://hadithapi.com/api/books?apiKey=${API_KEY}`;
+  const booksData = await fetchData(booksUrl);
+
+  if (booksData && Array.isArray(booksData) && booksData.length > 0) {
+    // 2. Pick a random book
+    const randomBook = booksData[Math.floor(Math.random() * booksData.length)];
+    
+    // 3. Fetch chapters for that book
+    const chaptersUrl = `https://hadithapi.com/api/books/${randomBook.slug}/chapters?apiKey=${API_KEY}`;
+    const chaptersData = await fetchData(chaptersUrl);
+
+    if (chaptersData && Array.isArray(chaptersData) && chaptersData.length > 0) {
+      // 4. Pick a random chapter
+      const randomChapter = chaptersData[Math.floor(Math.random() * chaptersData.length)];
+      
+      // 5. Fetch exactly 1 Hadith from that chapter
+      const hadithsUrl = `https://hadithapi.com/api/hadiths?bookId=${randomChapter.book_id}&chapterId=${randomChapter.id}&page=1&size=1&apiKey=${API_KEY}`;
+      const hadithsData = await fetchData(hadithsUrl);
+
+      if (hadithsData && hadithsData.hadiths && hadithsData.hadiths.length > 0) {
+        const h = hadithsData.hadiths[0];
+        if (arabicEl) arabicEl.textContent = h.arabic || h.text;
+        if (englishEl) englishEl.textContent = h.text;
+        if (sourceEl) sourceEl.textContent = `${randomBook.name} - Chapter ${randomChapter.id} - Hadith ${h.id}`;
+        if (dateEl) dateEl.textContent = new Date().toLocaleDateString();
+        return; // Success! Stop here.
+      }
+    }
   }
+
+  // If ANY step fails, show a real error message (no mock content)
+  if (arabicEl) arabicEl.textContent = "Unable to load Hadith.";
+  if (englishEl) englishEl.textContent = "The API is currently unreachable. Please try again later.";
+  if (sourceEl) sourceEl.textContent = "API Error";
+  if (dateEl) dateEl.textContent = new Date().toLocaleDateString();
 }
 
 function copyDailyHadith() {

@@ -227,12 +227,12 @@ async function fetchDailyHadith() {
     const booksData = await fetchData(booksUrl);
     if (booksData && booksData.books && Array.isArray(booksData.books) && booksData.books.length > 0) {
       const randomBook = booksData.books[Math.floor(Math.random() * booksData.books.length)];
-      // 2. Fetch chapters (use book id, not slug)
-      const chaptersUrl = `https://hadithapi.com/api/books/${randomBook.id}/chapters?apiKey=${encodedKey}`;
+      // 2. Fetch chapters (using slug, not numeric ID)
+      const chaptersUrl = `https://hadithapi.com/api/${randomBook.bookSlug}/chapters?apiKey=${encodedKey}`;
       const chaptersData = await fetchData(chaptersUrl);
       if (chaptersData && chaptersData.chapters && Array.isArray(chaptersData.chapters) && chaptersData.chapters.length > 0) {
         const randomChapter = chaptersData.chapters[Math.floor(Math.random() * chaptersData.chapters.length)];
-        // 3. Fetch Hadiths
+        // 3. Fetch Hadiths (using numeric bookId and chapterId)
         const hadithsUrl = `https://hadithapi.com/api/hadiths?bookId=${randomBook.id}&chapterId=${randomChapter.id}&page=1&size=1&apiKey=${encodedKey}`;
         const hadithsData = await fetchData(hadithsUrl);
         if (hadithsData && hadithsData.hadiths && Array.isArray(hadithsData.hadiths) && hadithsData.hadiths.length > 0) {
@@ -483,7 +483,7 @@ function initQuran() {
 }
 
 // ==============================
-// 6. HADITH PAGE (FIXED: use book id instead of slug)
+// 6. HADITH PAGE - FIXED with correct endpoints
 // ==============================
 
 async function fetchCollections() {
@@ -504,7 +504,7 @@ function renderCollectionList(collections) {
   const container = document.getElementById('bookListContainer');
   let html = '';
   collections.forEach(c => {
-    // Store both id and slug for flexibility
+    // Store both id and slug: we'll use slug for chapters, id for hadiths
     html += `<div class="book-item collection-item" data-id="${c.id}" data-slug="${c.bookSlug}">
       <div class="d-flex align-items-center">
         <div class="book-info">
@@ -519,23 +519,25 @@ function renderCollectionList(collections) {
   
   document.querySelectorAll('.collection-item').forEach(el => {
     el.addEventListener('click', function() {
+      const slug = this.getAttribute('data-slug');
       const bookId = this.getAttribute('data-id');
-      console.log('Clicked collection with ID:', bookId); // Debugging
-      fetchBooks(bookId);
+      console.log('Clicked collection with slug:', slug, 'ID:', bookId);
+      fetchBooks(slug, bookId);
     });
   });
 }
 
-async function fetchBooks(bookId) {
-  console.log('Fetching chapters for Book ID:', bookId);
-  const url = `https://hadithapi.com/api/books/${bookId}/chapters?apiKey=${encodeURIComponent(API_KEY)}`;
+async function fetchBooks(slug, bookId) {
+  console.log('Fetching chapters for slug:', slug);
+  const url = `https://hadithapi.com/api/${slug}/chapters?apiKey=${encodeURIComponent(API_KEY)}`;
   const data = await fetchData(url);
   const container = document.getElementById('bookListContainer');
   
   if (data && data.chapters && Array.isArray(data.chapters)) {
-    // We need to find the collection name from the stored list
-    const collectionName = APP.collectionList.find(c => c.id == bookId)?.bookName || bookId;
+    // Store the bookId for later hadith fetching
+    const collectionName = APP.collectionList.find(c => c.bookSlug === slug)?.bookName || slug;
     APP.currentCollection = collectionName;
+    APP.currentBookId = bookId; // store numeric ID
     APP.bookList = data.chapters;
     renderBookList(APP.bookList);
   } else {
@@ -547,7 +549,7 @@ function renderBookList(chapters) {
   const container = document.getElementById('bookListContainer');
   let html = `<div class="mb-2 text-muted small fst-italic ps-3">Collection: ${APP.currentCollection}</div><button class="btn btn-sm btn-outline-secondary ms-2 mb-2" onclick="fetchCollections()"><i class="fas fa-arrow-left"></i> Back</button>`;
   chapters.forEach(ch => {
-    html += `<div class="book-item book-item-child" data-collection="${APP.currentCollection}" data-chapter="${ch.id}" data-bookid="${ch.book_id}">
+    html += `<div class="book-item book-item-child" data-collection="${APP.currentCollection}" data-chapter="${ch.id}" data-bookid="${APP.currentBookId}">
       <div class="d-flex align-items-center">
         <span class="book-number">${ch.id}</span>
         <div class="book-info">

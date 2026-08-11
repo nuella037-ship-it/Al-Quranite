@@ -5,14 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Al-QURANITE | Light of Guidance</title>
     
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: https:;">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha512-t4GWSVZO1eC8BM339Xd7Uphw5s17a86tIZIj8qRxhnKub6WoyhnrxeCIMeAqBPgdZGlCcG2PrZjMc+Wr78+5Xg==" crossorigin="anonymous">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: https:; connect-src 'self' https://api.aladhan.com https://api.alquran.cloud https://cdn.jsdelivr.net https://cdnjs.cloudflare.com;">
+    
+   <link rel="icon" href="/Al-Quranite/images/favicon.ico" type="image/x-icon"> 
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha512-t4GWSVZO1eC8BM339Xd7Uphw5s17a86tIZIj8qRxhnKub6WoyhnrxeCIMeAqBPgdZGlCcG2PrZjMc+Wr78+5Xg==" crossorigin="anonymous"> 
+
     <!-- Bootstrap 5 CDN -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" type="text/css" href="css/styles.css">   
 </head>
 <body>
@@ -32,7 +39,6 @@
                     <li class="nav-item"><a class="nav-link" href="worship.html">Worship</a></li>
                     <li class="nav-item"><a class="nav-link" href="education.html">Education</a></li>
                     <li class="nav-item"><a class="nav-link" href="quran.html">Quran</a></li>
-                    <li class="nav-item"><a class="nav-link" href="hadith.html">Hadith</a></li>
                     <li class="nav-item"><a class="nav-link" href="connect.html">Connect</a></li>
                 </ul>
             </div>
@@ -115,7 +121,7 @@
                                 </div>
 
                                 <div class="mt-2">
-                                    <label class="small text-muted mb-1">Convert Date:</label>
+                                    <label class="small text-muted mb-1" for="gregorian-input">Convert Date:</label>
                                     <div class="input-group input-group-sm">
                                         <input type="date" class="form-control" id="gregorian-input" onchange="convertDate(this.value)">
                                         <button class="btn btn-outline-secondary" type="button" onclick="resetDate()">
@@ -132,39 +138,39 @@
         </div>
     </section>
 
-    <!-- SECTION 3: Daily Wisdom (Hadith & Dua) -->
-    <section class="py-4 bg-white">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="section-title">Daily Wisdom</h2>
-                <div class="divider-icon"><i class="fas fa-quote-right"></i></div>
-            </div>
-            
-            <div class="row g-4 justify-content-center">
-                <!-- Hadith of the Day -->
-                <div class="col-lg-6">
-                    <div class="widget-card" style="border-top-color: var(--magenta);">
-                        <div class="widget-title"><i class="fas fa-book-open" style="color: var(--magenta);"></i> Hadith of the Day</div>
-                        <div class="wisdom-box" style="border-left-color: var(--magenta); background: #fff5fc;">
-                            <p class="wisdom-text" id="daily-hadith">Loading prophetic wisdom...</p>
-                            <div class="wisdom-ref" id="hadith-source"></div>
-                        </div>
+   <!-- SECTION 3: Daily Wisdom (Hadith & Dua) -->
+<section class="py-4 bg-white">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Daily Wisdom</h2>
+            <div class="divider-icon"><i class="fas fa-quote-right"></i></div>
+        </div>
+        
+        <div class="row g-4 justify-content-center">
+            <!-- Ayah of the Day -->
+            <div class="col-lg-6">
+                <div class="widget-card" style="border-top-color: var(--emerald-green);">
+                    <div class="widget-title"><i class="fas fa-quran" style="color: var(--emerald-green);"></i> Ayah of the Day</div>
+                    <div class="wisdom-box" style="border-left-color: var(--emerald-green); background: #f0fdf4;">
+                        <p class="wisdom-text" id="daily-ayah">Loading divine wisdom...</p>
+                        <div class="wisdom-ref" id="ayah-source"></div>
                     </div>
                 </div>
+            </div>
 
-                <!-- Dua of the Day -->
-                <div class="col-lg-6">
-                    <div class="widget-card" style="border-top-color: var(--deep-sky-blue);">
-                        <div class="widget-title"><i class="fas fa-hands-praying" style="color: var(--deep-sky-blue);"></i> Dua of the Day</div>
-                        <div class="wisdom-box" style="border-left-color: var(--deep-sky-blue);">
-                            <p class="wisdom-text" id="daily-dua">Loading supplication...</p>
-                            <div class="wisdom-ref" id="dua-source"></div>
-                        </div>
+            <!-- Dua of the Day -->
+            <div class="col-lg-6">
+                <div class="widget-card" style="border-top-color: var(--deep-sky-blue);">
+                    <div class="widget-title"><i class="fas fa-hands-praying" style="color: var(--deep-sky-blue);"></i> Dua of the Day</div>
+                    <div class="wisdom-box" style="border-left-color: var(--deep-sky-blue);">
+                        <p class="wisdom-text" id="daily-dua">Loading supplication...</p>
+                        <div class="wisdom-ref" id="dua-source"></div>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
     <!-- SECTION 4: Foundations of Faith -->
     <section id="foundations" class="py-4 bg-white">
@@ -183,7 +189,7 @@
                         <div class="pillar-icon"><i class="fas fa-heart"></i></div>
                         <h3 class="serif-heading mb-2">Tazkiyah</h3>
                         <p class="text-muted small">Purification of the Soul. Cleansing the heart from spiritual diseases to attain tranquility and closeness to Allah.</p>
-                        <a href="education.html?article=tazkiyah" class="text-emerald text-decoration-none fw-bold mt-2 d-inline-block small">Explore Spirituality <i class="fas fa-arrow-right ms-1 small"></i></a>
+                        <a href="education.html?article=articles/tazkiyah" class="text-emerald text-decoration-none fw-bold mt-2 d-inline-block small">Explore Spirituality <i class="fas fa-arrow-right ms-1 small"></i></a>
                     </div>
                 </div>
                 <div class="col-md-4">
@@ -191,7 +197,7 @@
                         <div class="pillar-icon"><i class="fas fa-book-open"></i></div>
                         <h3 class="serif-heading mb-2">Ilm</h3>
                         <p class="text-muted small">Sacred Knowledge. Seeking understanding of Aqidah, Fiqh, and Seerah from authentic sources.</p>
-                        <a href="education.html?article=ilm" class="text-emerald text-decoration-none fw-bold mt-2 d-inline-block small">Start Learning <i class="fas fa-arrow-right ms-1 small"></i></a>
+                        <a href="education.html?article=articles/ilm" class="text-emerald text-decoration-none fw-bold mt-2 d-inline-block small">Start Learning <i class="fas fa-arrow-right ms-1 small"></i></a>
                     </div>
                 </div>
                 <div class="col-md-4">
@@ -199,7 +205,7 @@
                         <div class="pillar-icon"><i class="fas fa-praying-hands"></i></div>
                         <h3 class="serif-heading mb-2">Ibadah</h3>
                         <p class="text-muted small">Devotional Worship. Transforming daily rituals into profound acts of love and submission.</p>
-                        <a href="education.html?article=ibadah" class="text-emerald text-decoration-none fw-bold mt-2 d-inline-block small">Guide to Worship <i class="fas fa-arrow-right ms-1 small"></i></a>
+                        <a href="education.html?article=articles/ibadah" class="text-emerald text-decoration-none fw-bold mt-2 d-inline-block small">Guide to Worship <i class="fas fa-arrow-right ms-1 small"></i></a>
                     </div>
                 </div>
                 <div class="col-md-4">
@@ -207,7 +213,7 @@
                         <div class="pillar-icon"><i class="fas fa-users"></i></div>
                         <h3 class="serif-heading mb-2">Muamalat</h3>
                         <p class="text-muted small">Social Transactions. Ethics in business, family life, and community interactions based on justice and mercy.</p>
-                        <a href="education.html?article=muamalat" class="text-emerald text-decoration-none fw-bold mt-2 d-inline-block small">Learn Ethics <i class="fas fa-arrow-right ms-1 small"></i></a>
+                        <a href="education.html?article=articles/muamalat" class="text-emerald text-decoration-none fw-bold mt-2 d-inline-block small">Learn Ethics <i class="fas fa-arrow-right ms-1 small"></i></a>
                     </div>
                 </div>
                 <div class="col-md-4">
@@ -215,7 +221,7 @@
                         <div class="pillar-icon"><i class="fas fa-history"></i></div>
                         <h3 class="serif-heading mb-2">Seerah</h3>
                         <p class="text-muted small">Prophetic Biography. Studying the life of Prophet Muhammad ﷺ as the perfect practical example.</p>
-                        <a href="education.html?article=seerah" class="text-emerald text-decoration-none fw-bold mt-2 d-inline-block small">Read History <i class="fas fa-arrow-right ms-1 small"></i></a>
+                        <a href="education.html?article=articles/seerah" class="text-emerald text-decoration-none fw-bold mt-2 d-inline-block small">Read History <i class="fas fa-arrow-right ms-1 small"></i></a>
                     </div>
                 </div>
                 <div class="col-md-4">
@@ -223,7 +229,7 @@
                         <div class="pillar-icon"><i class="fas fa-balance-scale"></i></div>
                         <h3 class="serif-heading mb-2">Fiqh</h3>
                         <p class="text-muted small">Islamic Jurisprudence. Understanding the legal rulings that govern a Muslim's daily life and worship.</p>
-                        <a href="education.html?article=fiqh" class="text-emerald text-decoration-none fw-bold mt-2 d-inline-block small">Study Law <i class="fas fa-arrow-right ms-1 small"></i></a>
+                        <a href="education.html?article=articles/fiqh" class="text-emerald text-decoration-none fw-bold mt-2 d-inline-block small">Study Law <i class="fas fa-arrow-right ms-1 small"></i></a>
                     </div>
                 </div>
             </div>
@@ -253,9 +259,9 @@
                     <div class="topic-item">
                         <div class="topic-bg" style="background-image: url('images/hadith.jpg');"></div>
                         <div class="topic-overlay">
-                            <h3 class="topic-title">Hadith Library</h3>
+                            <h3 class="topic-title">Hadiths</h3>
                             <p class="small opacity-75">Authentic collections of Prophetic traditions.</p>
-                            <a href="hadith.html" class="btn btn-sm btn-outline-light rounded-2 mt-2">Browse Books</a>
+                            <a href="education.html?article=articles/hadith-major" class="btn btn-sm btn-outline-light rounded-2 mt-2">Read More</a>
                         </div>
                     </div>
                 </div>
@@ -275,7 +281,7 @@
                         <div class="topic-overlay">
                             <h3 class="topic-title">Names of Allah</h3>
                             <p class="small opacity-75">Reflect on the 99 Beautiful Names.</p>
-                            <a href="education.html?article=99-names" class="btn btn-sm btn-outline-light rounded-2 mt-2">View Names</a>
+                            <a href="education.html?article=articles/99-names" class="btn btn-sm btn-outline-light rounded-2 mt-2">View Names</a>
                         </div>
                     </div>
                 </div>
@@ -295,7 +301,7 @@
                         <div class="topic-overlay">
                             <h3 class="topic-title">Family Life</h3>
                             <p class="small opacity-75">Guidance for marriage and parenting.</p>
-                            <a href="education.html?article=marriage" class="btn btn-sm btn-outline-light rounded-2 mt-2">Read Guide</a>
+                            <a href="education.html?article=articles/marriage" class="btn btn-sm btn-outline-light rounded-2 mt-2">Read Guide</a>
                         </div>
                     </div>
                 </div>
@@ -319,16 +325,16 @@
                         <p class="text-muted small mb-3">Enter your eligible assets to calculate 2.5% Zakat.</p>
                         
                         <div class="zakat-input-group">
-                            <label>Cash on Hand & Bank Accounts ($)</label>
-                            <input type="number" class="zakat-input" id="cash-assets" placeholder="0.00">
+                        <label for="cash-assets">Cash on Hand & Bank Accounts ($)</label>
+                        <input type="number" class="zakat-input" id="cash-assets" placeholder="0.00">
                         </div>
                         <div class="zakat-input-group">
-                            <label>Gold & Silver Value ($)</label>
-                            <input type="number" class="zakat-input" id="gold-assets" placeholder="0.00">
+                        <label for="gold-assets">Gold & Silver Value ($)</label>
+                        <input type="number" class="zakat-input" id="gold-assets" placeholder="0.00">
                         </div>
                         <div class="zakat-input-group">
-                            <label>Business Goods/Stock ($)</label>
-                            <input type="number" class="zakat-input" id="business-assets" placeholder="0.00">
+                        <label for="business-assets">Business Goods/Stock ($)</label>
+                        <input type="number" class="zakat-input" id="business-assets" placeholder="0.00">
                         </div>
                         
                         <button class="btn w-100 mt-2" onclick="calculateZakat()" style="background: var(--emerald-green); color: white; border: none; padding: 10px 35px; border-radius: 50px; font-weight: bold;">Calculate Zakat</button>
@@ -339,29 +345,7 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- Donation Widget -->
-                <div class="col-lg-5">
-                    <div class="widget-card" style="border-top-color: var(--magenta);">
-                        <div class="widget-title"><i class="fas fa-donate" style="color: var(--magenta);"></i> Support Our Mission</div>
-                        <p class="text-muted small">Your donations help us maintain the servers, provide free educational content, and support local community projects.</p>
-                        
-                        <div class="d-grid gap-2 mt-3">
-                            <button class="btn btn-outline-primary py-2 rounded-3 d-flex justify-content-between align-items-center">
-                                <span><i class="fas fa-book me-2"></i> Sponsor a Student</span>
-                                <i class="fas fa-chevron-right small"></i>
-                            </button>
-                            <button class="btn btn-outline-success py-2 rounded-3 d-flex justify-content-between align-items-center">
-                                <span><i class="fas fa-mosque me-2"></i> Mosque Maintenance</span>
-                                <i class="fas fa-chevron-right small"></i>
-                            </button>
-                            <button class="btn btn-outline-info py-2 rounded-3 d-flex justify-content-between align-items-center">
-                                <span><i class="fas fa-globe me-2"></i> General Fund</span>
-                                <i class="fas fa-chevron-right small"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
+               
             </div>
         </div>
     </section>
@@ -378,7 +362,7 @@
                     <h5 class="text-white serif-heading">Quick Links</h5>
                     <ul class="list-unstyled">
                         <li><a href="index.html" class="text-decoration-none text-white">Home</a></li>
-                         <li><a href="hadith.html" class="text-decoration-none text-white">Hadith</a></li>
+                        <li><a href="education.html" class="text-decoration-none text-white">Education</a></li>
                         <li><a href="quran.html" class="text-decoration-none text-white">Qur'an</a></li>
                     </ul>
                 </div>

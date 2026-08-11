@@ -93,10 +93,6 @@ function updateClock() {
   const el = document.getElementById('current-time-display');
   if (el) el.textContent = timeStr;
 }
-<<<<<<< HEAD
-=======
-setInterval(updateClock, 1000);
->>>>>>> d53f6621d11102c86b65dcdd82d2525d9f7e5b01
 
 /* --- Prayer Times & Qibla --- */
 async function fetchPrayerTimes(lat, lng) {
@@ -493,7 +489,6 @@ document.addEventListener('DOMContentLoaded', function() {
   if (APP.currentPage === 'quran') initQuran();
 });
 
-<<<<<<< HEAD
   // ==============================
   // 8. CONTACT FORM HANDLER
   // ==============================
@@ -522,6 +517,3 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
 setInterval(updateClock, 1000);
-=======
-setInterval(updateClock, 1000);
->>>>>>> d53f6621d11102c86b65dcdd82d2525d9f7e5b01

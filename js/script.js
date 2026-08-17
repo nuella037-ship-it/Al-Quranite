@@ -645,9 +645,10 @@ async function renderSidebar() {
     const loader = document.getElementById('sidebarLoader');
     const searchInput = document.getElementById('bookSearch');
 
+    // 1. Fetch the articles including the new columns
     const { data: articles, error } = await supabase
         .from('articles')
-        .select('filename, title')
+        .select('filename, title, arabic_title, category')
         .order('id', { ascending: false });
 
     if (loader) loader.style.display = 'none';
@@ -658,23 +659,29 @@ async function renderSidebar() {
     }
 
     let html = '';
-    articles.forEach(article => {
-        const arabicName = article.title.replace(/[^a-zA-Z0-9 ]/g, '').substring(0, 5) || 'ع';
+    
+    // 2. Loop with index to create dynamic numbers
+    articles.forEach((article, index) => {
+        const number = index + 1; // <-- dynamically numbered 1, 2, 3...
+        const arabicName = article.arabic_title || ''; // <-- actual Arabic text
+        const category = article.category || 'General'; // <-- category instead of filename
+
         html += `
             <div class="book-item dynamic-link" data-src="${article.filename}">
                 <div class="d-flex align-items-center">
-                    <span class="book-number">-</span>
+                    <span class="book-number">${number}</span>
                     <div class="book-info">
                         <h6>${article.title || article.filename}</h6>
-                        <small>${article.filename}</small>
+                        <small>${category}</small> <!-- Changed from filename to category -->
                     </div>
                 </div>
-                <div class="book-name-ar">${arabicName}</div>
+                <div class="book-name-ar">${arabicName}</div> <!-- Changed to actual Arabic title -->
             </div>
         `;
     });
     container.innerHTML = html;
 
+    // Re-attach click listeners
     container.querySelectorAll('.dynamic-link').forEach(item => {
         item.addEventListener('click', function(e) {
             e.preventDefault();
@@ -683,6 +690,7 @@ async function renderSidebar() {
         });
     });
 
+    // Re-attach search filter
     if (searchInput) {
         searchInput.addEventListener('input', function() {
             const query = this.value.toLowerCase();
@@ -694,6 +702,7 @@ async function renderSidebar() {
         });
     }
 
+    // Highlight the active item
     const activeFile = localStorage.getItem('activeArticleFile');
     if (activeFile) {
         const activeLink = container.querySelector(`.book-item[data-src="${activeFile}"]`);

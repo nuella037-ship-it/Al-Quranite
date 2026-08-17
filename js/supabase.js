@@ -1,5 +1,5 @@
 // js/supabase.js
-import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
 // REPLACE THESE WITH YOUR ACTUAL SUPABASE PROJECT CREDENTIALS
 const supabaseUrl = 'https://txdmbluqqgjnbzawqogu.supabase.co';

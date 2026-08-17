@@ -1,3 +1,6 @@
+/* ==============================
+   1. ROOT VARIABLES
+   ============================== */
 :root {
     /* Palette Definition */
     --deep-sky-blue: #00BFFF;
@@ -20,23 +23,27 @@
     --qibla-deg: 0deg;
 }
 
+/* ==============================
+   2. BASE & TYPOGRAPHY
+   ============================== */
 body {
     font-family: var(--font-body);
     background-color: var(--bg-color);
     color: var(--text-main);
     overflow-x: hidden;
-    padding-top: 60px; /* Adjusted for smaller navbar */
+    padding-top: 60px;
 }
 
 h1, h2, h3, h4, h5, .arabic-text {
     font-family: var(--font-arabic);
 }
-
 .serif-heading {
     font-family: var(--font-heading);
 }
 
-/* --- Navbar (Updated: Compact) --- */
+/* ==============================
+   3. NAVBAR
+   ============================== */
 .navbar {
     background-color: rgba(0, 191, 255, 0.95);
     backdrop-filter: blur(10px);
@@ -45,7 +52,6 @@ h1, h2, h3, h4, h5, .arabic-text {
     transition: all 0.3s ease;
     z-index: 1030;
 }
-
 .navbar-brand {
     color: var(--white) !important;
     font-size: 1.5rem;
@@ -53,8 +59,7 @@ h1, h2, h3, h4, h5, .arabic-text {
     letter-spacing: 1px;
     text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
 }
-
-.nav-link {
+.navbar .nav-link {
     color: rgba(255,255,255,0.9) !important;
     font-family: var(--font-heading);
     font-size: 0.95rem;
@@ -62,19 +67,19 @@ h1, h2, h3, h4, h5, .arabic-text {
     transition: color 0.3s;
     padding: 0.4rem 0.8rem;
 }
-
-.nav-link:hover{
+.nav-link:hover {
     color: var(--emerald-green) !important;
     font-weight: 600;
 }
-
 .nav-link.active {
     color: var(--white) !important;
     background-color: var(--emerald-green);
     border-radius: 15px;
 }
 
-/* --- Hero Section --- */
+/* ==============================
+   4. HERO SECTIONS
+   ============================== */
 .hero-section, .quran-hero, .hadith-hero {
     background: var(--primary-gradient);
     color: white;
@@ -90,7 +95,9 @@ h1, h2, h3, h4, h5, .arabic-text {
     align-items: center;
     justify-content: center;
 }
-
+.hero-section .container {
+    z-index: 2;
+}
 .hero-section::before, .quran-hero::before, .hadith-hero::before {
     content: "";
     position: absolute;
@@ -99,41 +106,42 @@ h1, h2, h3, h4, h5, .arabic-text {
     background-size: 20px 20px;
     opacity: 0.15;
 }
-
-.hero-title, .bismillah-header { 
-    font-family: var(--font-heading); 
+.hero-title, .bismillah-header {
+    font-family: var(--font-heading);
     font-size: 3rem;
-    margin-bottom: 5px; 
+    margin-bottom: 5px;
     text-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
-.hero-subtitle { 
-    font-size: 1.2rem; 
-    font-weight: 300; 
-    color: var(--white); 
-    font-family: var(--font-arabic); 
+.hero-subtitle {
+    font-size: 1.2rem;
+    font-weight: 300;
+    color: var(--white);
+    font-family: var(--font-arabic);
     margin-bottom: 0;
 }
 
-/* --- Common Section Styles --- */
+/* ==============================
+   5. COMMON SECTION STYLES
+   ============================== */
 .section-header {
     text-align: center;
     margin-bottom: 40px;
 }
-
 .section-title {
     font-family: var(--font-heading);
     font-size: 2.5rem;
     color: var(--text-main);
     margin-bottom: 10px;
 }
-
 .divider-icon {
     color: var(--magenta);
     font-size: 1.2rem;
     margin: 5px 0;
 }
 
-/* --- Widget Cards General --- */
+/* ==============================
+   6. WIDGET CARDS
+   ============================== */
 .widget-card {
     background: white;
     border-radius: 15px;
@@ -143,11 +151,9 @@ h1, h2, h3, h4, h5, .arabic-text {
     border-top: 4px solid var(--emerald-green);
     transition: transform 0.3s;
 }
-
 .widget-card:hover {
     transform: translateY(-5px);
 }
-
 .widget-title {
     font-family: var(--font-heading);
     color: var(--text-main);
@@ -157,12 +163,14 @@ h1, h2, h3, h4, h5, .arabic-text {
     align-items: center;
     gap: 10px;
 }
-
 .widget-title i {
     color: var(--deep-sky-blue);
 }
 
-/* --- Prayer Times Widget (Enhanced) --- */
+/* ==============================
+   7. PRAYER TIMES
+   ============================== */
+   
 .prayer-row {
     display: flex;
     justify-content: space-between;
@@ -171,16 +179,13 @@ h1, h2, h3, h4, h5, .arabic-text {
     border-radius: 8px;
     transition: background 0.3s;
 }
-
 .prayer-row:last-child {
     border-bottom: none;
 }
-
 .prayer-name {
     font-weight: 700;
     color: var(--text-muted);
 }
-
 .prayer-time {
     font-family: var(--font-arabic);
     font-size: 1.1rem;
@@ -188,7 +193,58 @@ h1, h2, h3, h4, h5, .arabic-text {
     font-weight: bold;
 }
 
-/* --- Qibla & Date Widgets --- */
+/* Prayer Time Status Colors */
+.prayer-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    border-radius: 8px;
+    transition: background 0.3s;
+}
+.prayer-row:last-child {
+    border-bottom: none;
+}
+
+/* Medium Green: Currently active prayer window */
+.prayer-active {
+    background-color: #10b981 !important; /* Emerald green */
+    border-radius: 8px;
+    padding: 10px 12px;
+}
+.prayer-active .prayer-name,
+.prayer-active .prayer-time {
+    color: #ffffff !important; /* White text for high contrast */
+}
+
+/* Light Green: Upcoming next prayer (able to pray soon) */
+.prayer-upcoming {
+    background-color: #d1fae5 !important; /* Light green */
+    border-radius: 8px;
+    padding: 10px 12px;
+}
+
+/* Light Magenta: Prayer time has passed and we are in the next zone */
+.prayer-past {
+    background-color: #fce7f3 !important; /* Light magenta */
+    border-radius: 8px;
+    padding: 10px 12px;
+}
+
+.prayer-name {
+    font-weight: 700;
+    color: var(--text-muted);
+}
+.prayer-time {
+    font-family: var(--font-arabic);
+    font-size: 1.1rem;
+    color: var(--deep-sky-blue);
+    font-weight: bold;
+}
+
+/* ==============================
+   8. QIBLA & DATE WIDGETS
+   ============================== */
 .info-stat {
     text-align: center;
     padding: 15px;
@@ -196,14 +252,12 @@ h1, h2, h3, h4, h5, .arabic-text {
     border-radius: 10px;
     margin-bottom: 10px;
 }
-
 .stat-value {
     font-size: 1.3rem;
     font-weight: 700;
     color: var(--deep-sky-blue);
     font-family: var(--font-arabic);
 }
-
 .stat-label {
     font-size: 0.8rem;
     color: var(--text-muted);
@@ -211,7 +265,7 @@ h1, h2, h3, h4, h5, .arabic-text {
     letter-spacing: 1px;
 }
 
-/* Visual Compass - FIXED */
+/* Visual Compass */
 .compass-container {
     width: 120px;
     height: 120px;
@@ -222,7 +276,6 @@ h1, h2, h3, h4, h5, .arabic-text {
     margin: 0 auto 10px;
     box-shadow: inset 0 0 20px rgba(0,0,0,0.05);
 }
-
 .compass-arrow {
     position: absolute;
     top: 50%;
@@ -236,13 +289,9 @@ h1, h2, h3, h4, h5, .arabic-text {
     transition: transform 1s cubic-bezier(0.4, 0.0, 0.2, 1);
     z-index: 1;
 }
-
-/* Hide arrow when location is unavailable */
 .compass-arrow.hidden {
     display: none;
 }
-
-/* Added a tail to the compass for balance */
 .compass-arrow::after {
     content: '';
     position: absolute;
@@ -253,7 +302,6 @@ h1, h2, h3, h4, h5, .arabic-text {
     background: var(--text-muted);
     opacity: 0.3;
 }
-
 .compass-center {
     position: absolute;
     top: 50%;
@@ -267,7 +315,9 @@ h1, h2, h3, h4, h5, .arabic-text {
     z-index: 2;
 }
 
-/* --- Daily Hadith & Dua --- */
+/* ==============================
+   9. DAILY HADITH & DUA
+   ============================== */
 .wisdom-box {
     background: linear-gradient(135deg, #fff, #f0f9ff);
     border-left: 4px solid var(--magenta);
@@ -276,7 +326,6 @@ h1, h2, h3, h4, h5, .arabic-text {
     border-radius: 0 10px 10px 0;
     box-shadow: 0 5px 15px rgba(0,0,0,0.03);
 }
-
 .wisdom-text {
     font-family: var(--font-heading);
     font-size: 1.1rem;
@@ -284,7 +333,6 @@ h1, h2, h3, h4, h5, .arabic-text {
     color: var(--text-main);
     margin-bottom: 8px;
 }
-
 .wisdom-ref {
     font-size: 0.85rem;
     color: var(--emerald-green);
@@ -292,7 +340,75 @@ h1, h2, h3, h4, h5, .arabic-text {
     text-align: right;
 }
 
-/* --- Foundations of Faith (Cards) --- */
+/* Column backgrounds for Daily Wisdom widget */
+.wisdom-column {
+    padding: 1.5rem;
+    border-radius: 12px;
+    height: 100%;
+}
+
+/* Light Green for Hadith (Left) */
+.hadith-bg {
+    background-color: #f0fdf4; 
+    border: 1px solid #bbf7d0;
+}
+
+/* Light Blue for Ayah (Right) */
+.ayah-bg {
+    background-color: #f0f9ff; 
+    border: 1px solid #bae6fd;
+}
+
+.dh-footer {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 15px 30px;
+    background: #f8fafc;
+    border-top: 1px solid #f1f5f9;
+}
+
+.dh-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    width: 100%;   
+}
+
+/* Badge styles for Daily Wisdom widget */
+.badge-ayah {
+    display: inline-block;
+    background: linear-gradient(135deg, #e0f2fe, #dcfce7);
+    color: #047857;
+    padding: 6px 14px;
+    border-radius: 30px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    line-height: 1.4;
+}
+
+.badge-hadith {
+    display: inline-block;
+    background: linear-gradient(135deg, #fef3c7, #fde68a);
+    color: #92400e;
+    padding: 6px 14px;
+    border-radius: 30px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    line-height: 1.4;
+}
+
+.hadith-text-size {
+    font-size: 1.1rem;
+}
+
+/* ==============================
+   10. FOUNDATIONS OF FAITH (PILLAR CARDS)
+   ============================== */
 .pillar-card {
     background: white;
     padding: 30px 20px;
@@ -304,25 +420,24 @@ h1, h2, h3, h4, h5, .arabic-text {
     border-radius: 12px;
     border-bottom: 4px solid transparent;
 }
-
 .pillar-card:hover {
     transform: translateY(-10px);
     border-bottom: 4px solid var(--emerald-green);
     border-color: var(--emerald-green);
 }
-
 .pillar-icon {
     font-size: 2.5rem;
     color: var(--emerald-green);
     margin-bottom: 20px;
 }
-
 .pillar-card h3 {
     color: var(--deep-sky-blue);
     font-size: 1.5rem;
 }
 
-/* --- Explore the Deen (Cards) --- */
+/* ==============================
+   11. EXPLORE THE DEEN (TOPIC ITEMS)
+   ============================== */
 .topic-item {
     position: relative;
     overflow: hidden;
@@ -330,7 +445,6 @@ h1, h2, h3, h4, h5, .arabic-text {
     margin-bottom: 20px;
     box-shadow: 0 5px 15px rgba(0,0,0,0.1);
 }
-
 .topic-bg {
     height: 200px;
     background-size: cover;
@@ -338,11 +452,9 @@ h1, h2, h3, h4, h5, .arabic-text {
     transition: transform 0.5s;
     background-color: var(--deep-sky-blue);
 }
-
 .topic-item:hover .topic-bg {
     transform: scale(1.1);
 }
-
 .topic-overlay {
     position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
@@ -353,25 +465,24 @@ h1, h2, h3, h4, h5, .arabic-text {
     padding: 20px;
     color: white;
 }
-
 .topic-title {
     font-family: var(--font-heading);
     font-size: 1.4rem;
     margin-bottom: 5px;
 }
 
-/* --- Zakat Calculator --- */
+/* ==============================
+   12. ZAKAT CALCULATOR
+   ============================== */
 .zakat-input-group {
     margin-bottom: 12px;
 }
-
 .zakat-input-group label {
     font-size: 0.85rem;
     color: var(--text-muted);
     margin-bottom: 3px;
     display: block;
 }
-
 .zakat-input {
     width: 100%;
     padding: 8px;
@@ -379,7 +490,6 @@ h1, h2, h3, h4, h5, .arabic-text {
     border-radius: 8px;
     font-family: var(--font-body);
 }
-
 .zakat-result {
     background: var(--emerald-green);
     color: white;
@@ -392,23 +502,32 @@ h1, h2, h3, h4, h5, .arabic-text {
     overflow: hidden;
     transition: all 0.5s ease;
 }
-
 .zakat-result.show {
     max-height: 100px;
     opacity: 1;
     padding: 12px;
 }
-
 .zakat-amount {
     font-size: 1.5rem;
     font-weight: bold;
     font-family: var(--font-arabic);
 }
 
-/* --- Intro Section --- */
-.intro-section { padding: 60px 0; text-align: center; background-color: var(--white); }
-.lead-text { font-size: 1.1rem; line-height: 1.8; color: var(--text-muted); max-width: 800px; margin: 0 auto; }
-
+/* ==============================
+   13. INTRO SECTION
+   ============================== */
+.intro-section {
+    padding: 60px 0;
+    text-align: center;
+    background-color: var(--white);
+}
+.lead-text {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: var(--text-muted);
+    max-width: 800px;
+    margin: 0 auto;
+}
 .intro-card {
     background: var(--bg-color);
     padding: 30px;
@@ -417,16 +536,22 @@ h1, h2, h3, h4, h5, .arabic-text {
     height: 100%;
     border: 1px solid var(--border);
 }
-.intro-card:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
-
+.intro-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+}
 .intro-card h4 {
     margin-bottom: 15px;
     color: var(--deep-sky-blue);
 }
 
-/* --- Diseases & Cures Section (GRID DESIGN) --- */
-.dc-section { padding: 60px 0; background-color: #f8fafc; }
-
+/* ==============================
+   14. DISEASES & CURES
+   ============================== */
+.dc-section {
+    padding: 60px 0;
+    background-color: #f8fafc;
+}
 .dc-modern-card {
     background: white;
     border-radius: 20px;
@@ -439,26 +564,22 @@ h1, h2, h3, h4, h5, .arabic-text {
     display: flex;
     flex-direction: column;
 }
-
 .dc-modern-card:hover {
     box-shadow: 0 15px 40px rgba(0, 191, 255, 0.1);
     border-color: var(--deep-sky-blue);
     transform: translateY(-5px);
 }
-
 .dc-modern-card::before {
     content: '';
     position: absolute;
     top: 0; left: 0; width: 5px; height: 100%;
     background: var(--primary-gradient);
 }
-
 .dc-header {
     display: flex;
     align-items: center;
     margin-bottom: 20px;
 }
-
 .dc-icon-box {
     width: 60px;
     height: 60px;
@@ -472,7 +593,6 @@ h1, h2, h3, h4, h5, .arabic-text {
     margin-right: 20px;
     flex-shrink: 0;
 }
-
 .dc-title {
     font-family: var(--font-heading);
     font-size: 1.6rem;
@@ -480,14 +600,12 @@ h1, h2, h3, h4, h5, .arabic-text {
     margin-bottom: 5px;
     line-height: 1.2;
 }
-
 .dc-text {
     color: var(--text-muted);
     line-height: 1.6;
     margin-bottom: 15px;
     font-size: 0.95rem;
 }
-
 .scripture-box {
     background: #f8fafc;
     border-left: 3px solid var(--deep-sky-blue);
@@ -495,7 +613,6 @@ h1, h2, h3, h4, h5, .arabic-text {
     margin-bottom: 15px;
     border-radius: 0 8px 8px 0;
 }
-
 .quran-text {
     font-family: var(--font-arabic);
     font-size: 1.1rem;
@@ -504,13 +621,11 @@ h1, h2, h3, h4, h5, .arabic-text {
     direction: rtl;
     text-align: right;
 }
-
 .hadith-text {
     font-style: italic;
     font-size: 0.9rem;
     color: var(--text-muted);
 }
-
 .scripture-ref {
     font-size: 0.75rem;
     font-weight: bold;
@@ -518,7 +633,6 @@ h1, h2, h3, h4, h5, .arabic-text {
     display: block;
     margin-top: 5px;
 }
-
 .cure-box {
     background: #fdf2f8;
     border: 1px solid #fbcfe8;
@@ -526,7 +640,6 @@ h1, h2, h3, h4, h5, .arabic-text {
     padding: 15px;
     margin-top: auto;
 }
-
 .cure-label {
     color: var(--magenta);
     font-weight: bold;
@@ -537,7 +650,9 @@ h1, h2, h3, h4, h5, .arabic-text {
     display: block;
 }
 
-/* --- Polishing Section --- */
+/* ==============================
+   15. POLISHING & BEYOND SECTIONS
+   ============================== */
 .polish-section, .beyond-section {
     background: var(--primary-gradient);
     color: white;
@@ -562,7 +677,10 @@ h1, h2, h3, h4, h5, .arabic-text {
     border-radius: 16px;
     backdrop-filter: blur(5px);
 }
-.step-item:hover, .beyond-card:hover { transform: translateY(-5px); background: rgba(255,255,255,0.2); }
+.step-item:hover, .beyond-card:hover {
+    transform: translateY(-5px);
+    background: rgba(255,255,255,0.2);
+}
 .step-num {
     font-family: var(--font-heading);
     font-size: 3rem;
@@ -571,11 +689,26 @@ h1, h2, h3, h4, h5, .arabic-text {
     margin-bottom: 15px;
     line-height: 1;
 }
-.step-title, .beyond-title { font-family: var(--font-heading); font-size: 1.5rem; color: var(--white); margin-bottom: 10px; }
-.beyond-icon { color: var(--white); font-size: 2.5rem; margin-bottom: 20px; }
+.step-title, .beyond-title {
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    color: var(--white);
+    margin-bottom: 10px;
+}
+.beyond-icon {
+    color: var(--white);
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+}
 
-/* --- Wisdom Section --- */
-.wisdom-section { padding: 60px 0; background-color: var(--bg-color); text-align: center; }
+/* ==============================
+   16. WISDOM SECTION (Carousel)
+   ============================== */
+.wisdom-section {
+    padding: 60px 0;
+    background-color: var(--bg-color);
+    text-align: center;
+}
 .quote-box {
     max-width: 800px;
     margin: 0 auto;
@@ -586,16 +719,33 @@ h1, h2, h3, h4, h5, .arabic-text {
     border-radius: 20px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.05);
 }
-.quote-icon { font-size: 2rem; color: var(--magenta); margin-bottom: 20px; }
-.quote-text { font-family: var(--font-heading); font-size: 1.8rem; font-style: italic; color: var(--deep-sky-blue); line-height: 1.6; }
-.quote-author { margin-top: 30px; display: block; font-weight: bold; color: var(--emerald-green); letter-spacing: 1px; }
+.quote-icon {
+    font-size: 2rem;
+    color: var(--magenta);
+    margin-bottom: 20px;
+}
+.quote-text {
+    font-family: var(--font-heading);
+    font-size: 1.8rem;
+    font-style: italic;
+    color: var(--deep-sky-blue);
+    line-height: 1.6;
+}
+.quote-author {
+    margin-top: 30px;
+    display: block;
+    font-weight: bold;
+    color: var(--emerald-green);
+    letter-spacing: 1px;
+}
 
-/* --- Expanded Root Section Styles --- */
+/* ==============================
+   17. ROOT EXPANSION SECTION
+   ============================== */
 .root-expansion-section {
     padding: 60px 0;
     background-color: #f8fafc;
 }
-
 .root-detail-card {
     background: white;
     border-radius: 20px;
@@ -605,13 +755,11 @@ h1, h2, h3, h4, h5, .arabic-text {
     height: 100%;
     transition: all 0.3s ease;
 }
-
 .root-detail-card:hover {
     box-shadow: 0 15px 40px rgba(0, 191, 255, 0.1);
     border-color: var(--emerald-green);
     transform: translateY(-5px);
 }
-
 .root-icon-lg {
     font-size: 3rem;
     margin-bottom: 25px;
@@ -619,13 +767,11 @@ h1, h2, h3, h4, h5, .arabic-text {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
-
 .root-list {
     list-style: none;
     padding: 0;
     margin-top: 20px;
 }
-
 .root-list li {
     margin-bottom: 15px;
     padding-left: 30px;
@@ -633,7 +779,6 @@ h1, h2, h3, h4, h5, .arabic-text {
     color: var(--text-muted);
     line-height: 1.6;
 }
-
 .root-list li::before {
     content: '\f00c';
     font-family: 'Font Awesome 6 Free';
@@ -644,9 +789,13 @@ h1, h2, h3, h4, h5, .arabic-text {
     color: var(--emerald-green);
 }
 
-/* --- Six Articles Section (Modern Grid) --- */
-.articles-section { padding: 60px 0; background-color: #f8fafc; }
-
+/* ==============================
+   18. SIX ARTICLES OF FAITH
+   ============================== */
+.articles-section {
+    padding: 60px 0;
+    background-color: #f8fafc;
+}
 .article-modern-card {
     background: white;
     border-radius: 20px;
@@ -659,13 +808,11 @@ h1, h2, h3, h4, h5, .arabic-text {
     height: 100%;
     box-shadow: 0 4px 6px rgba(0,0,0,0.02);
 }
-
 .article-modern-card:hover {
     transform: translateY(-10px);
     box-shadow: 0 20px 40px rgba(0, 156, 74, 0.15);
     border-color: var(--emerald-green);
 }
-
 .article-modern-card::before {
     content: '';
     position: absolute;
@@ -675,11 +822,9 @@ h1, h2, h3, h4, h5, .arabic-text {
     transform: scaleX(0);
     transition: transform 0.4s ease;
 }
-
 .article-modern-card:hover::before {
     transform: scaleX(1);
 }
-
 .article-icon-box {
     width: 80px;
     height: 80px;
@@ -694,14 +839,12 @@ h1, h2, h3, h4, h5, .arabic-text {
     transition: all 0.3s;
     border: 1px solid rgba(0, 156, 74, 0.1);
 }
-
 .article-modern-card:hover .article-icon-box {
     background: var(--emerald-green);
     color: white;
     transform: rotateY(180deg);
     border-color: var(--emerald-green);
 }
-
 .article-title {
     font-family: var(--font-heading);
     font-size: 1.5rem;
@@ -709,19 +852,19 @@ h1, h2, h3, h4, h5, .arabic-text {
     color: var(--text-main);
     margin-bottom: 15px;
 }
-
 .article-desc {
     color: var(--text-muted);
     font-size: 0.95rem;
     line-height: 1.6;
 }
 
-/* --- Tawhid Section (DETAILED UPDATE) --- */
+/* ==============================
+   19. TAWHID DETAILED SECTION
+   ============================== */
 .tawhid-detailed-section {
     padding: 60px 0;
     background-color: var(--white);
 }
-
 .tawhid-detail-card {
     background: #f8fafc;
     border-radius: 20px;
@@ -734,37 +877,30 @@ h1, h2, h3, h4, h5, .arabic-text {
     opacity: 0;
     animation: fadeInUp 0.8s forwards;
 }
-
-/* Staggered Animation Delays */
 .tawhid-detail-card:nth-child(1) { animation-delay: 0.1s; }
 .tawhid-detail-card:nth-child(2) { animation-delay: 0.2s; }
 .tawhid-detail-card:nth-child(3) { animation-delay: 0.3s; }
 .tawhid-detail-card:nth-child(4) { animation-delay: 0.4s; }
-
 @keyframes fadeInUp {
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
 }
-
 .tawhid-detail-card:hover {
     box-shadow: 0 15px 40px rgba(0, 191, 255, 0.1);
     border-color: var(--deep-sky-blue);
     transform: translateY(-5px);
 }
-
 .tawhid-detail-card::before {
     content: '';
     position: absolute;
     top: 0; left: 0; width: 5px; height: 100%;
     background: var(--primary-gradient);
 }
-
 .tawhid-header {
     display: flex;
     align-items: center;
     margin-bottom: 20px;
 }
-
 .tawhid-num-badge {
     width: 50px;
     height: 50px;
@@ -781,25 +917,21 @@ h1, h2, h3, h4, h5, .arabic-text {
     margin-right: 20px;
     flex-shrink: 0;
 }
-
 .tawhid-detail-title {
     font-family: var(--font-heading);
     font-size: 1.8rem;
     color: var(--text-main);
     margin-bottom: 5px;
 }
-
 .tawhid-detail-sub {
     font-size: 1rem;
     color: var(--emerald-green);
     font-style: italic;
     font-weight: 600;
 }
-
 .tawhid-content-block {
     margin-top: 20px;
 }
-
 .tawhid-label {
     font-size: 0.85rem;
     text-transform: uppercase;
@@ -809,13 +941,11 @@ h1, h2, h3, h4, h5, .arabic-text {
     margin-bottom: 8px;
     display: block;
 }
-
 .tawhid-text {
     color: var(--text-main);
     line-height: 1.7;
     margin-bottom: 20px;
 }
-
 .quran-verse-box {
     background: white;
     border-right: 4px solid var(--deep-sky-blue);
@@ -830,7 +960,6 @@ h1, h2, h3, h4, h5, .arabic-text {
     line-height: 2.2;
     box-shadow: 0 2px 10px rgba(0,0,0,0.03);
 }
-
 .verse-ref {
     display: block;
     text-align: left;
@@ -841,7 +970,6 @@ h1, h2, h3, h4, h5, .arabic-text {
     margin-top: 10px;
     font-weight: bold;
 }
-
 .tawhid-example-box {
     background: #fffbeb;
     padding: 20px;
@@ -851,9 +979,13 @@ h1, h2, h3, h4, h5, .arabic-text {
     color: #92400e;
 }
 
-/* --- Names of Allah Section --- */
-.names-section { padding: 60px 0; background-color: var(--bg-color); }
-
+/* ==============================
+   20. NAMES OF ALLAH SECTION
+   ============================== */
+.names-section {
+    padding: 60px 0;
+    background-color: var(--bg-color);
+}
 .name-elegant-box {
     background: white;
     padding: 30px;
@@ -866,13 +998,11 @@ h1, h2, h3, h4, h5, .arabic-text {
     overflow: hidden;
     box-shadow: 0 4px 6px rgba(0,0,0,0.02);
 }
-
-.name-elegant-box:hover { 
-    border-color: var(--deep-sky-blue); 
+.name-elegant-box:hover {
+    border-color: var(--deep-sky-blue);
     box-shadow: 0 15px 30px rgba(0, 191, 255, 0.15);
     transform: translateY(-5px);
 }
-
 .name-elegant-box::after {
     content: '';
     position: absolute;
@@ -882,22 +1012,36 @@ h1, h2, h3, h4, h5, .arabic-text {
     transform: scaleX(0);
     transition: transform 0.3s ease;
 }
-
 .name-elegant-box:hover::after {
     transform: scaleX(1);
 }
+.arabic-name {
+    font-family: var(--font-arabic);
+    font-size: 2.5rem;
+    color: var(--deep-sky-blue);
+    display: block;
+    margin-bottom: 10px;
+}
+.english-name {
+    font-family: var(--font-heading);
+    font-weight: bold;
+    color: var(--emerald-green);
+    display: block;
+    margin-bottom: 5px;
+}
+.meaning {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
 
-.arabic-name { font-family: var(--font-arabic); font-size: 2.5rem; color: var(--deep-sky-blue); display: block; margin-bottom: 10px; }
-.english-name { font-family: var(--font-heading); font-weight: bold; color: var(--emerald-green); display: block; margin-bottom: 5px; }
-.meaning { font-size: 0.9rem; color: var(--text-muted); }
-
-/* --- MODERN PILLARS SECTION REDESIGN --- */
+/* ==============================
+   21. MODERN PILLARS REDESIGN
+   ============================== */
 .pillars-modern-section {
     padding: 60px 0;
     background-color: #f8fafc;
     position: relative;
 }
-
 .pillar-modern-card {
     background: white;
     border-radius: 20px;
@@ -910,13 +1054,11 @@ h1, h2, h3, h4, h5, .arabic-text {
     height: 100%;
     box-shadow: 0 4px 6px rgba(0,0,0,0.02);
 }
-
 .pillar-modern-card:hover {
     transform: translateY(-10px);
     box-shadow: 0 20px 40px rgba(0, 156, 74, 0.15);
     border-color: var(--emerald-green);
 }
-
 .pillar-modern-card::before {
     content: '';
     position: absolute;
@@ -926,11 +1068,9 @@ h1, h2, h3, h4, h5, .arabic-text {
     transform: scaleX(0);
     transition: transform 0.4s ease;
 }
-
 .pillar-modern-card:hover::before {
     transform: scaleX(1);
 }
-
 .pillar-icon-box {
     width: 80px;
     height: 80px;
@@ -944,13 +1084,11 @@ h1, h2, h3, h4, h5, .arabic-text {
     font-size: 2rem;
     transition: all 0.3s;
 }
-
 .pillar-modern-card:hover .pillar-icon-box {
     background: var(--emerald-green);
     color: white;
     transform: rotateY(180deg);
 }
-
 .pillar-arabic-title {
     font-family: var(--font-arabic);
     font-size: 2.2rem;
@@ -958,7 +1096,6 @@ h1, h2, h3, h4, h5, .arabic-text {
     margin-bottom: 10px;
     opacity: 0.8;
 }
-
 .pillar-english-title {
     font-family: var(--font-heading);
     font-size: 1.5rem;
@@ -966,14 +1103,12 @@ h1, h2, h3, h4, h5, .arabic-text {
     color: var(--text-main);
     margin-bottom: 15px;
 }
-
 .pillar-desc {
     color: var(--text-muted);
     font-size: 0.95rem;
     line-height: 1.6;
     margin-bottom: 20px;
 }
-
 .pillar-quote {
     font-size: 0.85rem;
     font-style: italic;
@@ -984,12 +1119,13 @@ h1, h2, h3, h4, h5, .arabic-text {
     border-left: 3px solid var(--emerald-green);
 }
 
-/* --- ELEGANT GRID ABLUTION (WUDU) SECTION --- */
+/* ==============================
+   22. WUDU GRID SECTION
+   ============================== */
 .wudu-grid-section {
     padding: 60px 0;
     background: linear-gradient(to bottom, #ffffff, #f0f9ff);
 }
-
 .wudu-intro-card {
     background: white;
     border-radius: 24px;
@@ -1001,7 +1137,6 @@ h1, h2, h3, h4, h5, .arabic-text {
     position: relative;
     overflow: hidden;
 }
-
 .wudu-intro-card::after {
     content: '';
     position: absolute;
@@ -1009,7 +1144,6 @@ h1, h2, h3, h4, h5, .arabic-text {
     height: 6px;
     background: var(--primary-gradient);
 }
-
 .wudu-icon-large {
     font-size: 3.5rem;
     background: var(--primary-gradient);
@@ -1017,7 +1151,6 @@ h1, h2, h3, h4, h5, .arabic-text {
     -webkit-text-fill-color: transparent;
     margin-bottom: 20px;
 }
-
 .wudu-grid-container {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -1025,7 +1158,6 @@ h1, h2, h3, h4, h5, .arabic-text {
     max-width: 1200px;
     margin: 0 auto;
 }
-
 .wudu-step-card {
     background: white;
     border-radius: 20px;
@@ -1036,13 +1168,11 @@ h1, h2, h3, h4, h5, .arabic-text {
     box-shadow: 0 5px 15px rgba(0,0,0,0.03);
     overflow: hidden;
 }
-
 .wudu-step-card:hover {
     transform: translateY(-8px);
     box-shadow: 0 15px 30px rgba(0, 191, 255, 0.15);
     border-color: var(--deep-sky-blue);
 }
-
 .wudu-step-number {
     position: absolute;
     top: -15px;
@@ -1062,27 +1192,23 @@ h1, h2, h3, h4, h5, .arabic-text {
     transition: all 0.3s;
     z-index: 2;
 }
-
 .wudu-step-card:hover .wudu-step-number {
     background: var(--emerald-green);
     color: white;
     border-color: var(--emerald-green);
     animation: pulse 1s infinite;
 }
-
 @keyframes pulse {
     0% { box-shadow: 0 0 0 0 rgba(0, 156, 74, 0.4); }
     70% { box-shadow: 0 0 0 10px rgba(0, 156, 74, 0); }
     100% { box-shadow: 0 0 0 0 rgba(0, 156, 74, 0); }
 }
-
 .wudu-step-icon {
     font-size: 2rem;
     color: var(--deep-sky-blue);
     margin-bottom: 20px;
     opacity: 0.8;
 }
-
 .wudu-step-title {
     font-family: var(--font-heading);
     font-size: 1.4rem;
@@ -1090,13 +1216,11 @@ h1, h2, h3, h4, h5, .arabic-text {
     margin-bottom: 15px;
     font-weight: 700;
 }
-
 .wudu-step-desc {
     color: var(--text-muted);
     line-height: 1.7;
     font-size: 0.95rem;
 }
-
 .wudu-tip-box {
     background: #fffbeb;
     border: 1px solid #fcd34d;
@@ -1111,8 +1235,13 @@ h1, h2, h3, h4, h5, .arabic-text {
     margin-right: auto;
 }
 
-/* --- Conditions & Benefits --- */
-.conditions-section { padding: 60px 0; background-color: var(--bg-color); }
+/* ==============================
+   23. CONDITIONS & BENEFITS
+   ============================== */
+.conditions-section {
+    padding: 60px 0;
+    background-color: var(--bg-color);
+}
 .condition-box {
     background: white;
     padding: 30px;
@@ -1124,7 +1253,10 @@ h1, h2, h3, h4, h5, .arabic-text {
     border: 1px solid var(--border);
     transition: all 0.3s;
 }
-.condition-box:hover { border-color: var(--deep-sky-blue); transform: translateX(5px); }
+.condition-box:hover {
+    border-color: var(--deep-sky-blue);
+    transform: translateX(5px);
+}
 .condition-num {
     font-family: var(--font-heading);
     font-size: 3rem;
@@ -1133,7 +1265,6 @@ h1, h2, h3, h4, h5, .arabic-text {
     margin-right: 20px;
     line-height: 1;
 }
-
 .benefit-table {
     width: 100%;
     border-collapse: separate;
@@ -1161,7 +1292,9 @@ h1, h2, h3, h4, h5, .arabic-text {
     color: var(--text-muted);
 }
 
-/* --- Layout Structure for Sticky Sidebar (EXACT MATCH TO QURAN.HTML) --- */
+/* ==============================
+   24. LAYOUT – SIDEBAR, SEARCH, BOOK LIST, READER
+   ============================== */
 .page-layout, .quran-layout, .hadith-layout {
     display: flex;
     position: relative;
@@ -1171,8 +1304,6 @@ h1, h2, h3, h4, h5, .arabic-text {
     gap: 30px;
     align-items: flex-start;
 }
-
-/* --- Side Navigation (Library) - EXACT MATCH TO QURAN.HTML SIDEBAR --- */
 .library-sidebar, .sidebar-panel {
     flex: 0 0 30%;
     max-width: 30%;
@@ -1189,20 +1320,16 @@ h1, h2, h3, h4, h5, .arabic-text {
     z-index: 100;
     transition: all 0.3s ease;
 }
-
 .sidebar-controls {
     padding: 15px;
     background: #f8fafc;
     border-bottom: 1px solid var(--border);
     z-index: 10;
 }
-
-/* --- ENHANCED SEARCH STYLING (Matches Quran Page) --- */
 .search-wrapper {
     position: relative;
     width: 100%;
 }
-
 .search-input {
     width: 100%;
     padding: 12px 20px 12px 45px;
@@ -1215,18 +1342,15 @@ h1, h2, h3, h4, h5, .arabic-text {
     outline: none;
     color: var(--text-main);
 }
-
 .search-input::placeholder {
     color: #cbd5e1;
     font-weight: 400;
 }
-
 .search-input:focus {
     border-color: var(--deep-sky-blue);
     box-shadow: 0 4px 20px rgba(0, 191, 255, 0.15);
     background-color: #fff;
 }
-
 .search-icon-wrapper {
     position: absolute;
     left: 15px;
@@ -1237,20 +1361,22 @@ h1, h2, h3, h4, h5, .arabic-text {
     pointer-events: none;
     transition: all 0.3s ease;
 }
-
 .search-input:focus + .search-icon-wrapper {
     color: var(--deep-sky-blue);
     transform: translateY(-50%) scale(1.1);
 }
-
 .book-list-container, .surah-list-container {
     flex-grow: 1;
     overflow-y: auto;
     padding: 10px 0;
 }
-.book-list-container::-webkit-scrollbar, .surah-list-container::-webkit-scrollbar { width: 6px; }
-.book-list-container::-webkit-scrollbar-thumb, .surah-list-container::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 3px; }
-
+.book-list-container::-webkit-scrollbar, .surah-list-container::-webkit-scrollbar {
+    width: 6px;
+}
+.book-list-container::-webkit-scrollbar-thumb, .surah-list-container::-webkit-scrollbar-thumb {
+    background-color: #cbd5e1;
+    border-radius: 3px;
+}
 .book-item, .surah-item {
     padding: 12px 20px;
     border-bottom: 1px solid #f1f5f9;
@@ -1260,9 +1386,14 @@ h1, h2, h3, h4, h5, .arabic-text {
     justify-content: space-between;
     align-items: center;
 }
-.book-item:hover, .surah-item:hover { background-color: #f0fdf4; padding-left: 25px; }
-.book-item.active, .surah-item.active { background-color: #e0f2fe; border-left: 4px solid var(--deep-sky-blue); }
-
+.book-item:hover, .surah-item:hover {
+    background-color: #f0fdf4;
+    padding-left: 25px;
+}
+.book-item.active, .surah-item.active {
+    background-color: #e0f2fe;
+    border-left: 4px solid var(--deep-sky-blue);
+}
 .book-number, .surah-number {
     font-size: 0.75rem;
     color: var(--text-muted);
@@ -1276,11 +1407,21 @@ h1, h2, h3, h4, h5, .arabic-text {
     border-radius: 50%;
     margin-right: 15px;
 }
-.book-info h6, .surah-info h6 { margin: 0; font-weight: 600; color: var(--text-main); font-size: 0.95rem; }
-.book-info small, .surah-info small { color: var(--text-muted); font-size: 0.75rem; }
-.book-name-ar, .surah-name-ar { font-family: var(--font-arabic); font-size: 1.5rem; color: var(--emerald-green); }
-
-/* Main Content Wrapper (EXACT MATCH TO QURAN.HTML READER PANEL) */
+.book-info h6, .surah-info h6 {
+    margin: 0;
+    font-weight: 600;
+    color: var(--text-main);
+    font-size: 0.95rem;
+}
+.book-info small, .surah-info small {
+    color: var(--text-muted);
+    font-size: 0.75rem;
+}
+.book-name-ar, .surah-name-ar {
+    font-family: var(--font-arabic);
+    font-size: 1.5rem;
+    color: var(--emerald-green);
+}
 .main-wrapper, .reader-panel {
     flex: 0 0 70%;
     max-width: 70%;
@@ -1292,7 +1433,6 @@ h1, h2, h3, h4, h5, .arabic-text {
     border-top: 4px solid var(--deep-sky-blue);
     transition: all 0.3s ease;
 }
-
 .reader-header {
     text-align: center;
     margin-bottom: 30px;
@@ -1306,31 +1446,20 @@ h1, h2, h3, h4, h5, .arabic-text {
     margin-bottom: 10px;
 }
 
-/* Mobile Handling */
-@media (max-width: 991px) {
-    .page-layout, .quran-layout, .hadith-layout { flex-direction: column; }
-    .library-sidebar, .sidebar-panel { 
-        flex: none; 
-        width: 100%; 
-        max-width: 100%; 
-        height: auto; 
-        max-height: 500px; 
-        position: relative; 
-        top: 0; 
-    }
-    .main-wrapper, .reader-panel { flex: none; width: 100%; max-width: 100%; padding: 20px; }
+#dynamic-content, #surahContent {
+    scroll-margin-top: 8rem;  /* Adjust this value as needed */
 }
 
-/* --- Article Styling (Integrated) --- */
+/* ==============================
+   25. ARTICLE STYLING
+   ============================== */
 .article-container {
     animation: fadeIn 0.5s ease-in-out;
 }
-
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
 }
-
 .article-meta {
     color: var(--text-muted);
     font-size: 0.9rem;
@@ -1341,14 +1470,12 @@ h1, h2, h3, h4, h5, .arabic-text {
     border-bottom: 1px solid var(--border);
     padding-bottom: 20px;
 }
-
 .article-content p {
     font-size: 1.15rem;
     line-height: 1.9;
     color: var(--text-main);
     margin-bottom: 25px;
 }
-
 .article-content h3 {
     font-family: var(--font-heading);
     color: var(--emerald-green);
@@ -1358,7 +1485,6 @@ h1, h2, h3, h4, h5, .arabic-text {
     position: relative;
     padding-left: 20px;
 }
-
 .article-content h3::before {
     content: '';
     position: absolute;
@@ -1369,7 +1495,6 @@ h1, h2, h3, h4, h5, .arabic-text {
     background: var(--magenta);
     border-radius: 2px;
 }
-
 .quran-quote {
     background: #f0fdf4;
     border-right: 4px solid var(--emerald-green);
@@ -1384,9 +1509,8 @@ h1, h2, h3, h4, h5, .arabic-text {
     line-height: 2.2;
     position: relative;
 }
-
 .quran-quote::before {
-    content: '\f10d'; 
+    content: '\f10d';
     font-family: 'Font Awesome 6 Free';
     font-weight: 900;
     position: absolute;
@@ -1397,7 +1521,6 @@ h1, h2, h3, h4, h5, .arabic-text {
     font-size: 2rem;
     direction: ltr;
 }
-
 .quran-ref {
     display: block;
     text-align: left;
@@ -1408,24 +1531,19 @@ h1, h2, h3, h4, h5, .arabic-text {
     margin-top: 15px;
     font-weight: bold;
 }
-
 .info-box {
-    background: #e3f2fd; 
+    background: #e3f2fd;
     border-left: 4px solid var(--deep-sky-blue);
     padding: 25px;
     border-radius: 12px;
     margin: 35px 0;
 }
-
 .info-box.green { background: #e8f5e9; border-color: var(--emerald-green); }
 .info-box.green h4 { color: var(--emerald-green); }
-
 .info-box.purple { background: #f3e5f5; border-color: var(--magenta); }
 .info-box.purple h4 { color: var(--magenta); }
-
 .info-box.gold { background: #fff8e1; border-color: #ffc107; }
 .info-box.gold h4 { color: #d39e00; }
-
 .info-box h4 {
     color: var(--deep-sky-blue);
     font-family: var(--font-heading);
@@ -1433,7 +1551,6 @@ h1, h2, h3, h4, h5, .arabic-text {
     display: flex;
     align-items: center;
 }
-
 .info-box h4 i { margin-right: 10px; }
 
 .grid-2, .grid-3, .grid-4 {
@@ -1498,7 +1615,9 @@ h1, h2, h3, h4, h5, .arabic-text {
     font-weight: bold;
 }
 
-/* Verse Card Design */
+/* ==============================
+   26. VERSE CARDS (QURAN PAGE)
+   ============================== */
 .verse-card {
     background: #fff;
     border: 1px solid #edf2f7;
@@ -1511,20 +1630,17 @@ h1, h2, h3, h4, h5, .arabic-text {
     position: relative;
     border-bottom-width: 2px;
 }
-
 .verse-card:hover {
     background-color: #f0fdf4;
     box-shadow: 0 4px 12px rgba(0,0,0,0.08);
     transform: translateY(-2px);
     border-color: var(--emerald-green);
 }
-
 .verse-content-wrapper {
     display: flex;
     align-items: flex-start;
     gap: 20px;
 }
-
 .verse-number-box {
     min-width: 40px;
     display: flex;
@@ -1536,21 +1652,18 @@ h1, h2, h3, h4, h5, .arabic-text {
     height: 100%;
     margin-top: 5px;
 }
-
 .verse-num-text {
     font-family: var(--font-heading);
     font-weight: bold;
     color: var(--emerald-green);
     font-size: 1.1rem;
 }
-
 .verse-text-content {
     flex-grow: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
 }
-
 .verse-arabic {
     font-family: var(--font-arabic);
     font-size: 2.2rem;
@@ -1561,7 +1674,6 @@ h1, h2, h3, h4, h5, .arabic-text {
     margin-bottom: 15px;
     width: 100%;
 }
-
 .verse-translation {
     color: #475569;
     font-size: 1.1rem;
@@ -1571,7 +1683,6 @@ h1, h2, h3, h4, h5, .arabic-text {
     width: 100%;
     max-width: 90%;
 }
-
 .verse-actions {
     display: flex;
     justify-content: flex-end;
@@ -1581,7 +1692,6 @@ h1, h2, h3, h4, h5, .arabic-text {
     border-top: 1px dashed #f1f5f9;
     width: 100%;
 }
-
 .btn-action-mini {
     background-color: var(--emerald-green);
     border: none;
@@ -1596,13 +1706,14 @@ h1, h2, h3, h4, h5, .arabic-text {
     gap: 4px;
     box-shadow: 0 2px 4px rgba(0,156,74,0.2);
 }
-
 .btn-action-mini:hover {
     background-color: #007a3a;
     transform: scale(1.05);
 }
 
-/* Load More Button Styling */
+/* ==============================
+   27. BUTTONS
+   ============================== */
 .load-more-btn {
     background: white;
     border: 2px solid var(--emerald-green);
@@ -1613,289 +1724,12 @@ h1, h2, h3, h4, h5, .arabic-text {
     transition: all 0.3s ease;
     box-shadow: 0 4px 10px rgba(0, 156, 74, 0.1);
 }
-
 .load-more-btn:hover {
     background: var(--emerald-green);
     color: white;
     transform: translateY(-2px);
     box-shadow: 0 6px 15px rgba(0, 156, 74, 0.2);
 }
-
-/* --- CONTACT PAGE SPECIFIC STYLES --- */
-.contact-section {
-    padding: 60px 0;
-}
-
-.contact-card {
-    background: white;
-    border-radius: 16px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-    border: 1px solid var(--border);
-    overflow: hidden;
-}
-
-.contact-info-side {
-    background: var(--bg-color);
-    padding: 40px;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
-
-.info-item {
-    display: flex;
-    align-items: flex-start;
-    margin-bottom: 30px;
-}
-
-.info-icon {
-    width: 50px;
-    height: 50px;
-    background: var(--white);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--emerald-green);
-    font-size: 1.2rem;
-    margin-right: 20px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-    flex-shrink: 0;
-}
-
-.info-content h5 {
-    font-family: var(--font-heading);
-    font-weight: 700;
-    margin-bottom: 5px;
-    color: var(--text-main);
-}
-
-.info-content p {
-    color: var(--text-muted);
-    margin: 0;
-    line-height: 1.6;
-}
-
-.social-connect {
-    margin-top: auto;
-    padding-top: 20px;
-    border-top: 1px solid #e2e8f0;
-}
-
-.social-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    background: white;
-    color: var(--text-main);
-    border-radius: 50%;
-    margin-right: 10px;
-    transition: all 0.3s;
-    border: 1px solid var(--border);
-    text-decoration: none;
-}
-
-.social-btn:hover {
-    background: var(--emerald-green);
-    color: white;
-    border-color: var(--emerald-green);
-    transform: translateY(-3px);
-}
-
-.contact-form-side {
-    padding: 40px;
-}
-
-.form-control {
-    padding: 12px 15px;
-    border-radius: 8px;
-    border: 1px solid #ced4da;
-    background-color: #fcfcfc;
-    transition: all 0.3s;
-}
-
-.form-control:focus {
-    box-shadow: 0 0 0 3px rgba(0, 191, 255, 0.15);
-    border-color: var(--deep-sky-blue);
-    background-color: white;
-}
-
-.btn-submit {
-    background: var(--primary-gradient);
-    border: none;
-    color: white;
-    padding: 12px 30px;
-    border-radius: 30px;
-    font-weight: 600;
-    font-family: var(--font-heading);
-    letter-spacing: 0.5px;
-    transition: all 0.3s;
-    box-shadow: 0 4px 15px rgba(0, 156, 74, 0.3);
-}
-
-.btn-submit:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0, 156, 74, 0.4);
-    color: white;
-}
-
-/* --- NEW ELEGANT DAILY HADITH DESIGN --- */
-.daily-hadith-elegant {
-    background: #ffffff;
-    border-radius: 20px;
-    position: relative;
-    overflow: hidden;
-    box-shadow: 0 15px 35px rgba(0, 156, 74, 0.1);
-    border: 1px solid rgba(0, 191, 255, 0.1);
-}
-
-.daily-hadith-elegant::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0; height: 6px;
-    background: var(--primary-gradient);
-}
-
-.dh-header {
-    padding: 25px 30px 10px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.dh-badge {
-    background: linear-gradient(135deg, #e0f2fe, #dcfce7);
-    color: #047857;
-    padding: 6px 14px;
-    border-radius: 30px;
-    font-size: 0.75rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-}
-
-.dh-body {
-    padding: 10px 30px 30px;
-    text-align: center;
-}
-
-.dh-arabic {
-    font-family: 'Amiri', serif;
-    font-size: 2rem;
-    line-height: 2.4;
-    color: #1e293b;
-    margin-bottom: 25px;
-    position: relative;
-    direction: rtl;
-}
-
-.dh-arabic::after {
-    content: "﷽";
-    display: block;
-    font-size: 1.5rem;
-    color: var(--emerald-green);
-    opacity: 0.3;
-    margin-top: 10px;
-}
-
-.dh-translation {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.25rem;
-    font-style: italic;
-    color: #475569;
-    line-height: 1.8;
-    margin-bottom: 25px;
-}
-
-.dh-footer {
-    background: #f8fafc;
-    padding: 15px 30px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-top: 1px solid #f1f5f9;
-}
-
-.dh-source {
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: var(--deep-sky-blue);
-}
-
-.dh-actions button {
-    background: white;
-    border: 1px solid #e2e8f0;
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    color: var(--text-muted);
-    transition: all 0.3s;
-    margin-left: 8px;
-    cursor: pointer;
-}
-
-.dh-actions button:hover {
-    background: var(--emerald-green);
-    color: white;
-    border-color: var(--emerald-green);
-    transform: translateY(-2px);
-}
-
-/* Newsletter Styles */
-.newsletter-box {
-    background: var(--bg-color);
-    border-radius: 16px;
-    padding: 40px;
-    text-align: center;
-    border: 1px solid var(--border);
-}
-.newsletter-input-group { max-width: 500px; margin: 0 auto; }
-.btn-newsletter { background: var(--emerald-green); color: white; border: none; padding: 10px 25px; border-radius: 0 8px 8px 0; font-weight: 600; }
-.btn-newsletter:hover { background: #007a3a; color: white; }
-
-/* Footer (Unified Design) */
-footer {
-    background-color: rgba(0, 191, 255, 0.95);
-    color: rgba(255,255,255,0.8);
-    padding: 30px 0 15px;
-    font-size: 0.85rem;
-    margin-top: 30px;
-}
-
-.footer-logo {
-    font-family: var(--font-arabic);
-    font-size: 1.5rem;
-    color: white;
-    margin-bottom: 10px;
-    display: block;
-}
-
-footer h5 {
-    font-size: 1rem;
-    margin-bottom: 12px;
-}
-
-footer ul li {
-    margin-bottom: 5px;
-}
-
-footer a:hover {
-    color: white !important;
-    padding-left: 5px;
-    transition: 0.3s;
-}
-
-.text-emerald { color: var(--emerald-green); }
-.text-magenta { color: var(--magenta); }
-.bg-emerald { background-color: var(--emerald-green) !important; }
-
-/* Updated Button Style */
 .btn-names {
     background: var(--primary-gradient);
     color: white;
@@ -1910,14 +1744,668 @@ footer a:hover {
     display: inline-block;
     letter-spacing: 0.5px;
 }
-
 .btn-names:hover {
     transform: translateY(-3px);
     box-shadow: 0 8px 25px rgba(0, 156, 74, 0.4);
     color: white;
 }
 
-/* Mobile Refinements */
+/* ==============================
+   28. CONTACT PAGE
+   ============================== */
+.contact-section {
+    padding: 60px 0;
+}
+.contact-card {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    border: 1px solid var(--border);
+    overflow: hidden;
+}
+.contact-info-side {
+    background: var(--bg-color);
+    padding: 40px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.info-item {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 30px;
+}
+.info-icon {
+    width: 30px;
+    height: 30px;
+    background: var(--white);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--emerald-green);
+    font-size: 1rem;
+    margin-right: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    flex-shrink: 0;
+}
+.info-content h5 {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: var(--text-main);
+}
+.info-content p {
+    color: var(--text-muted);
+    margin-left: -30px;
+    line-height: 1.6;
+}
+.social-connect {
+    margin-top: auto;
+    padding-top: 20px;
+    border-top: 1px solid #e2e8f0;
+}
+.social-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    background: white;
+    color: var(--text-main);
+    border-radius: 50%;
+    margin-right: 8px;
+    transition: all 0.3s;
+    border: 1px solid var(--border);
+    text-decoration: none;
+}
+.social-btn:hover {
+    background: var(--emerald-green);
+    color: white;
+    border-color: var(--emerald-green);
+    transform: translateY(-3px);
+}
+.contact-form-side {
+    padding: 40px;
+}
+.form-control {
+    padding: 12px 15px;
+    border-radius: 8px;
+    border: 1px solid #ced4da;
+    background-color: #fcfcfc;
+    transition: all 0.3s;
+}
+.form-control:focus {
+    box-shadow: 0 0 0 3px rgba(0, 191, 255, 0.15);
+    border-color: var(--deep-sky-blue);
+    background-color: white;
+}
+.btn-submit {
+    background: var(--primary-gradient);
+    border: none;
+    color: white;
+    padding: 12px 30px;
+    border-radius: 30px;
+    font-weight: 600;
+    font-family: var(--font-heading);
+    letter-spacing: 0.5px;
+    transition: all 0.3s;
+    box-shadow: 0 4px 15px rgba(0, 156, 74, 0.3);
+}
+.btn-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 156, 74, 0.4);
+    color: white;
+}
+
+/* ==============================
+   29. DAILY HADITH ELEGANT (CONNECT PAGE)
+   ============================== */
+.daily-hadith-elegant {
+    background: #ffffff;
+    border-radius: 20px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 15px 35px rgba(0, 156, 74, 0.1);
+    border: 1px solid rgba(0, 191, 255, 0.1);
+}
+.daily-hadith-elegant::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; height: 6px;
+    background: var(--primary-gradient);
+}
+.dh-header {
+    padding: 25px 30px 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.dh-badge {
+    background: linear-gradient(135deg, #e0f2fe, #dcfce7);
+    color: #047857;
+    padding: 6px 14px;
+    border-radius: 30px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+.dh-body {
+    padding: 10px 30px 30px;
+    text-align: center;
+}
+.dh-arabic {
+    font-family: 'Amiri', serif;
+    font-size: 2rem;
+    line-height: 2.4;
+    color: #1e293b;
+    margin-bottom: 25px;
+    position: relative;
+    direction: rtl;
+}
+.dh-arabic::after {
+    content: "﷽";
+    display: block;
+    font-size: 1.5rem;
+    color: var(--emerald-green);
+    opacity: 0.3;
+    margin-top: 10px;
+}
+.dh-translation {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.25rem;
+    font-style: italic;
+    color: #475569;
+    line-height: 1.8;
+    margin-bottom: 25px;
+}
+.dh-footer {
+    background: #f8fafc;
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid #f1f5f9;
+}
+.dh-source {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--deep-sky-blue);
+}
+.dh-actions button {
+    background: white;
+    border: 1px solid #e2e8f0;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    color: var(--text-muted);
+    transition: all 0.3s;
+    margin-left: 8px;
+    cursor: pointer;
+}
+.dh-actions button:hover {
+    background: var(--emerald-green);
+    color: white;
+    border-color: var(--emerald-green);
+    transform: translateY(-2px);
+}
+
+/* ==============================
+   30. NEWSLETTER
+   ============================== */
+.newsletter-box {
+    background: var(--bg-color);
+    border-radius: 16px;
+    padding: 40px;
+    text-align: center;
+    border: 1px solid var(--border);
+}
+.newsletter-input-group {
+    max-width: 500px;
+    margin: 0 auto;
+}
+.btn-newsletter {
+    background: var(--emerald-green);
+    color: white;
+    border: none;
+    padding: 10px 25px;
+    border-radius: 0 8px 8px 0;
+    font-weight: 600;
+}
+.btn-newsletter:hover {
+    background: #007a3a;
+    color: white;
+}
+
+/* ==============================
+   31. FOOTER
+   ============================== */
+footer {
+    background-color: rgba(0, 191, 255, 0.95);
+    color: rgba(255,255,255,0.8);
+    padding: 30px 0 15px;
+    font-size: 0.85rem;
+    margin-top: 30px;
+}
+.footer-logo {
+    font-family: var(--font-arabic);
+    font-size: 1.5rem;
+    color: white;
+    margin-bottom: 10px;
+    display: block;
+}
+footer h5 {
+    font-size: 1rem;
+    margin-bottom: 12px;
+}
+footer ul li {
+    margin-bottom: 5px;
+}
+footer a:hover {
+    color: white !important;
+    padding-left: 5px;
+    transition: 0.3s;
+}
+
+/* ==============================
+   32. ADMIN DASHBOARD STYLES
+   ============================== */
+.admin-wrapper {
+    padding-top: 80px;
+}
+
+.admin-sidebar {
+    background: var(--bg-color);
+    border-right: 1px solid var(--border);
+    min-height: calc(100vh - 80px);
+    padding: 20px;
+    position: sticky;
+    top: 80px;
+    height: calc(100vh - 80px);
+    overflow-y: auto;
+}
+
+.admin-sidebar .nav-link {
+    color: var(--text-main) !important;
+    margin-bottom: 5px;
+    border-radius: 8px;
+    transition: all 0.2s;
+    padding: 10px 15px;
+}
+
+.admin-sidebar .nav-link:hover {
+    background-color: var(--deep-sky-blue);
+    color: white;
+    transform: translateX(4px);
+}
+
+.admin-sidebar .nav-link.active {
+    background-color: var(--emerald-green) !important;
+    color: white !important;
+    box-shadow: 0 4px 6px rgba(0, 156, 74, 0.3);
+}
+
+.admin-sidebar .nav-link i {
+    margin-right: 10px;
+    width: 20px;
+    text-align: center;
+}
+
+.admin-sidebar .nav-pills .nav-link {
+    display: flex;
+    align-items: center;
+    gap: 12px; 
+    padding: 0.75rem 1rem;
+    text-align: left;
+    border-radius: 8px;
+    justify-content: flex-start;
+}
+
+.admin-sidebar .nav-pills .nav-link i {
+    color: #009c4a;
+    font-size: 1.2rem; 
+    transition: color 0.2s ease;
+}
+
+.admin-sidebar .nav-pills .nav-link span {
+    color: #2c3e50; /* Dark text color */
+    font-weight: 500;
+}
+
+.admin-sidebar .nav-pills .nav-link:hover i,
+.admin-sidebar .nav-pills .nav-link.active i {
+    color: #00BFFF;
+}
+.admin-sidebar .nav-pills .nav-link:hover span,
+.admin-sidebar .nav-pills .nav-link.active span {
+    color: white;
+}
+
+.stat-card {
+    background: white;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+    border: 1px solid var(--border);
+    border-top: 4px solid var(--deep-sky-blue);
+    text-align: center;
+    height: 100%;
+    transition: all 0.2s;
+}
+
+.stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.06);
+}
+
+/* Gold background for stat cards */
+.icon-bg-gold {
+    background: #fffbeb;
+    color: #d39e00;
+}
+
+.stat-card .icon-bg {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+}
+
+.stat-card .stat-number {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.stat-card .stat-label {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.reply-btn {
+    border: none;
+    background: var(--deep-sky-blue);
+    color: white;
+    border-radius: 4px;
+    padding: 4px 12px;
+    font-size: 0.8rem;
+    transition: background 0.2s;
+}
+
+.reply-btn:hover {
+    background: #008bb5;
+    color: white;
+}
+
+.article-row {
+    background: #f8f9fa;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.2s;
+}
+
+.article-row:hover {
+    background: white;
+    border-color: var(--deep-sky-blue);
+    box-shadow: 0 2px 8px rgba(0,191,255,0.1);
+}
+
+.loading-spinner {
+    display: flex;
+    justify-content: center;
+    padding: 40px;
+}
+
+#articleEditorModal .modal-body {
+    background: #f8fafc;
+}
+
+#articleEditorModal .modal-body textarea {
+    width: 100%;
+    height: 400px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 15px;
+    font-family: monospace;
+    background: white;
+}
+
+.btn-primary-custom {
+    background: var(--primary-gradient);
+    border: none;
+    color: white;
+    padding: 8px 20px;
+    border-radius: 30px;
+    font-weight: 600;
+    transition: all 0.3s;
+}
+
+.btn-primary-custom:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0,156,74,0.3);
+    color: white;
+}
+
+.btn-outline-primary-custom {
+    border: 2px solid var(--emerald-green);
+    color: var(--emerald-green);
+    background: transparent;
+    padding: 6px 16px;
+    border-radius: 30px;
+    font-weight: 600;
+    transition: all 0.3s;
+}
+
+.btn-outline-primary-custom:hover {
+    background: var(--emerald-green);
+    color: white;
+    transform: translateY(-2px);
+}
+
+.message-item {
+    border-left: 4px solid var(--emerald-green) !important;
+}
+
+.message-item .admin-reply {
+    background: #f0fdf4;
+    border-radius: 6px;
+    padding: 8px 12px;
+    margin-top: 8px;
+}
+
+/* Chart container sizing */
+.chart-container {
+    position: relative;
+    height: 250px;
+    width: 100%;
+}
+
+.chart-placeholder {
+    height: 200px;
+    background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+    border-radius: 12px;
+    border: 1px dashed var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+}
+
+.admin-profile-avatar {
+    width: 32px;
+    height: 32px;
+    background: var(--primary-gradient);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+/* Admin Mobile adjustments */
+@media (max-width: 768px) {
+    .admin-sidebar {
+        position: relative;
+        top: 0;
+        height: auto;
+        min-height: auto;
+        padding-top: 20px;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+    }
+    .admin-wrapper {
+        padding-top: 60px;
+    }
+}
+
+/* ==============================
+   33. COMING SOON PAGE STYLES
+   ============================== */
+.coming-soon-hero {
+    background: var(--primary-gradient);
+    color: white;
+    padding: 80px 0 60px;
+    text-align: center;
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+    position: relative;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+.coming-soon-hero::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image: radial-gradient(var(--white) 1px, transparent 1px);
+    background-size: 20px 20px;
+    opacity: 0.15;
+}
+.coming-soon-hero .container {
+    position: relative;
+    z-index: 2;
+}
+.coming-soon-title {
+    font-family: var(--font-heading);
+    font-size: 4rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+.coming-soon-sub {
+    font-size: 1.5rem;
+    font-weight: 300;
+    opacity: 0.9;
+}
+.coming-soon-message {
+    font-size: 1.2rem;
+    max-width: 600px;
+    margin: 20px auto 30px;
+    opacity: 0.85;
+}
+.countdown-wrapper {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin: 30px 0 20px;
+}
+.countdown-item {
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 16px;
+    padding: 15px 20px;
+    min-width: 80px;
+    text-align: center;
+}
+.countdown-number {
+    font-family: var(--font-heading);
+    font-size: 2.8rem;
+    font-weight: 700;
+    line-height: 1.2;
+}
+.countdown-label {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    opacity: 0.7;
+}
+.notify-section {
+    padding: 60px 0;
+    background-color: var(--white);
+}
+.notify-box {
+    max-width: 550px;
+    margin: 0 auto;
+    text-align: center;
+}
+.notify-box h3 {
+    font-family: var(--font-heading);
+    color: var(--text-main);
+    margin-bottom: 15px;
+}
+.notify-box p {
+    color: var(--text-muted);
+    margin-bottom: 25px;
+}
+.input-group-custom {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+.input-group-custom .form-control {
+    flex: 1 1 250px;
+    padding: 12px 20px;
+    border-radius: 50px;
+    border: 2px solid var(--border);
+    font-family: var(--font-body);
+    transition: border-color 0.3s;
+}
+.input-group-custom .form-control:focus {
+    border-color: var(--deep-sky-blue);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 191, 255, 0.15);
+}
+.btn-notify {
+    background: var(--primary-gradient);
+    border: none;
+    color: white;
+    padding: 12px 35px;
+    border-radius: 50px;
+    font-weight: 600;
+    font-family: var(--font-heading);
+    transition: transform 0.3s, box-shadow 0.3s;
+    box-shadow: 0 4px 15px rgba(0, 156, 74, 0.3);
+    white-space: nowrap;
+}
+.btn-notify:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 156, 74, 0.4);
+    color: white;
+}
+
+/* ==============================
+   34. MOBILE REFINEMENTS
+   ============================== */
 @media (max-width: 768px) {
     .quote-text { font-size: 1.4rem; }
     .hero-title, .bismillah-header { font-size: 2.2rem; }
@@ -1930,8 +2418,6 @@ footer a:hover {
     .tawhid-detail-card { padding: 25px; }
     .tawhid-header { flex-direction: column; text-align: center; }
     .tawhid-num-badge { margin-right: 0; margin-bottom: 15px; }
-    
-    /* Mobile Fix for Contact Info */
     .contact-info-side {
         padding: 30px;
         border-bottom: 1px solid var(--border);
@@ -1939,4 +2425,401 @@ footer a:hover {
     .contact-form-side {
         padding: 30px;
     }
+    /* Coming Soon mobile tweaks */
+    .coming-soon-title {
+        font-size: 2.8rem;
+    }
+    .countdown-item {
+        min-width: 60px;
+        padding: 10px 15px;
+    }
+    .countdown-number {
+        font-size: 2rem;
+    }
+    .input-group-custom .form-control {
+        flex: 1 1 100%;
+    }
+}
+
+@media (max-width: 991px) {
+    .page-layout, .quran-layout, .hadith-layout { flex-direction: column; }
+    .library-sidebar, .sidebar-panel {
+        flex: none;
+        width: 100%;
+        max-width: 100%;
+        height: auto;
+        max-height: 500px;
+        position: relative;
+        top: 0;
+    }
+    .main-wrapper, .reader-panel {
+        flex: none;
+        width: 100%;
+        max-width: 100%;
+        padding: 20px;
+    }
+}
+
+/* ==============================
+   35. LOGIN PAGE SPECIFIC
+   ============================== */
+.login-container {
+    max-width: 500px;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+}
+
+.login-container .card {
+    width: 100%;
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .login-container {
+        max-width: 100%;
+        padding: 0 20px;
+    }
+}
+
+/* ==============================
+   36. ARTICLE-SPECIFIC & UTILITY CLASSES
+   ============================== */
+
+/* 99 Names Search */
+.names-search {
+    border-radius: 50px;
+    padding-left: 20px;
+    border: 2px solid var(--border);
+}
+
+/* Font Sizes */
+.fs-1-2 { font-size: 1.2rem !important; }
+.fs-1-4 { font-size: 1.4rem !important; }
+.fs-1-8 { font-size: 1.8rem !important; }
+.fs-1rem { font-size: 1rem !important; }
+.fs-0-8 { font-size: 0.8rem !important; }
+.fs-0-6rem { font-size: 0.6rem !important; }
+.fs-2-8 { font-size: 2.8rem !important; }
+.fs-1-5 { font-size: 1.5rem !important; }
+
+/* Text Colors */
+.text-main { color: var(--text-main) !important; }
+.text-sky { color: var(--deep-sky-blue) !important; }
+.text-gold { color: #d39e00 !important; }
+.text-magenta { color: var(--magenta) !important; }
+.text-emerald { color: var(--emerald-green); }
+.text-muted { color: var(--text-muted); }
+.text-white { color: var(--white); }
+
+/* Background Utilities */
+.bg-soft-blue { background-color: #f8fafc !important; }
+.bg-section-light { background-color: #f8fafc !important; }
+.bg-very-light-blue { background-color: #f0f9ff !important; }
+.bg-soft-emerald { background-color: #f0fdf4 !important; }
+.bg-soft-pink { background: #fff0f5 !important; }
+.bg-emerald { background-color: var(--emerald-green) !important; }
+
+/* Border Utilities */
+.border-top-emerald { border-top-color: var(--emerald-green) !important; }
+.border-top-sky { border-top-color: var(--deep-sky-blue) !important; }
+.border-top-magenta { border-top-color: var(--magenta) !important; }
+.border-top-gold { border-top-color: #ffc107 !important; }
+.border-left-emerald { border-left-color: var(--emerald-green) !important; }
+.border-left-sky { border-left-color: var(--deep-sky-blue) !important; }
+.border-left-magenta { border-left-color: var(--magenta) !important; }
+.border-left-gold { border-left-color: #ffc107 !important; }
+.border-magenta { border-color: var(--magenta) !important; }
+
+/* Sizing & Spacing */
+.mw-600 { max-width: 600px !important; }
+.mw-800 { max-width: 800px !important; }
+.z-index-2 { z-index: 2 !important; }
+
+/* Miscellaneous */
+.opacity-0-3 { opacity: 0.3 !important; }
+.fst-italic { font-style: italic !important; }
+.direction-rtl { direction: rtl !important; }
+.footer-hr { border-color: rgba(255,255,255,0.2) !important; }
+
+/* Components */
+.btn-square-size { width: 30px !important; height: 30px !important; line-height: 1 !important; padding: 0 !important; }
+.btn-zakat-main {
+    background: var(--emerald-green) !important;
+    color: white !important;
+    border: none !important;
+    padding: 10px 35px !important;
+    border-radius: 50px !important;
+    font-weight: bold !important;
+}
+.btn-zakat-main:hover {
+    background: #007a3a !important;
+    color: white !important;
+}
+
+/* Topic Background Images */
+.bg-quran { background-image: url('../images/quran.jpg'); }
+.bg-hadith { background-image: url('../images/hadith.jpg'); }
+.bg-belief { background-image: url('../images/belief.jpg'); }
+.bg-names { background-image: url('../images/names.jpg'); }
+.bg-zakat { background-image: url('../images/zakat.jpg'); }
+.bg-family { background-image: url('../images/family.jpg'); }
+
+/* Chain display for Authentication */
+.chain-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+.chain-link {
+    background: white;
+    border: 1px solid var(--border);
+    padding: 10px 15px;
+    border-radius: 8px;
+    font-weight: bold;
+}
+
+#folderUploadInput {
+    display: none;
+}
+
+/* ==========================================
+   Mobile Offcanvas Sidebar Customisations
+   (Applies only on screens smaller than 768px)
+   ========================================== */
+   /* Enlarged Desktop Sidebar Styling */
+@media (min-width: 768px) {
+    .admin-sidebar .nav-pills .nav-link {
+        padding: 1rem 1.5rem; /* Increase padding for a larger click area */
+        gap: 15px;             /* Slightly larger gap between icon and text */
+        font-size: 1.1rem;     /* Make the text slightly larger */
+    }
+    .admin-sidebar .nav-pills .nav-link i {
+        font-size: 1.5rem;     /* Make the icons larger to match the new width */
+    }
+}
+@media (max-width: 767px) {
+    /* Sidebar width */
+    .offcanvas.offcanvas-start {
+        width: 250px !important;
+    }
+
+    /* Sidebar background: light gray with reduced opacity and blur */
+    .offcanvas {
+        background-color: #f8f9fa !important;
+        opacity: 0.9;  /* 90% opacity */
+        backdrop-filter: blur(4px);
+    }
+
+    /* Title "Admin Panel" – all caps, bold */
+    .offcanvas-title {
+        text-transform: uppercase;
+        font-weight: 600;
+    }
+
+    /* Remove active/hover background box */
+    .offcanvas-body .nav-pills .nav-link.active,
+    .offcanvas-body .nav-pills .nav-link:hover,
+    .offcanvas-body .nav-pills .nav-link:focus {
+        background-color: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+    }
+
+    /* Nav links: left align, flexible, with icon + text */
+    .offcanvas-body .nav-pills .nav-link {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 0.75rem 1rem;
+        text-align: left;
+        justify-content: flex-start;
+    }
+
+    /* Default icon color: green */
+    .offcanvas-body .nav-pills .nav-link i {
+        color: #009c4a !important;
+        font-size: 1.6rem;  /* slightly smaller for better balance */
+        transition: color 0.2s ease;
+    }
+
+    /* Text label styling */
+    .offcanvas-body .nav-pills .nav-link span {
+        font-size: 1rem;
+        font-weight: 500;
+        color: #2c3e50;
+    }
+
+    /* Hover: icon turns blue, text remains dark */
+    .offcanvas-body .nav-pills .nav-link:hover i {
+        color: #00BFFF !important;
+    }
+    .offcanvas-body .nav-pills .nav-link:hover span {
+        color: #00BFFF;
+    }
+
+    /* Active: icon turns magenta, text remains dark */
+    .offcanvas-body .nav-pills .nav-link.active i {
+        color: #b300b3 !important;
+    }
+    .offcanvas-body .nav-pills .nav-link.active span {
+        color: #b300b3;
+    }
+
+    /* Bottom action buttons – centered, separate */
+    .offcanvas-body .mt-auto .btn-back-to-site {
+        background-color: #f8f9fa;
+        color: #009c4a;
+        border: none;
+    }
+    .offcanvas-body .mt-auto .btn-back-to-site:hover {
+        background-color: #009c4a;
+        color: #f8f9fa;
+    }
+
+    .offcanvas-body .mt-auto .btn-logout {
+        background-color: #f8f9fa;
+        color: #b300b3;
+        border: none;
+    }
+    .offcanvas-body .mt-auto .btn-logout:hover {
+        background-color: #b300b3;
+        color: #f8f9fa;
+    }
+}
+
+/* ==========================================
+   Custom Toast Notification
+   ========================================== */
+.toast-notification {
+    position: fixed;
+    top: 85px; /* Pushes it just below the fixed navbar */
+    right: 20px;
+    z-index: 9999;
+    min-width: 260px;
+    padding: 16px 22px;
+    border-radius: 12px;
+    background: #ffffff;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+    border-left: 5px solid var(--emerald-green); /* Default: Green */
+    transform: translateX(120%);
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    font-family: var(--font-body);
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.toast-notification.show {
+    transform: translateX(0);
+}
+
+.toast-notification.error {
+    border-left-color: #dc3545; /* Red for errors */
+}
+
+.toast-notification .toast-icon {
+    font-size: 1.4rem;
+}
+
+.toast-notification .toast-icon.success {
+    color: var(--emerald-green);
+}
+
+.toast-notification .toast-icon.error {
+    color: #dc3545;
+}
+
+.toast-notification .toast-message {
+    color: var(--text-main);
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+/* ==========================================
+   Custom Confirmation Modal
+   ========================================== */
+.custom-modal-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    z-index: 9999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+.custom-modal-overlay.show {
+    display: flex;
+    opacity: 1;
+}
+.custom-modal-box {
+    background: #fff;
+    border-radius: 20px;
+    max-width: 450px;
+    width: 90%;
+    padding: 0;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    overflow: hidden;
+    transform: scale(0.9);
+    transition: transform 0.3s ease;
+}
+.custom-modal-overlay.show .custom-modal-box {
+    transform: scale(1);
+}
+.custom-modal-header {
+    background: var(--primary-gradient);
+    padding: 18px 25px;
+    color: white;
+    font-family: var(--font-heading);
+}
+.custom-modal-header h5 {
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+.custom-modal-body {
+    padding: 25px 30px;
+    font-family: var(--font-body);
+    color: var(--text-main);
+    font-size: 1rem;
+    line-height: 1.6;
+}
+.custom-modal-footer {
+    padding: 10px 30px 25px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+}
+.custom-btn-confirm {
+    background: var(--emerald-green);
+    color: #fff;
+    border: none;
+    border-radius: 30px;
+    padding: 10px 28px;
+    font-weight: 600;
+    font-family: var(--font-body);
+    transition: background 0.2s;
+}
+.custom-btn-confirm:hover {
+    background: #007a3a;
+    color: #fff;
+}
+.custom-btn-cancel {
+    background: #f8f9fa;
+    color: var(--text-main);
+    border: 1px solid var(--border);
+    border-radius: 30px;
+    padding: 10px 28px;
+    font-weight: 600;
+    font-family: var(--font-body);
+    transition: background 0.2s;
+}
+.custom-btn-cancel:hover {
+    background: #e2e8f0;
 }

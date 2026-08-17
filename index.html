@@ -4,15 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Al-QURANITE | Light of Guidance</title>
-    
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: https:; connect-src 'self' https://api.aladhan.com https://api.alquran.cloud https://cdn.jsdelivr.net https://cdnjs.cloudflare.com;">
-    
-   <link rel="icon" href="/Al-Quranite/images/favicon.ico" type="image/x-icon"> 
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha512-t4GWSVZO1eC8BM339Xd7Uphw5s17a86tIZIj8qRxhnKub6WoyhnrxeCIMeAqBPgdZGlCcG2PrZjMc+Wr78+5Xg==" crossorigin="anonymous"> 
+   
+    <!-- SECURE CSP -->
+    <meta http-equiv="Content-Security-Policy" content="
+      default-src 'self'; 
+      script-src 'self' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; 
+      style-src 'self' https://cdn.jsdelivr.net https://fonts.googleapis.com https://cdnjs.cloudflare.com; 
+      font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; 
+      img-src 'self' data: https:; 
+      connect-src 'self' https://api.aladhan.com https://api.alquran.cloud https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://txdmbluqqgjnbzawqogu.supabase.co">
+          
+   <link rel="icon" href="images/favicon.ico" type="image/x-icon"> 
 
     <!-- Bootstrap 5 CDN -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha512-t4GWSVZO1eC8BM339Xd7Uphw5s17a86tIZIj8qRxhnKub6WoyhnrxeCIMeAqBPgdZGlCcG2PrZjMc+Wr78+5Xg==" crossorigin="anonymous"> 
 
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -45,16 +50,16 @@
         </div>
     </nav>
 
-    <!-- SECTION 1: Hero (Much Smaller, No Verse) -->
+    <!-- SECTION 1: Hero -->
     <header class="hero-section">
-        <div class="container position-relative" style="z-index: 2;">
+        <div class="container position-relative z-index-2">
             <h1 class="hero-title">Al-QURANITE | بِسْمِ ٱللّٰهِ ٱلرَّحْمٰنِ ٱلرَّحِيمِ</h1>
             <p class="hero-subtitle">Light of Guidance</p>
         </div>
     </header>
 
-    <!-- SECTION 2: Daily Essentials (Redesigned) -->
-    <section class="py-4" style="background-color: #f8fafc;">
+    <!-- SECTION 2: Daily Essentials -->
+    <section class="py-4 bg-soft-blue">
         <div class="container">
             <div class="section-header">
                 <h2 class="section-title">Daily Essentials</h2>
@@ -63,15 +68,15 @@
             </div>
             
             <div class="row g-4">
-                <!-- Prayer Times Widget -->
-                <div class="col-lg-5">
+                <!-- Column 1: Prayer Times Widget -->
+                <div class="col-lg-4 col-md-6">
                     <div class="widget-card h-100">
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <div class="widget-title mb-0"><i class="fas fa-mosque"></i> Prayer Times</div>
                             <div class="d-flex align-items-center gap-2">
-                                <div id="current-time-display" class="text-emerald fw-bold font-monospace" style="font-size: 1rem;">--:--</div>
-                                <button class="btn btn-sm btn-outline-secondary rounded-circle p-1" onclick="refreshPrayerTimes()" title="Refresh Times" style="width: 30px; height: 30px; line-height: 1;">
-                                    <i class="fas fa-sync-alt" style="font-size: 0.8rem;"></i>
+                                <div id="current-time-display" class="text-emerald fw-bold font-monospace fs-1rem">--:--</div>
+                                <button id="refresh-prayer-btn" class="btn btn-sm btn-outline-secondary rounded-circle p-1 btn-square-size" title="Refresh Times">
+                                    <i class="fas fa-sync-alt fs-0-8rem"></i>
                                 </button>
                             </div>
                         </div>
@@ -81,56 +86,63 @@
                         </div>
 
                         <div id="prayer-times-list" class="mt-2">
-                            <div class="text-center py-3"><i class="fas fa-spinner fa-spin text-emerald"></i> Loading Times...</div>
+                            <!-- Next Prayer Banner -->
+                            <div id="next-prayer-banner" class="alert alert-success py-2 mb-2 small d-none text-center">
+                                <i class="fas fa-clock me-1"></i> Next Prayer: <strong id="next-prayer-name">--</strong> in <span id="countdown-timer">--:--:--</span>
+                            </div>
+                            <div class="text-center py-3" id="prayer-loader"><i class="fas fa-spinner fa-spin text-emerald"></i> Loading Times...</div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Right Column: Qibla, Date & Calendar -->
-                <div class="col-lg-7">
-                    <div class="row g-4 h-100">
-                        <!-- Qibla Direction -->
-                        <div class="col-md-6">
-                            <div class="widget-card h-100 d-flex flex-column justify-content-center align-items-center text-center">
-                                <div class="widget-title mb-2"><i class="fas fa-compass"></i> Qibla Direction</div>
-                                
-                                <!-- Visual Compass -->
-                                <div class="compass-container">
-                                    <div class="compass-arrow" id="qibla-arrow"></div>
-                                    <div class="compass-center"></div>
-                                    <div class="position-absolute top-0 start-50 translate-middle badge rounded-pill bg-danger" style="font-size: 0.6rem;">N</div>
-                                </div>
-
-                                <div class="stat-value mb-1" id="qibla-direction">--°</div>
-                                <small class="text-muted">Degrees from North</small>
-                                <button class="btn btn-sm btn-outline-primary mt-2 rounded-pill" onclick="calculateQibla()">
-                                    <i class="fas fa-sync-alt me-1"></i> Recalculate
-                                </button>
-                            </div>
+                <!-- Column 2: Qibla Direction Widget -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="widget-card h-100 d-flex flex-column justify-content-center align-items-center text-center">
+                        <div class="widget-title mb-2"><i class="fas fa-compass"></i> Qibla Direction</div>
+                        
+                        <!-- Visual Compass -->
+                        <div class="compass-container">
+                            <div class="compass-arrow" id="qibla-arrow"></div>
+                            <div class="compass-center"></div>
+                            <div class="position-absolute top-0 start-50 translate-middle badge rounded-pill bg-danger fs-0-6rem">N</div>
                         </div>
 
-                        <!-- Hijri Date & Mini Calendar -->
-                        <div class="col-md-6">
-                            <div class="widget-card h-100">
-                                <div class="widget-title"><i class="fas fa-calendar-alt"></i> Islamic Calendar</div>
-                                
-                                <div class="text-center p-2 bg-light rounded mb-2 border">
-                                    <div class="text-muted small text-uppercase ls-1">Today's Date</div>
-                                    <div class="stat-value text-emerald" id="hijri-date" style="font-size: 1.5rem;">Loading...</div>
-                                    <div class="text-muted small" id="gregorian-date">--/--/----</div>
-                                </div>
+                        <div class="stat-value mb-1" id="qibla-direction">--°</div>
+                        <small class="text-muted">Degrees from North</small>
 
-                                <div class="mt-2">
-                                    <label class="small text-muted mb-1" for="gregorian-input">Convert Date:</label>
-                                    <div class="input-group input-group-sm">
-                                        <input type="date" class="form-control" id="gregorian-input" onchange="convertDate(this.value)">
-                                        <button class="btn btn-outline-secondary" type="button" onclick="resetDate()">
-                                            <i class="fas fa-undo"></i>
-                                        </button>
-                                    </div>
-                                    <div id="converted-hijri" class="small text-center mt-1 text-emerald fw-bold"></div>
-                                </div>
+                        <!-- Calibrate & Recalculate Buttons -->
+                        <div class="d-flex justify-content-center gap-2 mt-2">
+                            <button id="qibla-recalc-btn" class="btn btn-sm btn-outline-primary rounded-pill">
+                                <i class="fas fa-sync-alt me-1"></i> Recalculate
+                            </button>
+                            <button id="qibla-calibrate-btn" class="btn btn-sm btn-outline-info rounded-pill">
+                                <i class="fas fa-compass me-1"></i> Calibrate
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Column 3: Hijri Calendar Widget -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="widget-card h-100">
+                        <div class="widget-title"><i class="fas fa-calendar-alt"></i> Islamic Calendar</div>
+                        
+                        <div class="text-center p-2 bg-light rounded mb-2 border">
+                            <div class="text-muted small text-uppercase ls-1">Today's Date</div>
+                            <div class="stat-value text-emerald fs-1-5rem" id="hijri-date">Loading...</div>
+                            <div class="text-muted small mt-1 fst-italic" id="hijri-event"></div>
+                            <div class="text-muted small" id="gregorian-date">--/--/----</div>
+                        </div>
+
+                        <div class="mt-2">
+                            <label class="small text-muted mb-1" for="gregorian-input">Convert Date:</label>
+                            <div class="input-group input-group-sm">
+                                <input type="date" class="form-control" id="gregorian-input">
+                                <button id="reset-date-btn" class="btn btn-outline-secondary" type="button">
+                                    <i class="fas fa-undo"></i>
+                                </button>
                             </div>
+                            <div id="converted-hijri" class="small text-center mt-1 text-emerald fw-bold"></div>
                         </div>
                     </div>
                 </div>
@@ -138,39 +150,47 @@
         </div>
     </section>
 
-   <!-- SECTION 3: Daily Wisdom (Hadith & Dua) -->
-<section class="py-4 bg-white">
-    <div class="container">
-        <div class="section-header">
-            <h2 class="section-title">Daily Wisdom</h2>
-            <div class="divider-icon"><i class="fas fa-quote-right"></i></div>
-        </div>
-        
-        <div class="row g-4 justify-content-center">
-            <!-- Ayah of the Day -->
-            <div class="col-lg-6">
-                <div class="widget-card" style="border-top-color: var(--emerald-green);">
-                    <div class="widget-title"><i class="fas fa-quran" style="color: var(--emerald-green);"></i> Ayah of the Day</div>
-                    <div class="wisdom-box" style="border-left-color: var(--emerald-green); background: #f0fdf4;">
-                        <p class="wisdom-text" id="daily-ayah">Loading divine wisdom...</p>
-                        <div class="wisdom-ref" id="ayah-source"></div>
+    <!-- SECTION 3: Daily Wisdom -->
+    <section class="py-4 bg-white">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Daily Wisdom</h2>
+                <div class="divider-icon"><i class="fas fa-quote-right"></i></div>
+            </div>
+            
+            <div class="row g-4 justify-content-center">
+                <!-- Ayah of the Day -->
+                <div class="col-lg-6">
+                    <div class="widget-card border-top-emerald">
+                        <div class="widget-title"><i class="fas fa-quran text-emerald"></i> Ayah of the Day</div>
+                        <div class="wisdom-box border-left-emerald bg-soft-emerald">
+                            <p class="wisdom-text" id="daily-ayah">Loading divine wisdom...</p>
+                            <div class="wisdom-ref" id="ayah-source"></div>
+                        </div>
+                        <div class="text-end mt-2">
+                            <button class="btn btn-sm btn-outline-secondary rounded-circle p-1 me-1" data-action="copy" title="Copy Ayah"><i class="far fa-copy"></i></button>
+                            <button class="btn btn-sm btn-outline-secondary rounded-circle p-1" data-action="share" title="Share Ayah"><i class="fas fa-share-alt"></i></button>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Dua of the Day -->
-            <div class="col-lg-6">
-                <div class="widget-card" style="border-top-color: var(--deep-sky-blue);">
-                    <div class="widget-title"><i class="fas fa-hands-praying" style="color: var(--deep-sky-blue);"></i> Dua of the Day</div>
-                    <div class="wisdom-box" style="border-left-color: var(--deep-sky-blue);">
-                        <p class="wisdom-text" id="daily-dua">Loading supplication...</p>
-                        <div class="wisdom-ref" id="dua-source"></div>
+                <!-- Dua of the Day -->
+                <div class="col-lg-6">
+                    <div class="widget-card border-top-sky">
+                        <div class="widget-title"><i class="fas fa-hands-praying text-sky"></i> Dua of the Day</div>
+                        <div class="wisdom-box border-left-sky">
+                            <p class="wisdom-text" id="daily-dua">Loading supplication...</p>
+                            <div class="wisdom-ref" id="dua-source"></div>
+                        </div>
+                        <div class="text-end mt-2">
+                            <button class="btn btn-sm btn-outline-secondary rounded-circle p-1 me-1" data-action="copy" title="Copy Dua"><i class="far fa-copy"></i></button>
+                            <button class="btn btn-sm btn-outline-secondary rounded-circle p-1" data-action="share" title="Share Dua"><i class="fas fa-share-alt"></i></button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
     <!-- SECTION 4: Foundations of Faith -->
     <section id="foundations" class="py-4 bg-white">
@@ -178,13 +198,13 @@
             <div class="section-header">
                 <h2 class="section-title">Foundations of Faith</h2>
                 <div class="divider-icon"><i class="fas fa-star-and-crescent"></i></div>
-                <p class="text-muted mx-auto" style="max-width: 600px;">
+                <p class="text-muted mx-auto mw-600">
                     Our path is built upon the timeless pillars of Islamic tradition, designed to nurture the heart and enlighten the mind.
                 </p>
             </div>
             
             <div class="row g-4">
-                <div class="col-md-4">
+                <div class="col-md-6 col-lg-4">
                     <div class="pillar-card">
                         <div class="pillar-icon"><i class="fas fa-heart"></i></div>
                         <h3 class="serif-heading mb-2">Tazkiyah</h3>
@@ -192,7 +212,7 @@
                         <a href="education.html?article=articles/tazkiyah" class="text-emerald text-decoration-none fw-bold mt-2 d-inline-block small">Explore Spirituality <i class="fas fa-arrow-right ms-1 small"></i></a>
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-6 col-lg-4">
                     <div class="pillar-card">
                         <div class="pillar-icon"><i class="fas fa-book-open"></i></div>
                         <h3 class="serif-heading mb-2">Ilm</h3>
@@ -200,7 +220,7 @@
                         <a href="education.html?article=articles/ilm" class="text-emerald text-decoration-none fw-bold mt-2 d-inline-block small">Start Learning <i class="fas fa-arrow-right ms-1 small"></i></a>
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-6 col-lg-4">
                     <div class="pillar-card">
                         <div class="pillar-icon"><i class="fas fa-praying-hands"></i></div>
                         <h3 class="serif-heading mb-2">Ibadah</h3>
@@ -208,7 +228,7 @@
                         <a href="education.html?article=articles/ibadah" class="text-emerald text-decoration-none fw-bold mt-2 d-inline-block small">Guide to Worship <i class="fas fa-arrow-right ms-1 small"></i></a>
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-6 col-lg-4">
                     <div class="pillar-card">
                         <div class="pillar-icon"><i class="fas fa-users"></i></div>
                         <h3 class="serif-heading mb-2">Muamalat</h3>
@@ -216,7 +236,7 @@
                         <a href="education.html?article=articles/muamalat" class="text-emerald text-decoration-none fw-bold mt-2 d-inline-block small">Learn Ethics <i class="fas fa-arrow-right ms-1 small"></i></a>
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-6 col-lg-4">
                     <div class="pillar-card">
                         <div class="pillar-icon"><i class="fas fa-history"></i></div>
                         <h3 class="serif-heading mb-2">Seerah</h3>
@@ -224,7 +244,7 @@
                         <a href="education.html?article=articles/seerah" class="text-emerald text-decoration-none fw-bold mt-2 d-inline-block small">Read History <i class="fas fa-arrow-right ms-1 small"></i></a>
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-6 col-lg-4">
                     <div class="pillar-card">
                         <div class="pillar-icon"><i class="fas fa-balance-scale"></i></div>
                         <h3 class="serif-heading mb-2">Fiqh</h3>
@@ -237,17 +257,17 @@
     </section>
 
     <!-- SECTION 5: Explore the Deen -->
-    <section class="py-4 bg-white" style="background-color: #f8fafc;">
+    <section class="py-4 bg-section-light">
         <div class="container">
             <div class="section-header">
                 <h2 class="section-title">Explore the Deen</h2>
                 <div class="divider-icon"><i class="fas fa-star-and-crescent"></i></div>
             </div>
             
-            <div class="row">
+            <div class="row g-4">
                 <div class="col-md-4">
                     <div class="topic-item">
-                        <div class="topic-bg" style="background-image: url('images/quran.jpg');"></div>
+                        <div class="topic-bg bg-quran"></div>
                         <div class="topic-overlay">
                             <h3 class="topic-title">The Holy Quran</h3>
                             <p class="small opacity-75">Read, listen, and reflect on the divine words.</p>
@@ -257,7 +277,7 @@
                 </div>
                 <div class="col-md-4">
                     <div class="topic-item">
-                        <div class="topic-bg" style="background-image: url('images/hadith.jpg');"></div>
+                        <div class="topic-bg bg-hadith"></div>
                         <div class="topic-overlay">
                             <h3 class="topic-title">Hadiths</h3>
                             <p class="small opacity-75">Authentic collections of Prophetic traditions.</p>
@@ -267,7 +287,7 @@
                 </div>
                 <div class="col-md-4">
                     <div class="topic-item">
-                        <div class="topic-bg" style="background-image: url('images/belief.jpg');"></div>
+                        <div class="topic-bg bg-belief"></div>
                         <div class="topic-overlay">
                             <h3 class="topic-title">Islamic Belief</h3>
                             <p class="small opacity-75">Understanding the six articles of faith.</p>
@@ -277,7 +297,7 @@
                 </div>
                 <div class="col-md-4">
                     <div class="topic-item">
-                        <div class="topic-bg" style="background-image: url('images/names.jpg');"></div>
+                        <div class="topic-bg bg-names"></div>
                         <div class="topic-overlay">
                             <h3 class="topic-title">Names of Allah</h3>
                             <p class="small opacity-75">Reflect on the 99 Beautiful Names.</p>
@@ -287,7 +307,7 @@
                 </div>
                 <div class="col-md-4">
                     <div class="topic-item">
-                        <div class="topic-bg" style="background-image: url('images/zakat.jpg');"></div>
+                        <div class="topic-bg bg-zakat"></div>
                         <div class="topic-overlay">
                             <h3 class="topic-title">Zakat & Charity</h3>
                             <p class="small opacity-75">Calculate dues and purify wealth.</p>
@@ -297,7 +317,7 @@
                 </div>
                 <div class="col-md-4">
                     <div class="topic-item">
-                        <div class="topic-bg" style="background-image: url('images/family.jpg');"></div>
+                        <div class="topic-bg bg-family"></div>
                         <div class="topic-overlay">
                             <h3 class="topic-title">Family Life</h3>
                             <p class="small opacity-75">Guidance for marriage and parenting.</p>
@@ -309,8 +329,8 @@
         </div>
     </section>
 
-    <!-- SECTION 6: Zakat & Donation Widgets -->
-    <section id="zakat-section" class="py-4" style="background-color: #f0f9ff;">
+    <!-- SECTION 6: Zakat & Charity (Wider Layout) -->
+    <section id="zakat-section" class="py-4 bg-very-light-blue">
         <div class="container">
             <div class="section-header">
                 <h2 class="section-title">Charity & Purification</h2>
@@ -319,33 +339,35 @@
             
             <div class="row g-4 justify-content-center">
                 <!-- Zakat Calculator -->
-                <div class="col-lg-6">
+                <div class="col-lg-10"> <!-- Changed from col-lg-6 col-md-8 to col-lg-10 -->
                     <div class="widget-card">
                         <div class="widget-title"><i class="fas fa-calculator"></i> Zakat Calculator</div>
                         <p class="text-muted small mb-3">Enter your eligible assets to calculate 2.5% Zakat.</p>
                         
                         <div class="zakat-input-group">
-                        <label for="cash-assets">Cash on Hand & Bank Accounts ($)</label>
-                        <input type="number" class="zakat-input" id="cash-assets" placeholder="0.00">
+                            <label for="cash-assets">Cash on Hand & Bank Accounts ($)</label>
+                            <input type="number" class="zakat-input" id="cash-assets" placeholder="0.00">
                         </div>
                         <div class="zakat-input-group">
-                        <label for="gold-assets">Gold & Silver Value ($)</label>
-                        <input type="number" class="zakat-input" id="gold-assets" placeholder="0.00">
+                            <label for="gold-assets">Gold & Silver Value ($)</label>
+                            <input type="number" class="zakat-input" id="gold-assets" placeholder="0.00">
                         </div>
                         <div class="zakat-input-group">
-                        <label for="business-assets">Business Goods/Stock ($)</label>
-                        <input type="number" class="zakat-input" id="business-assets" placeholder="0.00">
+                            <label for="business-assets">Business Goods/Stock ($)</label>
+                            <input type="number" class="zakat-input" id="business-assets" placeholder="0.00">
                         </div>
                         
-                        <button class="btn w-100 mt-2" onclick="calculateZakat()" style="background: var(--emerald-green); color: white; border: none; padding: 10px 35px; border-radius: 50px; font-weight: bold;">Calculate Zakat</button>
+                        <button id="calculate-zakat-btn" class="btn w-100 mt-2 btn-zakat-main">Calculate Zakat</button>
                         
                         <div class="zakat-result" id="zakat-output">
                             <div>Total Zakat Payable:</div>
                             <div class="zakat-amount" id="zakat-total">$0.00</div>
+                            <div id="nisab-warning" class="alert alert-warning small mt-2 d-none">
+                                <i class="fas fa-exclamation-triangle me-1"></i> You are not required to pay Zakat as your total assets are below the Nisab threshold.
+                            </div>
                         </div>
                     </div>
                 </div>
-               
             </div>
         </div>
     </section>
@@ -383,7 +405,7 @@
                     </div>
                 </div>
             </div>
-            <hr class="border-secondary my-2" style="border-color: rgba(255,255,255,0.2) !important;">
+            <hr class="border-secondary my-2 footer-hr">
             <div class="text-center small">
                 <p class="mb-0">&copy; 2026 Al-Quranite. All Rights Reserved.</p>
             </div>
@@ -393,7 +415,8 @@
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Scripts -->
-    <script src="js/script.js"></script>
+    <!-- Main Scripts -->
+    <script type="module" src="js/script.js"></script>
+    
 </body>
 </html>

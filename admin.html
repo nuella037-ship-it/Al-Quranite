@@ -5,119 +5,164 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - Al-QURANITE</title>
 
-     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: https:; connect-src 'self' https://api.aladhan.com https://api.alquran.cloud https://cdn.jsdelivr.net https://cdnjs.cloudflare.com;">
+    <!-- SECURE CSP -->
+    <meta http-equiv="Content-Security-Policy" content="
+      default-src 'self'; 
+      script-src 'self' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://cdn.jsdelivr.net/npm/chart.js; 
+      style-src 'self' https://cdn.jsdelivr.net https://fonts.googleapis.com https://cdnjs.cloudflare.com; 
+      font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; 
+      img-src 'self' data: https:; 
+      connect-src 'self' https://api.aladhan.com https://api.alquran.cloud https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://txdmbluqqgjnbzawqogu.supabase.co">
 
-     <link rel="icon" href="/Al-Quranite/images/favicon.ico" type="image/x-icon">
-    
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
 
+    <!-- Bootstrap 5 CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha512-t4GWSVZO1eC8BM339Xd7Uphw5s17a86tIZIj8qRxhnKub6WoyhnrxeCIMeAqBPgdZGlCcG2PrZjMc+Wr78+5Xg==" crossorigin="anonymous">
+
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <link rel="stylesheet" type="text/css" href="css/styles.css">
-    <style>
-        /* Dashboard Styles */
-        .admin-sidebar {
-            background: var(--bg-color);
-            border-right: 1px solid var(--border);
-            min-height: calc(100vh - 60px);
-            padding: 20px;
-            padding-top: 80px;
-        }
-        .admin-sidebar .nav-link { color: var(--text-main); margin-bottom: 8px; border-radius: 8px; }
-        .admin-sidebar .nav-link:hover { background-color: var(--deep-sky-blue); color: white; }
-        .admin-sidebar .nav-link.active { background-color: var(--emerald-green); color: white; }
-        .stat-card {
-            background: white;
-            border-radius: 15px;
-            padding: 20px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-            border-top: 4px solid var(--deep-sky-blue);
-            text-align: center;
-            height: 100%;
-        }
-        .stat-number { font-size: 2.5rem; font-weight: bold; color: var(--emerald-green); }
-        .reply-btn {
-            border: none;
-            background: var(--deep-sky-blue);
-            color: white;
-            border-radius: 4px;
-            padding: 2px 8px;
-            font-size: 0.8rem;
-        }
-        .reply-btn:hover { background: #008bb5; }
-        .article-row {
-            background: #f8f9fa;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 10px;
-            margin-bottom: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .loading-spinner { display: flex; justify-content: center; padding: 40px; }
-        #articleEditorModal .modal-body { background: #f8fafc; }
-        #articleEditorModal .modal-body textarea {
-            width: 100%;
-            height: 400px;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            padding: 15px;
-            font-family: monospace;
-        }
-        @media (max-width: 768px) { .admin-sidebar { padding-top: 60px; } }
-    </style>
 </head>
 <body>
-    
+
     <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg fixed-top">
+    <nav class="navbar navbar-expand-md fixed-top">
         <div class="container">
             <a class="navbar-brand" href="index.html"><i class="fas fa-kaaba me-2"></i> Al-QURANITE</a>
-            <div class="collapse navbar-collapse justify-content-end">
-                <ul class="navbar-nav">
-                    <li class="nav-item"><a class="nav-link text-danger" href="index.html"><i class="fas fa-arrow-left me-2"></i>Back to Site</a></li>
-                    <li class="nav-item"><button id="logoutBtn" class="btn btn-outline-light btn-sm ms-2">Logout</button></li>
+
+            <!-- Hamburger (visible only on screens smaller than 768px) -->
+            <button class="btn btn-outline-light d-md-none ms-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSidebar">
+                <i class="fas fa-home"></i>
+            </button>
+
+            <!-- Navbar items (visible on md and up) -->
+            <div class="navbar-collapse collapse justify-content-end" id="adminNavbar">
+                <ul class="navbar-nav align-items-center">
+                    <!-- Admin Avatar (now visible on md and up) -->
+                    <li class="nav-item me-2 d-none d-md-block">
+                        <div class="admin-profile-avatar"><i class="fas fa-user"></i></div>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-danger" href="index.html"><i class="fas fa-arrow-left me-2"></i>Back to Site</a>
+                    </li>
+                    <li class="nav-item">
+                        <button id="logoutBtn" class="btn btn-outline-light btn-sm ms-2">Logout</button>
+                    </li>
                 </ul>
             </div>
         </div>
     </nav>
 
+    <!-- Off-canvas Sidebar for Mobile (Icons + Text, Left Aligned) -->
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasSidebar" aria-labelledby="offcanvasSidebarLabel">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title serif-heading text-emerald" id="offcanvasSidebarLabel"><i class="fas fa-crown me-2"></i>Admin Panel</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body d-flex flex-column">
+            <!-- Mobile Navigation Links (Icons + Text, Left Aligned) -->
+            <div class="nav flex-column nav-pills text-start" id="v-pills-tab-mobile" role="tablist">
+                <button class="nav-link active py-3 d-flex align-items-center gap-3" id="v-pills-dashboard-tab-mobile" data-bs-toggle="pill" data-bs-target="#v-pills-dashboard" type="button" title="Dashboard">
+                    <i class="fas fa-tachometer-alt fs-4"></i>
+                    <span>Dashboard</span>
+                </button>
+                <button class="nav-link py-3 d-flex align-items-center gap-3" id="v-pills-articles-tab-mobile" data-bs-toggle="pill" data-bs-target="#v-pills-articles" type="button" title="Manage Articles">
+                    <i class="fas fa-file-alt fs-4"></i>
+                    <span>Manage Articles</span>
+                </button>
+                <button class="nav-link py-3 d-flex align-items-center gap-3" id="v-pills-messages-tab-mobile" data-bs-toggle="pill" data-bs-target="#v-pills-messages" type="button" title="Messages">
+                    <i class="fas fa-envelope fs-4"></i>
+                    <span>Messages</span>
+                </button>
+                <button class="nav-link py-3 d-flex align-items-center gap-3" id="v-pills-newsletters-tab-mobile" data-bs-toggle="pill" data-bs-target="#v-pills-newsletters" type="button" title="Newsletters">
+                    <i class="fas fa-users fs-4"></i>
+                    <span>Newsletters</span>
+                </button>
+                <button class="nav-link py-3 d-flex align-items-center gap-3" id="v-pills-analytics-tab-mobile" data-bs-toggle="pill" data-bs-target="#v-pills-analytics" type="button" title="Analytics">
+                    <i class="fas fa-chart-line fs-4"></i>
+                    <span>Analytics</span>
+                </button>
+            </div>
+
+            <!-- User Actions (Separate buttons at the bottom, centered) -->
+            <div class="mt-auto pt-3 border-top d-flex gap-2 justify-content-center">
+                <!-- Back to Site – medium green -->
+                <a href="index.html" class="btn btn-back-to-site p-3" title="Back to Site">
+                    <i class="fas fa-arrow-left fs-5"></i>
+                    <span class="visually-hidden">Back to Site</span>
+                </a>
+                <!-- Logout – red -->
+                <button id="logoutBtnMobile" class="btn btn-logout p-3" title="Logout">
+                    <i class="fas fa-sign-out-alt fs-5"></i>
+                    <span class="visually-hidden">Logout</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Main Layout -->
-    <div class="container-fluid">
-        <div class="row">
-            <!-- Sidebar -->
-            <div class="col-md-3 col-lg-2 admin-sidebar">
+    <div class="container-fluid admin-wrapper">
+        <div class="row g-4">
+            <!-- Desktop Sidebar (hidden on small screens) -->
+            <div class="col-md-3 col-lg-3 admin-sidebar d-none d-md-block">
                 <h5 class="serif-heading text-emerald mb-4"><i class="fas fa-crown me-2"></i>Admin Panel</h5>
                 <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist">
-                    <button class="nav-link active" id="v-pills-dashboard-tab" data-bs-toggle="pill" data-bs-target="#v-pills-dashboard" type="button"><i class="fas fa-tachometer-alt me-2"></i>Dashboard</button>
-                    <button class="nav-link" id="v-pills-articles-tab" data-bs-toggle="pill" data-bs-target="#v-pills-articles" type="button"><i class="fas fa-file-alt me-2"></i>Manage Articles</button>
-                    <button class="nav-link" id="v-pills-messages-tab" data-bs-toggle="pill" data-bs-target="#v-pills-messages" type="button"><i class="fas fa-envelope me-2"></i>Messages</button>
-                    <button class="nav-link" id="v-pills-newsletters-tab" data-bs-toggle="pill" data-bs-target="#v-pills-newsletters" type="button"><i class="fas fa-users me-2"></i>Newsletters</button>
-                    <button class="nav-link" id="v-pills-analytics-tab" data-bs-toggle="pill" data-bs-target="#v-pills-analytics" type="button"><i class="fas fa-chart-line me-2"></i>Analytics</button>
+                    <button class="nav-link active" id="v-pills-dashboard-tab" data-bs-toggle="pill" data-bs-target="#v-pills-dashboard" type="button">
+                        <i class="fas fa-tachometer-alt me-2"></i><span>Dashboard</span>
+                    </button>
+                    <button class="nav-link" id="v-pills-articles-tab" data-bs-toggle="pill" data-bs-target="#v-pills-articles" type="button">
+                        <i class="fas fa-file-alt me-2"></i><span>Manage Articles</span>
+                    </button>
+                    <button class="nav-link" id="v-pills-messages-tab" data-bs-toggle="pill" data-bs-target="#v-pills-messages" type="button">
+                        <i class="fas fa-envelope me-2"></i><span>Messages</span>
+                    </button>
+                    <button class="nav-link" id="v-pills-newsletters-tab" data-bs-toggle="pill" data-bs-target="#v-pills-newsletters" type="button">
+                        <i class="fas fa-users me-2"></i><span>Newsletters</span>
+                    </button>
+                    <button class="nav-link" id="v-pills-analytics-tab" data-bs-toggle="pill" data-bs-target="#v-pills-analytics" type="button">
+                        <i class="fas fa-chart-line me-2"></i><span>Analytics</span>
+                    </button>
                 </div>
             </div>
 
             <!-- Main Content -->
-            <div class="col-md-9 col-lg-10 p-4" style="padding-top: 80px !important;">
+            <div class="col-md-9 col-lg-9 p-4">
                 <div class="tab-content" id="v-pills-tabContent">
+
                     <!-- Dashboard -->
                     <div class="tab-pane fade show active" id="v-pills-dashboard">
-                        <h2 class="serif-heading">Welcome back, Admin.</h2>
-                        <div class="row g-4 mt-2">
-                            <div class="col-md-6 col-lg-3">
-                                <div class="stat-card"><div class="stat-number" id="totalArticles">-</div><div class="text-muted small">Total Articles</div></div>
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h2 class="serif-heading mb-0" id="dashboardGreeting">Welcome back, Admin.</h2>
+                            <div class="text-muted small" id="currentDateTime"></div>
+                        </div>
+                        <div class="row g-4">
+                            <div class="col-md-4">
+                                <div class="stat-card">
+                                    <div class="icon-bg bg-soft-emerald"><i class="fas fa-file-alt text-emerald"></i></div>
+                                    <div class="stat-number" id="totalArticles">-</div>
+                                    <div class="stat-label">Total Articles</div>
+                                </div>
                             </div>
-                            <div class="col-md-6 col-lg-3">
-                                <div class="stat-card" style="border-top-color: var(--emerald-green);"><div class="stat-number" id="totalMessages">-</div><div class="text-muted small">Total Messages</div></div>
+                            <div class="col-md-4">
+                                <div class="stat-card">
+                                    <div class="icon-bg bg-soft-blue"><i class="fas fa-envelope text-sky"></i></div>
+                                    <div class="stat-number" id="totalMessages">-</div>
+                                    <div class="stat-label">Total Messages</div>
+                                </div>
                             </div>
-                            <div class="col-md-6 col-lg-3">
-                                <div class="stat-card" style="border-top-color: var(--magenta);"><div class="stat-number" id="totalSubs">-</div><div class="text-muted small">Newsletter Subscribers</div></div>
-                            </div>
-                            <div class="col-md-6 col-lg-3">
-                                <div class="stat-card" style="border-top-color: #ffc107;"><div class="stat-number text-muted" id="sessionTime">--</div><div class="text-muted small">Session Time</div></div>
+                            <div class="col-md-4">
+                                <div class="stat-card">
+                                    <div class="icon-bg bg-soft-pink"><i class="fas fa-users text-magenta"></i></div>
+                                    <div class="stat-number" id="totalSubs">-</div>
+                                    <div class="stat-label">Newsletter Subscribers</div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -125,52 +170,79 @@
                     <!-- Manage Articles -->
                     <div class="tab-pane fade" id="v-pills-articles">
                         <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
-                            <h2 class="serif-heading">Manage Articles</h2>
+                            <h2 class="serif-heading mb-0">Manage Articles</h2>
                             <div>
-                                <button class="btn btn-success btn-sm me-2" data-bs-toggle="modal" data-bs-target="#createArticleModal">
-                                    <i class="fas fa-plus"></i> Create New
+                                <button class="btn btn-primary-custom btn-sm me-2" data-bs-toggle="modal" data-bs-target="#createArticleModal">
+                                    <i class="fas fa-plus me-1"></i> Create New
                                 </button>
-                                <button class="btn btn-outline-primary btn-sm" id="syncLocalBtn">
-                                    <i class="fas fa-sync-alt"></i> Sync Local Files
+                                <input type="file" id="folderUploadInput" webkitdirectory accept=".html">
+                                <button class="btn btn-outline-primary-custom btn-sm me-2" id="syncFolderBtn">
+                                    <i class="fas fa-folder-open me-1"></i> Sync All Articles
                                 </button>
                                 <button class="btn btn-outline-secondary btn-sm ms-2" id="refreshArticlesBtn">
-                                    <i class="fas fa-redo-alt"></i> Refresh
+                                    <i class="fas fa-redo-alt me-1"></i> Refresh
+                                </button>
+                                <button class="btn btn-outline-danger btn-sm ms-2" id="bulkDeleteBtn" disabled>
+                                    <i class="fas fa-trash-alt me-1"></i> Delete Selected
                                 </button>
                             </div>
                         </div>
-                        <div id="articleListContainer"><div class="loading-spinner"><div class="spinner-border text-emerald"></div> Loading Articles...</div></div>
+                        <div id="articleListContainer">
+                            <div class="loading-spinner">
+                                <div class="spinner-border text-emerald"></div> Loading Articles...
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Messages -->
                     <div class="tab-pane fade" id="v-pills-messages">
-                        <h2 class="serif-heading">Messages</h2>
-                        <div id="messagesContainer"><div class="text-muted small py-3">Loading messages...</div></div>
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h2 class="serif-heading">Messages</h2>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="showArchivedCheckbox">
+                                <label class="form-check-label small text-muted" for="showArchivedCheckbox">
+                                    Show Archived
+                                </label>
+                            </div>
+                        </div>
+                        <div id="messagesContainer">
+                            <div class="text-muted small py-3">Loading messages...</div>
+                        </div>
                     </div>
 
                     <!-- Newsletters -->
                     <div class="tab-pane fade" id="v-pills-newsletters">
                         <h2 class="serif-heading">Newsletter Subscribers</h2>
-                        <div id="newsletterContainer"><div class="text-muted small py-3">Loading subscribers...</div></div>
+                        <div id="newsletterContainer">
+                            <div class="text-muted small py-3">Loading subscribers...</div>
+                        </div>
                     </div>
 
                     <!-- Analytics -->
                     <div class="tab-pane fade" id="v-pills-analytics">
                         <h2 class="serif-heading">Analytics</h2>
-                        <div class="row g-4">
+                        <div class="row g-4 mt-2">
                             <div class="col-md-6">
-                                <div class="stat-card" style="border-top-color: var(--deep-sky-blue);">
+                                <div class="stat-card border-top-sky">
                                     <div class="stat-number" id="totalVisits">0</div>
-                                    <div class="text-muted small">Total Visits</div>
+                                    <div class="stat-label">Total Visits</div>
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <div class="stat-card" style="border-top-color: var(--emerald-green);">
+                                <div class="stat-card border-top-emerald">
                                     <div class="stat-number" id="averageSession">00:00</div>
-                                    <div class="text-muted small">Avg Session Length</div>
+                                    <div class="stat-label">Avg Session Length</div>
+                                </div>
+                            </div>
+                            <div class="col-12 mt-4">
+                                <h5 class="text-muted small text-uppercase mb-3">Visits Overview</h5>
+                                <div class="chart-container">
+                                    <canvas id="visitsChart"></canvas>
                                 </div>
                             </div>
                         </div>
                     </div>
+
                 </div>
             </div>
         </div>
@@ -180,26 +252,29 @@
     <div class="modal fade" id="createArticleModal" tabindex="-1">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                <div class="modal-header"><h5 class="modal-title">Create New Article</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                <div class="modal-header">
+                    <h5 class="modal-title">Create New Article</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
                 <div class="modal-body">
                     <form id="createArticleForm">
                         <div class="mb-3">
-                            <label class="form-label">Article Title</label>
+                            <label class="form-label" for="newArticleTitle">Article Title</label>
                             <input type="text" class="form-control" id="newArticleTitle" placeholder="e.g. My New Article" required>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Filename (must end with .html)</label>
+                            <label class="form-label" for="newArticleFilename">Filename (must end with .html)</label>
                             <input type="text" class="form-control" id="newArticleFilename" placeholder="my-new-article.html" required>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Initial Content (HTML)</label>
+                            <label class="form-label" for="newArticleContent">Initial Content (HTML)</label>
                             <textarea class="form-control" id="newArticleContent" rows="8" placeholder="<h1>Title</h1><p>Content...</p>" required></textarea>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-success" id="createArticleBtn">Create Article</button>
+                    <button type="button" class="btn btn-primary-custom" id="createArticleBtn">Create Article</button>
                 </div>
             </div>
         </div>
@@ -209,11 +284,16 @@
     <div class="modal fade" id="articleEditorModal" tabindex="-1">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
-                <div class="modal-header"><h5 class="modal-title">Editing <span id="editFileName"></span></h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
-                <div class="modal-body"><textarea id="editorContent"></textarea></div>
+                <div class="modal-header">
+                    <h5 class="modal-title">Editing <span id="editFileName"></span></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <textarea id="editorContent"></textarea>
+                </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-submit" id="saveArticleEditBtn">Save Changes</button>
+                    <button type="button" class="btn btn-primary-custom" id="saveArticleEditBtn">Save Changes</button>
                 </div>
             </div>
         </div>
@@ -223,364 +303,42 @@
     <div class="modal fade" id="replyModal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header"><h5 class="modal-title">Reply to <span id="replyName"></span></h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
-                <div class="modal-body"><textarea id="replyText" class="form-control" rows="4"></textarea></div>
+                <div class="modal-header">
+                    <h5 class="modal-title">Reply to <span id="replyName"></span></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <textarea id="replyText" class="form-control" rows="4" placeholder="Write your reply..."></textarea>
+                </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-submit" id="sendReplyBtn">Send Reply</button>
+                    <button type="button" class="btn btn-primary-custom" id="sendReplyBtn">Send Reply</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Bootstrap JS -->
+    <!-- Custom Confirmation Modal -->
+<div class="custom-modal-overlay" id="customConfirmModal">
+    <div class="custom-modal-box">
+        <div class="custom-modal-header">
+            <h5 class="m-0" id="confirmModalTitle">Confirm Action</h5>
+        </div>
+        <div class="custom-modal-body">
+            <p id="confirmModalMessage">Are you sure?</p>
+        </div>
+        <div class="custom-modal-footer">
+            <button class="custom-btn-cancel" id="confirmNoBtn">Cancel</button>
+            <button class="custom-btn-confirm" id="confirmYesBtn">OK</button>
+        </div>
+    </div>
+</div>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+
+    <!-- Supabase & Dashboard Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-    <script src="js/script.js"></script>
-    
-    <script type="module">
-    // ==============================
-    // 1. CONFIGURATION & AUTH CHECK
-    // ==============================
-    import { supabase } from './js/supabase.js';
-
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session) {
-        window.location.href = 'login.html';
-        throw new Error('Unauthorized');
-    }
-    // Check profile table for admin status
-    const { data: profile, error } = await supabase
-        .from('profiles')
-        .select('is_admin')
-        .eq('email', session.user.email)
-        .single();
-
-    if (error || !profile || !profile.is_admin) {
-        await supabase.auth.signOut();
-        window.location.href = 'login.html';
-        throw new Error('Unauthorized: Admin access only');
-    }
-    // ==============================
-    // 2. DASHBOARD STATS
-    // ==============================
-    async function updateStats() {
-        const { count: articleCount } = await supabase.from('articles').select('*', { count: 'exact', head: true });
-        const { count: msgCount } = await supabase.from('messages').select('*', { count: 'exact', head: true });
-        const { count: subCount } = await supabase.from('newsletters').select('*', { count: 'exact', head: true });
-        document.getElementById('totalArticles').textContent = articleCount || 0;
-        document.getElementById('totalMessages').textContent = msgCount || 0;
-        document.getElementById('totalSubs').textContent = subCount || 0;
-    }
-
-    // ==============================
-    // 3. ARTICLE MANAGEMENT
-    // ==============================
-    let editingFile = null;
-
-    async function refreshArticleList() {
-        const container = document.getElementById('articleListContainer');
-        container.innerHTML = '<div class="loading-spinner"><div class="spinner-border text-emerald"></div> Loading...</div>';
-        
-        const { data: articles, error } = await supabase.from('articles').select('*').order('id', { ascending: false });
-        if (error) {
-            container.innerHTML = `<div class="text-danger small">Error: ${error.message}</div>`;
-            return;
-        }
-
-        let html = '';
-        articles.forEach(article => {
-            html += `
-                <div class="article-row" data-id="${article.id}">
-                    <div>
-                        <strong>${article.title || article.filename}</strong>
-                        ${article.is_local_synced ? '<span class="badge bg-secondary text-light ms-2">Local</span>' : '<span class="badge bg-info text-dark ms-2">New</span>'}
-                        <br><small class="text-muted">${article.filename} • Updated: ${new Date(article.updated_at).toLocaleDateString()}</small>
-                    </div>
-                    <div>
-                        <button class="btn btn-sm btn-outline-primary me-2 btn-edit-article" data-filename="${article.filename}"><i class="fas fa-edit"></i> Edit</button>
-                        <button class="btn btn-sm btn-outline-danger btn-delete-article" data-filename="${article.filename}"><i class="fas fa-trash-alt"></i></button>
-                    </div>
-                </div>
-            `;
-        });
-        container.innerHTML = html;
-        updateStats();
-        // After container.innerHTML = html; in refreshArticleList():
-        container.querySelectorAll('.btn-edit-article').forEach(btn => {
-            btn.addEventListener('click', function() {
-                editArticle(this.getAttribute('data-filename'));
-            });
-        });
-        container.querySelectorAll('.btn-delete-article').forEach(btn => {
-            btn.addEventListener('click', function() {
-                deleteArticle(this.getAttribute('data-filename'));
-            });
-        });
-    }
-
-    window.createNewArticle = async function() {
-        const title = document.getElementById('newArticleTitle').value.trim();
-        let filename = document.getElementById('newArticleFilename').value.trim();
-        const content = document.getElementById('newArticleContent').value;
-
-        if (!title || !filename || !content) return alert('Please fill out all fields.');
-        if (!filename.endsWith('.html')) filename += '.html';
-
-        const { error } = await supabase.from('articles').insert([
-            { filename, title, content, is_local_synced: false }
-        ]);
-
-        if (error) alert('Error creating article: ' + error.message);
-        else {
-            bootstrap.Modal.getInstance(document.getElementById('createArticleModal')).hide();
-            document.getElementById('createArticleForm').reset();
-            refreshArticleList();
-        }
-    };
-
-    const topicFiles = [
-        'shirk.html', 'ilm.html', 'tazkiyah.html', 'ibadah.html', 'aqidah.html',
-        'rituals.html', '99-names.html', 'asbab.html', 'preservation.html', 'authentication.html',
-        'maqasid.html', 'fiqh.html', 'madhhabs.html', 'usul.html', 'dawah.html',
-        'modernism.html', 'modernity.html', 'marriage.html', 'muamalat.html', 'quran-source.html',
-        'hadith-source.html', 'seerah.html', 'ijma.html', 'qiyas.html', 'adab.html',
-        'books.html', 'hadith-major.html'
-    ];
-
-    window.syncLocalArticles = async function() {
-        if (!confirm('This will upload all local .html files to Supabase. Proceed?')) return;
-        const btn = document.getElementById('syncLocalBtn');
-        btn.disabled = true;
-        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Syncing...';
-
-        try {
-            for (let file of topicFiles) {
-                const response = await fetch(`articles/${file}`);
-                if (!response.ok) continue;
-                const content = await response.text();
-                const titleMatch = content.match(/<h1[^>]*>(.*?)<\/h1>/i) || content.match(/<title>(.*?)<\/title>/i);
-                const title = titleMatch ? titleMatch[1].replace(/<[^>]*>/g, '') : file;
-                
-                await supabase.from('articles').upsert({
-                    filename: file,
-                    title: title,
-                    content: content,
-                    is_local_synced: true
-                }, { onConflict: 'filename' });
-            }
-            alert('Sync complete!');
-            refreshArticleList();
-        } catch (e) {
-            alert('Error syncing: ' + e.message);
-        } finally {
-            btn.disabled = false;
-            btn.innerHTML = '<i class="fas fa-sync-alt"></i> Sync Local Files';
-        }
-    };
-
-    window.editArticle = async function(file) {
-        editingFile = file;
-        const { data } = await supabase.from('articles').select('content').eq('filename', file).maybeSingle();
-        const content = data ? data.content : 'Article not found.';
-        document.getElementById('editFileName').textContent = file;
-        document.getElementById('editorContent').value = content;
-        new bootstrap.Modal(document.getElementById('articleEditorModal')).show();
-    };
-
-    window.saveArticleEdit = async function() {
-        const content = document.getElementById('editorContent').value;
-        const { error } = await supabase
-            .from('articles')
-            .upsert({ filename: editingFile, content, updated_at: new Date() }, { onConflict: 'filename' });
-        if (error) alert('Error saving: ' + error.message);
-        else {
-            bootstrap.Modal.getInstance(document.getElementById('articleEditorModal')).hide();
-            refreshArticleList();
-        }
-    };
-
-    window.deleteArticle = async function(file) {
-        if (!confirm(`Are you sure you want to delete ${file} from the database? (Local file will remain)`)) return;
-        const { error } = await supabase.from('articles').delete().eq('filename', file);
-        if (error) alert('Error deleting: ' + error.message);
-        else refreshArticleList();
-    };
-
-    // ==============================
-    // 4. MESSAGES MANAGEMENT
-    // ==============================
-    let replyingToId = null;
-
-    async function renderMessages() {
-        const { data: messages, error } = await supabase.from('messages').select('*').order('id', { ascending: false });
-        const container = document.getElementById('messagesContainer');
-        if (error) { container.innerHTML = `<div class="text-danger small">Error: ${error.message}</div>`; return; }
-        if (!messages || messages.length === 0) { container.innerHTML = '<div class="text-muted small py-3">No messages yet.</div>'; return; }
-        
-        let html = `<div class="list-group">`;
-        messages.forEach(m => {
-            const replies = m.replies || [];
-            html += `
-                <div class="list-group-item p-3 mb-2 rounded shadow-sm" style="border-left: 4px solid var(--emerald-green);">
-                    <div class="d-flex justify-content-between">
-                        <h6 class="mb-1">${m.first_name} ${m.last_name} <span class="text-muted small">(${m.email})</span></h6>
-                        <small class="text-muted">${new Date(m.created_at).toLocaleString()}</small>
-                    </div>
-                    <p class="mb-2 small text-muted"><strong>Subject:</strong> ${m.subject}</p>
-                    <p class="mb-2">${m.message}</p>
-                    ${replies.map(r => `<div class="bg-light p-2 rounded mt-2 small"><strong>Admin:</strong> ${r}</div>`).join('')}
-                    <button class="reply-btn mt-2" data-message-id="${m.id}"><i class="fas fa-reply me-1"></i> Reply</button>
-                </div>
-            `;
-        });
-        html += `</div>`;
-        container.innerHTML = html;
-        updateStats();
-
-        // Attach click listeners to reply buttons via delegation
-        container.querySelectorAll('.reply-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const id = parseInt(this.getAttribute('data-message-id'));
-                openReply(id);
-            });
-        });
-    }
-
-    window.openReply = function(id) {
-        replyingToId = id;
-        document.getElementById('replyName').textContent = 'Message #' + id;
-        document.getElementById('replyText').value = '';
-        new bootstrap.Modal(document.getElementById('replyModal')).show();
-    };
-
-    window.sendReply = async function() {
-        const reply = document.getElementById('replyText').value;
-        if (!reply.trim()) return alert('Please write a reply.');
-        const { data: msg, error: fetchError } = await supabase.from('messages').select('replies').eq('id', replyingToId).single();
-        if (fetchError) return alert('Error fetching message: ' + fetchError.message);
-        const replies = msg.replies || [];
-        replies.push(reply);
-        const { error } = await supabase.from('messages').update({ replies }).eq('id', replyingToId);
-        if (error) alert('Error saving reply: ' + error.message);
-        else { bootstrap.Modal.getInstance(document.getElementById('replyModal')).hide(); renderMessages(); }
-    };
-
-    // ==============================
-    // 5. NEWSLETTERS MANAGEMENT
-    // ==============================
-    async function renderNewsletters() {
-        const { data: subs, error } = await supabase.from('newsletters').select('email, created_at').order('id', { ascending: false });
-        const container = document.getElementById('newsletterContainer');
-        if (error) { container.innerHTML = `<div class="text-danger small">Error: ${error.message}</div>`; return; }
-        if (!subs || subs.length === 0) { container.innerHTML = '<div class="text-muted small py-3">No subscribers yet.</div>'; return; }
-        
-        let html = `<div class="table-responsive"><table class="table table-hover"><thead><tr><th>Email</th><th>Date Subscribed</th></tr></thead><tbody>`;
-        subs.forEach(s => { html += `<tr><td>${s.email}</td><td>${new Date(s.created_at).toLocaleString()}</td></tr>`; });
-        html += `</tbody></table></div>`;
-        container.innerHTML = html;
-        updateStats();
-    }
-
-    // ==============================
-    // 6. ANALYTICS & SESSION TRACKING (Optimized)
-    // ==============================
-    let sessionStart = Date.now();
-
-    async function initAnalytics() {
-        const { data: analytics, error: fetchError } = await supabase
-            .from('analytics')
-            .select('total_visits, total_duration_ms, avg_duration_ms')
-            .eq('id', 1)
-            .maybeSingle();
-
-        if (fetchError) return console.error(fetchError);
-
-        let visits = (analytics?.total_visits || 0) + 1;
-        document.getElementById('totalVisits').textContent = visits;
-
-        // Update database with new visit count and recalculated average
-        const avgMs = analytics?.avg_duration_ms || 0;
-        const totalMs = analytics?.total_duration_ms || 0;
-        
-        document.getElementById('averageSession').textContent = formatDuration(avgMs);
-
-        await supabase
-            .from('analytics')
-            .upsert({ 
-                id: 1, 
-                total_visits: visits, 
-                total_duration_ms: totalMs,
-                avg_duration_ms: avgMs,
-                updated_at: new Date() 
-            });
-    }
-
-    document.addEventListener('visibilitychange', async function() {
-        if (document.hidden) {
-            const duration = Date.now() - sessionStart;
-            const { data: analytics } = await supabase
-                .from('analytics')
-                .select('total_visits, total_duration_ms')
-                .eq('id', 1)
-                .maybeSingle();
-
-            let oldTotalMs = analytics?.total_duration_ms || 0;
-            let oldVisits = analytics?.total_visits || 0;
-            
-            // Weighted average formula
-            let newTotalMs = oldTotalMs + duration;
-            let newAvgMs = newTotalMs / (oldVisits || 1); // prevent division by zero
-
-            await supabase
-                .from('analytics')
-                .update({ 
-                    total_duration_ms: newTotalMs, 
-                    avg_duration_ms: newAvgMs 
-                })
-                .eq('id', 1);
-        } else {
-            sessionStart = Date.now();
-        }
-    });
-
-    // Helper to format milliseconds to MM:SS
-    function formatDuration(ms) {
-        if (!ms) return '00:00';
-        const seconds = Math.floor(ms / 1000);
-        return `${String(Math.floor(seconds / 60)).padStart(2, '0')}:${String(seconds % 60).padStart(2, '0')}`;
-    }
-
-    // Update session clock
-    setInterval(() => {
-        const elapsed = Date.now() - sessionStart;
-        document.getElementById('sessionTime').textContent = formatDuration(elapsed);
-    }, 1000);
-
-    // ==============================
-    // 7. INITIALIZATION & EVENT LISTENERS
-    // ==============================
-    document.addEventListener('DOMContentLoaded', function() {
-        document.getElementById('logoutBtn')?.addEventListener('click', async () => { await supabase.auth.signOut(); window.location.href = 'login.html'; });
-        supabase.auth.onAuthStateChange((event, session) => { if (event === 'SIGNED_OUT') window.location.href = 'login.html'; });
-        
-        // Bind button listeners
-        document.getElementById('syncLocalBtn')?.addEventListener('click', syncLocalArticles);
-        document.getElementById('refreshArticlesBtn')?.addEventListener('click', refreshArticleList);
-        document.getElementById('createArticleBtn')?.addEventListener('click', createNewArticle);
-        document.getElementById('saveArticleEditBtn')?.addEventListener('click', saveArticleEdit);
-        document.getElementById('sendReplyBtn')?.addEventListener('click', sendReply);
-
-        refreshArticleList(); renderMessages(); renderNewsletters(); initAnalytics();
-    });
-
-    // Expose functions globally for inline onclick handlers (if any left, but none now)
-    window.refreshArticleList = refreshArticleList;
-    window.editArticle = editArticle;
-    window.saveArticleEdit = saveArticleEdit;
-    window.deleteArticle = deleteArticle;
-    window.openReply = openReply;
-    window.sendReply = sendReply;
-    </script>
+    <script src="js/admin-dashboard.js" type="module"></script>
 </body>
 </html>

@@ -1426,6 +1426,12 @@ h1, h2, h3, h4, h5, .arabic-text {
     text-align: right;
     direction: rtl; 
 }
+.book-name-ar {
+    text-align: right;  
+    direction: rtl;      
+    flex-shrink: 0;     
+    min-width: 80px;       
+}
 .main-wrapper, .reader-panel {
     flex: 0 0 70%;
     max-width: 70%;

@@ -255,15 +255,32 @@ document.addEventListener('DOMContentLoaded', async function() {
         else refreshArticleList();
     }
 
+    // ---------- Create new article ----------
     window.createNewArticle = async function() {
         const title = document.getElementById('newArticleTitle').value.trim();
+        const arabicTitle = document.getElementById('newArabicTitle').value.trim();
+        const category = document.getElementById('newCategory').value;
         let filename = document.getElementById('newArticleFilename').value.trim();
         const content = document.getElementById('newArticleContent').value;
-        if (!title || !filename || !content) return showToast('Please fill out all fields.', 'error');
+
+        if (!title || !arabicTitle || !category || !filename || !content) {
+            return showToast('Please fill out all fields.', 'error');
+        }
         if (!filename.endsWith('.html')) filename += '.html';
-        const { error } = await supabase.from('articles').insert([{ filename, title, content, is_local_synced: false, status: 'draft' }]);
-        if (error) showToast('Error creating article: ' + error.message, 'error');
-        else {
+
+        const { error } = await supabase.from('articles').insert([{
+            filename,
+            title,
+            arabic_title: arabicTitle,
+            category,
+            content,
+            is_local_synced: false,
+            status: 'draft'
+        }]);
+
+        if (error) {
+            showToast('Error creating article: ' + error.message, 'error');
+        } else {
             bootstrap.Modal.getInstance(document.getElementById('createArticleModal')).hide();
             document.getElementById('createArticleForm').reset();
             refreshArticleList();
@@ -271,42 +288,101 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
     };
 
-    document.getElementById('syncFolderBtn')?.addEventListener('click', function() {
-        document.getElementById('folderUploadInput').click();
-    });
+    // ---------- Sync Local Files (with mapping) ----------
+    const topicFiles = [
+        'shirk.html', 'ilm.html', 'tazkiyah.html', 'ibadah.html', 'aqidah.html', 'rituals.html', 
+        '99-names.html', 'asbab.html', 'preservation.html', 'authentication.html', 'maqasid.html', 
+        'fiqh.html', 'madhhabs.html', 'usul.html', 'dawah.html', 'modernism.html', 'modernity.html', 
+        'marriage.html', 'muamalat.html', 'quran-source.html', 'hadith-source.html', 'seerah.html', 
+        'ijma.html', 'qiyas.html', 'adab.html', 'books.html', 'hadith-major.html'
+    ];
 
-    document.getElementById('folderUploadInput')?.addEventListener('change', async function(e) {
-        const files = Array.from(this.files).filter(f => f.name.endsWith('.html'));
-        if (files.length === 0) return showToast('No HTML files found in the selected folder.', 'error');
+    const arabicTitleMap = {
+        'shirk.html': 'الشرك',
+        'ilm.html': 'العلم',
+        'tazkiyah.html': 'التزكية',
+        'ibadah.html': 'العبادة',
+        'aqidah.html': 'العقيدة',
+        'rituals.html': 'الشعائر',
+        '99-names.html': 'الأسماء الحسنى',
+        'asbab.html': 'أسباب النزول',
+        'preservation.html': 'حفظ النص',
+        'authentication.html': 'التوثيق',
+        'maqasid.html': 'مقاصد الشريعة',
+        'fiqh.html': 'الفقه',
+        'madhhabs.html': 'المذاهب',
+        'usul.html': 'أصول الفقه',
+        'dawah.html': 'الدعوة',
+        'modernism.html': 'الحداثة',
+        'modernity.html': 'العصرية',
+        'marriage.html': 'الزواج',
+        'muamalat.html': 'المعاملات',
+        'quran-source.html': 'القرآن الكريم',
+        'hadith-source.html': 'الحديث النبوي',
+        'seerah.html': 'السيرة النبوية',
+        'ijma.html': 'الإجماع',
+        'qiyas.html': 'القياس',
+        'adab.html': 'آداب طالب العلم',
+        'books.html': 'الكتب',
+        'hadith-major.html': 'المجاميع الحديثية'
+    };
+    const categoryMap = {
+        'shirk.html': 'Foundations',
+        'ilm.html': 'Foundations',
+        'tazkiyah.html': 'Foundations',
+        'ibadah.html': 'Foundations',
+        'aqidah.html': 'Foundations',
+        'rituals.html': 'Foundations',
+        '99-names.html': 'Foundations',
+        'asbab.html': 'Sacred Sciences',
+        'preservation.html': 'Sacred Sciences',
+        'authentication.html': 'Sacred Sciences',
+        'maqasid.html': 'Legal Systems',
+        'fiqh.html': 'Legal Systems',
+        'madhhabs.html': 'Legal Systems',
+        'usul.html': 'Legal Systems',
+        'dawah.html': 'Modern Dynamics',
+        'modernism.html': 'Modern Dynamics',
+        'modernity.html': 'Modern Dynamics',
+        'marriage.html': 'Modern Dynamics',
+        'muamalat.html': 'Modern Dynamics',
+        'quran-source.html': 'Sources',
+        'hadith-source.html': 'Sources',
+        'seerah.html': 'Sources',
+        'ijma.html': 'Sources',
+        'qiyas.html': 'Sources',
+        'adab.html': 'Student Guide',
+        'books.html': 'Student Guide',
+        'hadith-major.html': 'Sources'
+    };
 
-        const btn = document.getElementById('syncFolderBtn');
-        btn.disabled = true;
-        btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Syncing ${files.length} files...`;
-
+    window.syncLocalArticles = async function() {
+        if (!confirm('This will upload all local .html files to Supabase. Proceed?')) return;
+        const btn = document.getElementById('syncLocalBtn');
+        btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Syncing...';
         try {
-            for (let file of files) {
-                const content = await file.text();
+            for (let file of topicFiles) {
+                const response = await fetch(`articles/${file}`);
+                if (!response.ok) continue;
+                const content = await response.text();
                 const titleMatch = content.match(/<h1[^>]*>(.*?)<\/h1>/i) || content.match(/<title>(.*?)<\/title>/i);
-                const title = titleMatch ? titleMatch[1].replace(/<[^>]*>/g, '') : file.name;
-                const { error } = await supabase.from('articles').upsert({
-                    filename: file.name, title, content, is_local_synced: true, status: 'published'
+                const title = titleMatch ? titleMatch[1].replace(/<[^>]*>/g, '') : file;
+                await supabase.from('articles').upsert({
+                    filename: file,
+                    title: title,
+                    arabic_title: arabicTitleMap[file] || '',
+                    category: categoryMap[file] || 'General',
+                    content: content,
+                    is_local_synced: true,
+                    status: 'published'
                 }, { onConflict: 'filename' });
-                if (error) {
-                    console.error('Supabase error:', error);
-                    throw new Error(error.message || 'Unknown error');
-                }
             }
-            showToast(`Successfully synced ${files.length} articles to Supabase!`);
-            refreshArticleList();
-        } catch (e) {
-            showToast('Error syncing: ' + e.message, 'error');
-        } finally {
-            btn.disabled = false;
-            btn.innerHTML = '<i class="fas fa-folder-open me-1"></i> Sync All Articles';
-            this.value = '';
-        }
-    });
+            alert('Sync complete!'); refreshArticleList();
+        } catch (e) { alert('Error syncing: ' + e.message); }
+        finally { btn.disabled = false; btn.innerHTML = '<i class="fas fa-sync-alt"></i> Sync Local Files'; }
+    };
 
+    // ---------- Edit article ----------
     window.editArticle = async function(file) {
         editingFile = file;
         const { data } = await supabase.from('articles').select('content').eq('filename', file).maybeSingle();

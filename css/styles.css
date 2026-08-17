@@ -1422,6 +1422,16 @@ h1, h2, h3, h4, h5, .arabic-text {
     font-size: 1.5rem;
     color: var(--emerald-green);
 }
+.book-name-ar {
+    text-align: right;
+    direction: rtl; 
+}
+.book-name-ar {
+    text-align: right;      
+    direction: rtl;        
+    flex-shrink: 0;         
+    min-width: 80px;       
+}
 .main-wrapper, .reader-panel {
     flex: 0 0 70%;
     max-width: 70%;
@@ -2822,4 +2832,30 @@ footer a:hover {
 }
 .custom-btn-cancel:hover {
     background: #e2e8f0;
+}
+
+/* Secret Admin Link - Pure text, zero margins */
+.secret-admin-link {
+    display: inline !important;
+    color: inherit !important;
+    text-decoration: none !important;
+    font-weight: normal !important;
+    background: transparent !important;
+    cursor: pointer !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* Ensure absolutely no hover effects, bold, or color changes */
+.secret-admin-link:hover,
+.secret-admin-link:focus,
+.secret-admin-link:active {
+    color: inherit !important;
+    text-decoration: none !important;
+    font-weight: normal !important;
+    background: transparent !important;
+    outline: none !important;
+    box-shadow: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
 }

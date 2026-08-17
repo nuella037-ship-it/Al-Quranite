@@ -1,31 +1,37 @@
-import { supabase } from './supabase.js';
+    // admin-login.js
+    import { supabase } from './supabase.js';
 
-document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('loginForm');
-    const errorDiv = document.getElementById('loginError');
-    const submitBtn = document.getElementById('loginBtn');
-    const passwordInput = document.getElementById('password');
-    const toggleBtn = document.getElementById('togglePasswordBtn');
-    const toggleIcon = document.getElementById('togglePasswordIcon');
-    const forgotLink = document.getElementById('forgotPasswordLink');
-    
-    const loader = document.getElementById('sessionLoader');
-    const card = document.querySelector('.login-container .card');
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('loginForm');
+        const errorDiv = document.getElementById('loginError');
+        const submitBtn = document.getElementById('loginBtn');
+        const passwordInput = document.getElementById('password');
+        const toggleBtn = document.getElementById('togglePasswordBtn');
+        const toggleIcon = document.getElementById('togglePasswordIcon');
+        const forgotLink = document.getElementById('forgotPasswordLink');
+        const loader = document.getElementById('sessionLoader');
+        const card = document.querySelector('.login-container .card');
 
-    (async function checkSession() {
-        try {
-            const { data: { session } } = await supabase.auth.getSession();
-            if (session) {
-                window.location.href = 'admin.html';
-            } else {
+        (async function checkSession() {
+            try {
+                // 1. Check if an active session exists
+                const { data: { session } } = await supabase.auth.getSession();
+
+                // 2. If session exists, redirect to admin dashboard
+                if (session) {
+                    window.location.href = 'admin.html';
+                } else {
+                    // 3. No session found → Hide loader and show the login form
+                    if (loader) loader.style.display = 'none';
+                    if (card) card.style.display = 'block';
+                }
+            } catch (error) {
+                // 4. If Supabase throws an error, still show the login form (fallback)
+                console.warn("Session check failed. Proceeding to login page.");
                 if (loader) loader.style.display = 'none';
                 if (card) card.style.display = 'block';
             }
-        } catch (error) {
-            if (loader) loader.style.display = 'none';
-            if (card) card.style.display = 'block';
-        }
-    })();
+        })();
 
     toggleBtn.addEventListener('click', function() {
         const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';

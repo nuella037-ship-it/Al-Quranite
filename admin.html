@@ -259,8 +259,24 @@
                 <div class="modal-body">
                     <form id="createArticleForm">
                         <div class="mb-3">
-                            <label class="form-label" for="newArticleTitle">Article Title</label>
-                            <input type="text" class="form-control" id="newArticleTitle" placeholder="e.g. My New Article" required>
+                            <label class="form-label" for="newArticleTitle">English Title</label>
+                            <input type="text" class="form-control" id="newArticleTitle" placeholder="e.g. The Concept of Shirk" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="newArabicTitle">Arabic Title</label>
+                            <input type="text" class="form-control" id="newArabicTitle" placeholder="e.g. الشرك" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="newCategory">Category</label>
+                            <select class="form-select" id="newCategory" required>
+                                <option value="">Select a category</option>
+                                <option value="Foundations">Foundations</option>
+                                <option value="Sacred Sciences">Sacred Sciences</option>
+                                <option value="Legal Systems">Legal Systems</option>
+                                <option value="Modern Dynamics">Modern Dynamics</option>
+                                <option value="Sources">Sources</option>
+                                <option value="Student Guide">Student Guide</option>
+                            </select>
                         </div>
                         <div class="mb-3">
                             <label class="form-label" for="newArticleFilename">Filename (must end with .html)</label>
@@ -279,7 +295,6 @@
             </div>
         </div>
     </div>
-
     <!-- Article Editor Modal -->
     <div class="modal fade" id="articleEditorModal" tabindex="-1">
         <div class="modal-dialog modal-xl">

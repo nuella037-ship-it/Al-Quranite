@@ -589,10 +589,19 @@ document.addEventListener('DOMContentLoaded', async function() {
         return `${String(Math.floor(seconds / 60)).padStart(2, '0')}:${String(seconds % 60).padStart(2, '0')}`;
     }
 
-    // 8. LOGOUT
-    document.getElementById('logoutBtn')?.addEventListener('click', async () => { await supabase.auth.signOut(); window.location.href = 'login.html'; });
-    document.getElementById('logoutBtnMobile')?.addEventListener('click', async () => { await supabase.auth.signOut(); window.location.href = 'login.html'; });
+        // 8. LOGOUT HANDLERS (Desktop & Mobile)
+    document.getElementById('logoutBtn')?.addEventListener('click', async () => {
+        await supabase.auth.signOut();
+        localStorage.clear(); // Forces a complete clean wipe of all site data
+        window.location.href = 'login.html';
+    });
 
+    document.getElementById('logoutBtnMobile')?.addEventListener('click', async () => {
+        await supabase.auth.signOut();
+        localStorage.clear(); // Forces a complete clean wipe of all site data
+        window.location.href = 'login.html';
+    });
+    
     // 9. INIT
     document.getElementById('refreshArticlesBtn')?.addEventListener('click', refreshArticleList);
     document.getElementById('createArticleBtn')?.addEventListener('click', createNewArticle);

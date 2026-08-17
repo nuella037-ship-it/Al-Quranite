@@ -1,0 +1,17 @@
+# Dependencies
+node_modules/
+
+# Environment files (DO NOT UPLOAD THESE!)
+.env
+.env.local
+.env.production
+
+# macOS specific files
+.DS_Store
+
+# Windows system files
+Thumbs.db
+
+# Supabase local secrets (if you have them locally)
+supabase/.env
+supabase/.env.local

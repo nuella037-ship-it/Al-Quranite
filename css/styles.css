@@ -1422,6 +1422,10 @@ h1, h2, h3, h4, h5, .arabic-text {
     font-size: 1.5rem;
     color: var(--emerald-green);
 }
+.book-name-ar {
+    text-align: right;
+    direction: rtl; 
+}
 .main-wrapper, .reader-panel {
     flex: 0 0 70%;
     max-width: 70%;
